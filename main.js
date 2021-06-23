@@ -1,67 +1,70 @@
 var weaponData = {
-    unarmed: { category: "unarmed", damage: "3", hit: "+6", delay: { base: 10, min: 5 }, },
+    "unarmed": { category: "unarmed", damage: 3, hit: +6, delay: { base: 10, min: 5 }, },
+    "claws 1": { category: "unarmed", damage: 5, hit: +6, delay: { base: 10, min: 5 }, },
+    "claws 2": { category: "unarmed", damage: 7, hit: +6, delay: { base: 10, min: 5 }, },
+    "claws 3": { category: "unarmed", damage: 9, hit: +6, delay: { base: 10, min: 5 }, },
 
-    dagger: { name: "dagger", category: "short_blades", damage: "4", hit: "+6", delay: { base: 10, min: 5 }, img: "dagger" },
-    "quick blade": { category: "short_blades", name: "quick_blade", damage: "5", hit: "+6", delay: { base: 7, min: 3 }, img: "quickblade" },
-    "short sword": { category: "short_blades", name: "short_sword", damage: "6", hit: "+4", delay: { base: 11, min: 5 }, img: "short_sword" },
-    rapier: { category: "short_blades", name: "rapier", damage: "8", hit: "+4", delay: { base: "12", min: 5 }, img: "rapier" },
+    "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
+    "quick blade": { category: "short_blades", damage: 5, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
+    "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
+    "rapier": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
-    falchion: { category: "long_blades", name: "falchion", damage: "7", hit: "+2", delay: { base: 13, min: 6 }, img: "falchion" },
-    "long sword": { category: "long_blades", name: "long_sword", damage: "9", hit: "+1", delay: { base: "14", min: 7 }, img: "long_sword" },
-    scimitar: { category: "long_blades", name: "scimitar", damage: "11", hit: "0", delay: { base: 14, min: 7 }, img: "scimitar" },
-    "demon blade": { category: "long_blades", name: "demon_blade", damage: "12", hit: "-1", delay: { base: 13, min: 6 }, img: "demon_blade" },
-    "eudemon blade": { category: "long_blades", name: "eudemon_blade", damage: "13", hit: "-2", delay: { base: 12, min: 6 }, img: "blessed_blade" },
-    "double sword": { category: "long_blades", name: "double_sword", damage: "14", hit: "-1", delay: { base: 15, min: 7 }, img: "double_sword" },
-    "great sword": { category: "long_blades", name: "great_sword", damage: "15", hit: "-3", delay: { base: 17, min: 7 }, img: "greatsword" },
-    "triple sword": { category: "long_blades", name: "triple_sword", damage: "17", hit: "-4", delay: { base: "19", min: 7 }, img: "triple_sword" },
+    "falchion": { category: "long_blades", damage: 7, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
+    "long sword": { category: "long_blades", damage: 9, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
+    "scimitar": { category: "long_blades", damage: 11, hit: +0, delay: { base: 14, min: 7 }, img: "scimitar" },
+    "demon blade": { category: "long_blades", damage: 12, hit: -1, delay: { base: 13, min: 6 }, img: "demon_blade" },
+    "eudemon blade": { category: "long_blades", damage: 13, hit: -2, delay: { base: 12, min: 6 }, img: "blessed_blade" },
+    "double sword": { category: "long_blades", damage: 14, hit: -1, delay: { base: 15, min: 7 }, img: "double_sword" },
+    "great sword": { category: "long_blades", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "greatsword" },
+    "triple sword": { category: "long_blades", damage: 17, hit: -4, delay: { base: 19, min: 7 }, img: "triple_sword" },
 
-    "hand axe": { category: "axes", name: "hand axe", damage: "7", hit: "+3", delay: { base: 13, min: 6 }, img: "hand_axe" },
-    "war axe": { category: "axes", name: "hand axe", damage: 11, hit: "0", delay: { base: 15, min: 7 }, img: "war_axe" },
-    "broad axe": { category: "axes", name: "hand axe", damage: 13, hit: "-2", delay: { base: 16, min: 7 }, img: "broad_axe" },
-    "battleaxe": { category: "axes", name: "hand axe", damage: 15, hit: "-4", delay: { base: 17, min: 7 }, img: "battle_axe" },
-    "executioner's axe": { category: "axes", name: "hand axe", damage: "17", hit: "-6", delay: { base: 20, min: 7 }, img: "executioner_axe" },
+    "hand axe": { category: "axes", damage: 7, hit: +3, delay: { base: 13, min: 6 }, img: "hand_axe" },
+    "war axe": { category: "axes", damage: 11, hit: 0, delay: { base: 15, min: 7 }, img: "war_axe" },
+    "broad axe": { category: "axes", damage: 13, hit: -2, delay: { base: 16, min: 7 }, img: "broad_axe" },
+    "battleaxe": { category: "axes", damage: 15, hit: -4, delay: { base: 17, min: 7 }, img: "battle_axe" },
+    "executioner's axe": { category: "axes", damage: 17, hit: -6, delay: { base: 20, min: 7 }, img: "executioner_axe" },
 
-    whip: { category: "maces", name: "whip", damage: "6", hit: "+2", delay: { base: 11, min: 5 }, img: "bullwhip" },
-    club: { category: "maces", name: "hand axe", damage: "5", hit: "+3", delay: { base: 13, min: 6 }, img: "club" },
-    mace: { category: "maces", name: "hand axe", damage: "8", hit: "+3", delay: { base: 14, min: 7 }, img: "mace" },
-    flail: { category: "maces", name: "hand axe", damage: "10", hit: "+0", delay: { base: 14, min: 7 }, img: "flail" },
-    morningstar: { category: "maces", name: "hand axe", damage: "13", hit: "-2", delay: { base: 15, min: 7 }, img: "morningstar" },
-    "demon whip": { category: "maces", name: "hand axe", damage: "11", hit: "+1", delay: { base: 11, min: 5 }, img: "demon_whip" },
-    "sacred scourge": { category: "maces", name: "hand axe", damage: "12", hit: "+0", delay: { base: 11, min: 5 }, img: "sacred_scourge" },
-    "dire flail": { category: "maces", name: "dire flail", damage: "13", hit: "-3", delay: { base: 13, min: 6 }, img: "dire_flail" },
-    eveningstar: { category: "maces", name: "hand axe", damage: "15", hit: "-1", delay: { base: 15, min: 7 }, img: "eveningstar" },
-    "great mace": { category: "maces", name: "hand axe", damage: "17", hit: "-4", delay: { base: 17, min: 7 }, img: "mace_large" },
-    "giant club": { category: "maces", name: "hand axe", damage: "20", hit: "-6", delay: { base: 16, min: 7 }, img: "giant_club" },
-    "giant spiked club": { category: "maces", name: "hand axe", damage: "22", hit: "-7", delay: { base: 22, min: 7 }, img: "spiked_giant_club" },
+    "whip": { category: "maces", damage: 6, hit: +2, delay: { base: 11, min: 5 }, img: "bullwhip" },
+    "club": { category: "maces", damage: 5, hit: +3, delay: { base: 13, min: 6 }, img: "club" },
+    "mace": { category: "maces", damage: 8, hit: +3, delay: { base: 14, min: 7 }, img: "mace" },
+    "flail": { category: "maces", damage: 10, hit: +0, delay: { base: 14, min: 7 }, img: "flail" },
+    "morningstar": { category: "maces", damage: 13, hit: -2, delay: { base: 15, min: 7 }, img: "morningstar" },
+    "demon whip": { category: "maces", damage: 11, hit: +1, delay: { base: 11, min: 5 }, img: "demon_whip" },
+    "sacred scourge": { category: "maces", damage: 12, hit: +0, delay: { base: 11, min: 5 }, img: "sacred_scourge" },
+    "dire flail": { category: "maces", damage: 13, hit: -3, delay: { base: 13, min: 6 }, img: "dire_flail" },
+    "eveningstar": { category: "maces", damage: 15, hit: -1, delay: { base: 15, min: 7 }, img: "eveningstar" },
+    "great mace": { category: "maces", damage: 17, hit: -4, delay: { base: 17, min: 7 }, img: "mace_large" },
+    "giant club": { category: "maces", damage: 20, hit: -6, delay: { base: 16, min: 7 }, img: "giant_club" },
+    "giant spiked club": { category: "maces", damage: 22, hit: -7, delay: { base: 22, min: 7 }, img: "spiked_giant_club" },
 
-    spear: { category: "polearms", name: "spear", damage: "6", hit: "+4", delay: { base: 11, min: 6 }, img: "spear" },
-    trident: { category: "polearms", name: "spear", damage: "9", hit: "+1", delay: { base: 13, min: 6 }, img: "trident" },
-    halberd: { category: "polearms", name: "spear", damage: "13", hit: "-3", delay: { base: 15, min: 7 }, img: "halberd" },
-    scythe: { category: "polearms", name: "spear", damage: "14", hit: "-4", delay: { base: 20, min: 7 }, img: "scythe" },
-    "demon trident": { category: "polearms", name: "spear", damage: "12", hit: "+1", delay: { base: 13, min: 6 }, img: "demon_trident" },
-    trishula: { category: "polearms", name: "spear", damage: "13", hit: "+0", delay: { base: 13, min: 6 }, img: "trishula" },
-    glaive: { category: "polearms", name: "spear", damage: "15", hit: "-3", delay: { base: 17, min: 7 }, img: "glaive" },
-    bardiche: { category: "polearms", name: "spear", damage: "18", hit: "-6", delay: { base: 20, min: 7 }, img: "bardiche" },
+    "spear": { category: "polearms", damage: 6, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
+    "trident": { category: "polearms", damage: 9, hit: +1, delay: { base: 13, min: 6 }, img: "trident" },
+    "halberd": { category: "polearms", damage: 13, hit: -3, delay: { base: 15, min: 7 }, img: "halberd" },
+    "scythe": { category: "polearms", damage: 14, hit: -4, delay: { base: 20, min: 7 }, img: "scythe" },
+    "demon trident": { category: "polearms", damage: 12, hit: +1, delay: { base: 13, min: 6 }, img: "demon_trident" },
+    "trishula": { category: "polearms", damage: 13, hit: +0, delay: { base: 13, min: 6 }, img: "trishula" },
+    "glaive": { category: "polearms", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "glaive" },
+    "bardiche": { category: "polearms", damage: 18, hit: -6, delay: { base: 20, min: 7 }, img: "bardiche" },
 
-    quarterstaff: { category: "staves", name: "spear", damage: "10", hit: "+3", delay: { base: 13, min: 6 }, img: "quarterstaff" },
-    lajatang: { category: "staves", name: "spear", damage: "16", hit: "-3", delay: { base: 14, min: 7 }, img: "lajatang" },
-    staff: { category: "staves", name: "spear", damage: "5", hit: "+5", delay: { base: 12, min: 6 }, img: "staff" },
+    "quarterstaff": { category: "staves", damage: 10, hit: +3, delay: { base: 13, min: 6 }, img: "quarterstaff" },
+    "lajatang": { category: "staves", damage: 16, hit: -3, delay: { base: 14, min: 7 }, img: "lajatang" },
+    "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
     /*
-    "hunting sling": { category: "slings", name: "triple_sword", damage: "5", hit: "+2", delay: { base: 12, min: 6 }, img: "ranged/sling" },
-    fustibalus: { category: "slings", name: "triple_sword", damage: "8", hit: "-1", delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
+    "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
+    "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
 
-    shortbow: { category: "bows", name: "triple_sword", damage: "9", hit: "+2", delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
-    longbow: { category: "bows", name: "triple_sword", damage: "15", hit: "0", delay: { base: 17, min: 7 }, img: "ranged/longbow" },
+    "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
+    "longbow": { category: "bows", damage: 15, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
 
-    "hand crossbow": { category: "crossbows", name: "triple_sword", damage: "12", hit: "+5", delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
-    arbalest: { category: "crossbows", name: "triple_sword", damage: "18", hit: "+2", delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
-    "triple crossbow": { category: "crossbows", name: "triple_sword", damage: "22", hit: "+0", delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    "hand crossbow": { category: "crossbows", damage: 12, hit: +5, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
+    "arbalest": { category: "crossbows", damage: 18, hit: +2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
+    "triple crossbow": { category: "crossbows", damage: 22, hit: +0, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
 
-    stone: { category: "throwing", name: "triple_sword", damage: "2", hit: "+0", delay: { base: 11, min: 7 }, },
-    boomerang: { category: "throwing", name: "triple_sword", damage: "6", hit: "+0", delay: { base: 13, min: 7 }, },
-    javelin: { category: "throwing", name: "triple_sword", damage: "11", hit: "+0", delay: { base: 15, min: 7 }, },
-    "large rock": { category: "throwing", name: "triple_sword", damage: "20", hit: "+0", delay: { base: 20, min: 7 }, },
+    "stone": { category: "throwing", damage: 2, hit: +0, delay: { base: 11, min: 7 }, },
+    "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
+    "javelin": { category: "throwing", damage: 11, hit: +0, delay: { base: 15, min: 7 }, },
+    "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
     */
 };
 
@@ -78,26 +81,52 @@ $("#skills").on("change paste keyup", function() {
 });
 
 
-var weapons;
+var weapons = [];
+
+function reset()
+{
+    weapons = [];
+
+    $('#strength').val(10);
+
+    $('#fighting').val(0);
+    $('#short_blades').val(0);
+    $('#long_blades').val(0);
+    $('#axes').val(0);
+    $('#maces').val(0);
+    $('#polearms').val(0);
+    $('#staves').val(0);
+    $('#unarmed').val(0);
+}
 
 function parseData()
 {
+    reset();
+
     var data = $('textarea#data').val();
-
-    try {
-        var str = parseInt(/Str:\s+(\d+)/.exec(data)[1]);
-        $('#strength').val(str);
-    }
-    catch (err) {
-    }
-
     var lines = data.split('\n');
 
-    weapons = [];
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        if (line.match(/Dungeon Overview/)) {
+        if (line.match(/spell levels/)) {
             break;
+        }
+
+        var str = /Str:\s*(\d+)/.exec(line);
+        if (str && str.length >= 2) {
+            $('#strength').val(parseInt(str[1]));
+        }
+
+        // unarmed
+        if (weapons.length == 0) {
+            var claws = line.match(/claws [1-3]/);
+            if (claws != null) {
+                weapons.push(parseWeapon(claws[0]));
+            }
+            else if (line.match(/Inventory/)) {
+                // standard unarmed (fist, tentacle, etc.)
+                weapons.push(parseWeapon("unarmed"));
+            }
         }
 
         parseSkill(line);
@@ -151,6 +180,8 @@ function parseSkill(line)
             $('#polearms').val(val);
         else if (name == "Staves")
             $('#staves').val(val);
+        else if (name == "Unarmed Combat")
+            $('#unarmed').val(val);
     }
     catch (err) {
     }
@@ -161,16 +192,14 @@ function parseWeapon(s) {
         enchantment: 0,
         brand: ""
     }
-    weapon["name"] = s;
 
-    try {
-        weapon["enchantment"] = parseInt(/([\+\-][0-9]+)\s/.exec(s)[1]);
-    } catch(err) {}
-    
     for (var t in weaponData) {
         if (s.includes(t)) {
-            weapon["type"] = t;
-            break;
+            // some weapon names include other weapon names (e.g. "demon whip" includes "whip")
+            // we want to take the longest match
+            if (weapon["type"] == null || t.length > weapon["type"].length) {
+                weapon["type"] = t;
+            }
         }   
     }
 
@@ -178,7 +207,15 @@ function parseWeapon(s) {
         return null;
     }
 
+    weapon["ref_data"] = weaponData[weapon["type"]];
+
+    try {
+        weapon["enchantment"] = parseInt(/([\+\-][0-9]+)\s/.exec(s)[1]);
+    } catch(err) {}
+    
     weapon["brand"] = parseBrand(s);
+
+    weapon["description"] = weaponToString(weapon);
 
     return weapon;
 }
@@ -214,7 +251,7 @@ function calculate()
         var weap = weapons[i];
 
         var row = "<tr>";
-        row += "<td>" + weaponToString(weap) + "</td>";
+        row += "<td>" + weap["description"] + "</td>";
 
         row += "<td>";
         if (weap["delay"] != null) {
@@ -249,70 +286,85 @@ function calculate()
 }
 
 function weaponToString(w) {
-    var s = ""
-    s += enchantmentToString(w["enchantment"]) + " ";
-    s += w["type"]
-    if (w["brand"] != "") {
-        s += " (" + w["brand"] + ")";
+    var wtype = w["type"];
+    if (wtype == "unarmed") {
+        return wtype;
     }
-    return s;
+    else if (wtype.match(/^claws/)) {
+        return "unarmed (" + wtype + ")";
+    }
+    else {
+        var s = ""
+        s += numStringWithSign(w["enchantment"]) + " ";
+        s += wtype
+        if (w["brand"] != "") {
+            s += " (" + w["brand"] + ")";
+        }
+        return s;
+    }
 }
 
-function enchantmentToString(e) {
-    if (e < 0)
-        return e.toString();
-    else
-        return "+" + e.toString();
+function numStringWithSign(e) {
+    return (e<0?"":"+") + e.toString();
 }
 
 function calcDamage(weapon)
 {
-    weapon["delay"] = 1.0;
-
-    var data = weaponData[weapon["type"]];
-    if (data == null) {
+    var refData = weapon["ref_data"];
+    if (refData == null) {
         return;
     }
 
+    var unarmed = (refData["category"] == "unarmed");
+
     var str = parseFloat($('#strength').val());
     var fighting = parseFloat($('#fighting').val());
-    var weaponSkill = parseFloat($('#'+data["category"]).val());
+    var weaponSkill = parseFloat($('#'+refData["category"]).val());
 
+    // base damage
+    var damage = refData["damage"];
+    if (unarmed) {
+        damage += weaponSkill;
+    }
+    
+    // strength modifier
     var strModifier = 1.0;
     if (str > 10) {
-        // (39+((1d(str-8)-1)*2))/39
-        // avg = (39 + str-9)/39 = (str + 30) / 39
+        // [39 + (random2(you.strength() - 9) * 2)] / 39
+        // avg = (39 + str-9)/39
+        //     = (str + 30) / 39
         strModifier = (str + 30.0) / 39.0;
     }
     else if (str < 10) {
-        // (39-((1d(12-str)-1)*3))/39
-        // avg = (39-(12-str)/2*3)/39
-        strModifier = (39-3/2*(12-str)) / 39.0;
+        // [39 - (random2(11 - you.strength()) * 3)] / 39
+        // avg = [39-((11-str)*3/2)]/39
+        //     = 1 - (11-str)/26
+        strModifier = 1.0 - ((11-str)/26.0);
     }
+    damage *= strModifier;
 
-    var damage = data["damage"] * strModifier;
-
-    // at this point random2 is applied and returns a number between 0 and the full potential damage
+    // at this point, damage is randomized to a number between 0 and the full potential damage,
     // so average is half
     damage *= 0.5;
 
-    // weapon skill modifier
-    // [2499 + 1d(100 * weapon_skill +1)]/2500
-    // avg = (2499 + (100*weapon_skill + 2) /2)/2500
-    //     = (2500 + 50*weapon_skill)/2500
-    //     = 1 +  (weapon_skill/50)
-    var weaponSkillMod = 1.0 + (weaponSkill/50.0);
-
+    if (!unarmed) {
+        // weapon skill modifier
+        // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
+        // avg = 1 + 100*weapon_skill/2/2500
+        //     = 1 + (weapon_skill/50)
+        var weaponSkillMod = 1.0 + (weaponSkill/50.0);
+        damage *= weaponSkillMod;
+    }
 
     // fighting skill modifier
-    //(3999 + 1d(100 * fighting_skill +1))/4000
-    // avg = (3999 + (100*fighting_skill+2)/2)/4000
-    //     = 1.0 + 50*fighting_skill/4000
-    //     = 1.0 + fighting_skill/80
-    var fightingMod = 1.0 + (fighting/80.0);
+    // [30 * 100 + (random2(you.skill(SK_FIGHTING, 100) + 1))] / (30 * 100)
+    // avg = 1 + fighting_skill/2/30
+    //     = 1 + fighting_skill/60
+    var fightingMod = 1.0 + (fighting/60.0);
+    damage *= fightingMod;
 
     var damage_per_hit = {}
-    damage_per_hit["base"] = damage * weaponSkillMod * fightingMod;
+    damage_per_hit["base"] = damage;
 
     // slaying/enchantment
     var slaying = 0; // TODO
@@ -356,11 +408,17 @@ function calcDamage(weapon)
     weapon["damage_per_hit"] = damage_per_hit;
 
 
-    var base_delay = data["delay"]["base"] / 10.0;
-    var min_delay = data["delay"]["min"] / 10.0;
+    // calculate delay
+    var base_delay = refData["delay"]["base"] / 10.0;
+    var min_delay = refData["delay"]["min"] / 10.0;
 
-    //var delay = base_delay;
-    var delay = base_delay - (0.1 * Math.floor(weaponSkill/2.0));
+    var delay = base_delay;
+    if (unarmed) {
+        delay -= weaponSkill * (base_delay - min_delay) / 27.0;
+    }
+    else {
+        delay -= 0.1 * Math.floor(weaponSkill/2.0);
+    }
     delay = Math.max(delay, min_delay);
     if (weapon["brand"] == "speed") {
         delay = 2.0/3.0 * delay;
