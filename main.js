@@ -1,4 +1,6 @@
 var weaponData = {
+    // Ref: https://github.com/crawl/crawl/blob/master/crawl-ref/source/item-prop.cc
+
     "unarmed": { category: "unarmed", damage: 3, hit: +6, delay: { base: 10, min: 5 }, },
     "claws 1": { category: "unarmed", damage: 5, hit: +6, delay: { base: 10, min: 5 }, },
     "claws 2": { category: "unarmed", damage: 7, hit: +6, delay: { base: 10, min: 5 }, },
@@ -50,9 +52,9 @@ var weaponData = {
     "lajatang": { category: "staves", damage: 16, hit: -3, delay: { base: 14, min: 7 }, img: "lajatang" },
     "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
-    /*
-    "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
-    "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
+    // damage listed here is when using bullets. Subtract 2 if using stones.
+    "hunting sling": { category: "slings", damage: 5+4, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
+    "fustibalus": { category: "slings", damage: 8+4, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
 
     "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
     "longbow": { category: "bows", damage: 15, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
@@ -65,7 +67,6 @@ var weaponData = {
     "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
     "javelin": { category: "throwing", damage: 11, hit: +0, delay: { base: 15, min: 7 }, },
     "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
-    */
 };
 
 
@@ -75,7 +76,12 @@ $("#data").on("change paste keyup", function() {
     return true;
 });
 
-$("#skills").on("change paste keyup", function() {
+$("#skills1").on("change paste keyup", function() {
+    calculate();
+    return true;
+});
+
+$("#skills2").on("change paste keyup", function() {
     calculate();
     return true;
 });
@@ -136,10 +142,10 @@ function parseData()
 
         parseSkill(line);
 
-        if (line.match(/^\s*[a-z]\s+\-\s+/)) {
+        if (line.match(/^\s*[a-zA-Z]\s+\-\s+/)) {
             // inventory item - try to parse as weapon
             try {
-                var weapon = /^\s*[a-z]\s+\-\s+(.*)$/.exec(line)[1];
+                var weapon = /^\s*[a-zA-Z]\s+\-\s+(.*)$/.exec(line)[1];
                 var w = parseWeapon(weapon);
                 if (w != null) {
                     weapons.push(w);
@@ -187,6 +193,14 @@ function parseSkill(line)
             $('#staves').val(val);
         else if (name == "Unarmed Combat")
             $('#unarmed').val(val);
+        else if (name == "Slings")
+            $('#slings').val(val);
+        else if (name == "Bows")
+            $('#bows').val(val);
+        else if (name == "Crossbows")
+            $('#crossbows').val(val);
+        else if (name == "Throwing")
+            $('#throwing').val(val);
     }
     catch (err) {
     }
@@ -212,10 +226,13 @@ function parseWeapon(s) {
         return null;
     }
 
-    weapon["ref_data"] = weaponData[weapon["type"]];
+    var refData = weaponData[weapon["type"]]
+    weapon["ref_data"] = refData;
 
     try {
-        weapon["enchantment"] = parseInt(/([\+\-][0-9]+)\s/.exec(s)[1]);
+        if (refData["category"] != "throwing") {
+            weapon["enchantment"] = parseInt(/([\+\-][0-9]+)\s/.exec(s)[1]);
+        }
     } catch(err) {}
     
     weapon["brand"] = parseBrand(s);
@@ -226,7 +243,7 @@ function parseWeapon(s) {
 }
 
 function parseBrand(s) {
-    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt)/.exec(s);
+    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver)/.exec(s);
     if (m != null) {
         return m[1];
     }
@@ -300,11 +317,18 @@ function weaponToString(w) {
     }
     else {
         var s = ""
-        s += numStringWithSign(w["enchantment"]) + " ";
+        if (w["ref_data"]["category"] != "throwing") {
+            s += numStringWithSign(w["enchantment"]) + " ";
+        }
         s += wtype
         if (w["brand"] != "") {
             s += " (" + w["brand"] + ")";
         }
+
+        if (w["ref_data"]["category"] == "slings") {
+            s += " with bullets"
+        }
+
         return s;
     }
 }
@@ -420,6 +444,11 @@ function calcDamage(weapon)
         // = (9*dam+2)/6
         // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
         damage_per_hit["brand"] = (9.0 * damage_per_hit["base"] + 2.0) / 18.0;
+    }
+    else if (weapon["brand"] == "silver") {
+        // flat 75% on chaotic monsters
+        damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
+        //TODO: (1 + random2(damage_done) / 3) on others
     }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
