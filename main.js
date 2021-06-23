@@ -80,6 +80,11 @@ $("#skills").on("change paste keyup", function() {
     return true;
 });
 
+$("#enemy_ac").on("change paste keyup", function() {
+    calculate();
+    return true;
+});
+
 
 var weapons = [];
 
@@ -320,11 +325,12 @@ function calcDamage(weapon)
     var str = parseFloat($('#strength').val());
     var fighting = parseFloat($('#fighting').val());
     var weaponSkill = parseFloat($('#'+refData["category"]).val());
+    var enemy_ac = parseInt($('#enemy_ac').val());
 
     // base damage
-    var damage = refData["damage"];
+    var max_damage = refData["damage"];
     if (unarmed) {
-        damage += weaponSkill;
+        max_damage += weaponSkill;
     }
     
     // strength modifier
@@ -341,19 +347,16 @@ function calcDamage(weapon)
         //     = 1 - (11-str)/26
         strModifier = 1.0 - ((11-str)/26.0);
     }
-    damage *= strModifier;
+    max_damage *= strModifier;
+    max_damage = Math.floor(max_damage);
 
-    // at this point, damage is randomized to a number between 0 and the full potential damage,
-    // so average is half
-    damage *= 0.5;
-
+    var weaponSkillMod = 1.0;
     if (!unarmed) {
         // weapon skill modifier
         // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
         // avg = 1 + 100*weapon_skill/2/2500
         //     = 1 + (weapon_skill/50)
-        var weaponSkillMod = 1.0 + (weaponSkill/50.0);
-        damage *= weaponSkillMod;
+        weaponSkillMod += (weaponSkill/50.0);
     }
 
     // fighting skill modifier
@@ -361,16 +364,31 @@ function calcDamage(weapon)
     // avg = 1 + fighting_skill/2/30
     //     = 1 + fighting_skill/60
     var fightingMod = 1.0 + (fighting/60.0);
-    damage *= fightingMod;
-
-    var damage_per_hit = {}
-    damage_per_hit["base"] = damage;
 
     // slaying/enchantment
     var slaying = 0; // TODO
     var effective_enchant = weapon["enchantment"] + slaying;
-    // adds a random amount between 0 and eff. enchantment, so average is half
-    damage_per_hit["base"] += effective_enchant / 2.0;
+    var slay_bonus_min = Math.min(effective_enchant, 0)
+    var slay_bonus_max = Math.max(effective_enchant, 0)
+
+    // damage is randomized, as is slaying bonus, and protection provided by enemy ac
+    // work out the average
+    var sum = 0;
+    var count = 0;
+    for (var dam = 0; dam <= max_damage; dam++) {
+        var damage = Math.floor(dam * weaponSkillMod * fightingMod);
+        for (var slay_bonus = slay_bonus_min; slay_bonus <= slay_bonus_max; slay_bonus++) {
+            for (var saved = 0; saved <= enemy_ac; saved++) {
+                count++;
+                sum += Math.max(0, damage + slay_bonus - saved);
+            }
+        }
+    }
+    var avg_damage = sum/count;
+
+    var damage_per_hit = {}
+    damage_per_hit["base"] = avg_damage;
+
 
     damage_per_hit["brand"] = 0.0;
     if (weapon["brand"] == "vorpal") {
