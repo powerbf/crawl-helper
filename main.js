@@ -399,8 +399,7 @@ function calcDamage(weapon)
     if (crawlVersion >= 0.27) {
         // this has changed in version 0.27
         // there's no longer a random element
-        // damage *= max(1.0, 75 + 2.5 * you.strength())
-        // damage /= 100
+        // max(1.0, 75 + 2.5 * you.strength()) / 100
         for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
             var dam = parseInt(damage);
             var newDam = Math.floor(dam * Math.max(1.0, 75 + 2.5 * str));
@@ -512,7 +511,7 @@ function calcDamage(weapon)
         }
     }
 
-    // work out the average
+    // work out the weighted average
     var sum = 0;
     var count = 0;
     for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
