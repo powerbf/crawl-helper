@@ -343,6 +343,15 @@ function numStringWithSign(e) {
     return (e<0?"":"+") + e.toString();
 }
 
+
+function addWeight(dict, key, weight)
+{
+    if (dict[key] == null)
+        dict[key] = weight;
+    else
+        dict[key] += weight;
+}
+
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
 function calcDamage(weapon)
@@ -359,54 +368,117 @@ function calcDamage(weapon)
     var weaponSkill = parseFloat($('#'+refData["category"]).val());
     var enemy_ac = parseInt($('#enemy_ac').val());
 
+    // all possible damage values, weighted by probability
+    var weightedDamage = {};
+    var prevWeightedDamage;
+
     // base damage
     var base_damage = refData["damage"];
     if (unarmed) {
-        base_damage += weaponSkill;
+        base_damage += Math.floor(weaponSkill);
+        var fraction = weaponSkill - Math.floor(weaponSkill);
+        // if there is a fractional part of weapon skill then there is the corresponding chance to add 1 to base damage
+        if (fraction == 0) {
+            weightedDamage[base_damage] = 1;
+        }
+        else {
+            weightedDamage[base_damage+1] = Math.floor(fraction * 256);
+            weightedDamage[base_damage] = 256 - weightedDamage[base_damage+1];
+        }
     }
-    
+    else {
+        weightedDamage[base_damage] = 1;
+    }
+
+
     // strength modifier
-    var strModifier;
+
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
     if (crawlVersion >= 0.27) {
         // this has changed in version 0.27
         // there's no longer a random element
-        // max(1.0, 75 + 2.5 * you.strength()) / 100
-        strModifier = Math.max(1.0, 75 + 2.5 * str) / 100;
+        // damage *= max(1.0, 75 + 2.5 * you.strength())
+        // damage /= 100
+        for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+            var dam = parseInt(damage);
+            var newDam = Math.floor(dam * Math.max(1.0, 75 + 2.5 * str));
+            newDam = Math.floor(newDam / 100);
+            addWeight(weightedDamage, newDam, weight);
+        }
     }
     else {
-        strModifier = 1.0;
         if (str > 10) {
             // [39 + (random2(you.strength() - 9) * 2)] / 39]
             // = 1 + (0->str-10)*2/39
-            // avg = 1 + (str-10)/39
-            strModifier = 1 + (str-10)/39;
+            for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+                var dam = parseInt(damage);
+                for (var i = 0; i <= str - 10; i++) {
+                    var newDam = Math.floor(dam + dam*i*2/39);
+                    addWeight(weightedDamage, newDam, weight);
+                }
+            }
         }
         else if (str < 10) {
             // [39 - (random2(11 - you.strength()) * 3)] / 39
             // = 1 - (0->10-str)*3/39
             // = 1 - (0->10-str)/13
-            // avg = 1 -((10-str)/2)/13
-            //     = 1 -(10-str)/26
-            strModifier = 1.0 - ((10-str)/26.0);
+            for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+                var dam = parseInt(damage);
+                for (var i = 0; i <= 10-str; i++) {
+                    var newDam = Math.floor(dam - dam*i/13);
+                    addWeight(weightedDamage, newDam, weight);
+                }
+            }
+        }
+        else {
+            weightedDamage = prevWeightedDamage;
         }
     }
 
-    var max_damage = Math.floor(base_damage * strModifier);
+    // at this point, damage is randomized to a number between 0 and the full amount
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
 
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = 0; i <= dam; i++) {
+            addWeight(weightedDamage, i, weight);
+        }
+    }
 
-    // actual damage is
-    // random2(max_damage+1) * weaponSkillMod * fightingMod + slaying_bonus - ac_reduction
-    // but all those things are randomized
-    // We can't just take the average of all the terms because there is a floor of zero, which messes things up
-    // Note that random2(n) returns a number between 0 and n-1
-    //
     // weapon skill modifier
     // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
     // = 1 + (0->weapon_skill*100)/2500
-    //
+
+    if (!unarmed) {
+        prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
+
+        for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+            var dam = parseInt(damage);
+            for (var i = 0; i <= weaponSkill*100; i++) {
+                var newDam = Math.floor(dam + dam*i/2500);
+                addWeight(weightedDamage, newDam, weight);
+            }
+        }
+    }
+
     // fighting skill modifier
     // [30 * 100 + (random2(you.skill(SK_FIGHTING, 100) + 1))] / (30 * 100)
     // = 1 + (0->fighting_skill*100)/3000
+
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = 0; i <= fighting*100; i++) {
+            var newDam = Math.floor(dam + dam*i/3000);
+            addWeight(weightedDamage, newDam, weight);
+        }
+    }
 
     // slaying bonus
     // a random number between 0 and effective enchantment (which can be negative)
@@ -415,36 +487,43 @@ function calcDamage(weapon)
     var slay_bonus_min = Math.min(effective_enchant, 0)
     var slay_bonus_max = Math.max(effective_enchant, 0)
 
-    // to do every possible value of the random part of weapon and fighting modifiers is too much processing, so skip some
-    w_max = Math.floor(weaponSkill * 100);
-    f_max = Math.floor(fighting * 100);
-    w_step = Math.max(1, Math.round(w_max/50));
-    f_step = Math.max(1, Math.round(w_max/50));
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = slay_bonus_min; i <= slay_bonus_max; i++) {
+            var newDam = dam + i;
+            addWeight(weightedDamage, newDam, weight);
+        }
+    }
+
+    // apply ac reduction
+
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
+   for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+       var dam = parseInt(damage);
+       for (var saved = 0; saved <= enemy_ac; saved++) {
+            // damage can't go below zero
+            var newDam = Math.max(0, dam - saved);
+            addWeight(weightedDamage, newDam, weight);
+        }
+    }
 
     // work out the average
     var sum = 0;
     var count = 0;
-    for (var w = 0; w <= w_max; w += w_step) {
-        var weaponSkillMod = 1 + (w/2500);
-        for (var f = 0; f <= f_max; f += f_step) {
-            var fightingSkillMod = 1 + (f/3000);
-            for (var dam = 0; dam <= max_damage; dam++) {
-                var damage = Math.floor(Math.floor(dam * weaponSkillMod) * fightingSkillMod);
-                for (var slay_bonus = slay_bonus_min; slay_bonus <= slay_bonus_max; slay_bonus++) {
-                    for (var saved = 0; saved <= enemy_ac; saved++) {
-                        // actual damage can't go below zero
-                        sum += Math.max(0, damage + slay_bonus - saved);
-                        count++;
-                    }
-                }
-            }
-        }
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        count += weight;
+        sum += (dam * weight)
     }
     var avg_damage = sum/count;
 
     var damage_per_hit = {}
     damage_per_hit["base"] = avg_damage;
-
 
     damage_per_hit["brand"] = 0.0;
     if (weapon["brand"] == "vorpal") {
