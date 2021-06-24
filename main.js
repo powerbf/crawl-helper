@@ -92,6 +92,7 @@ $("#enemy_ac").on("change paste keyup", function() {
 });
 
 
+var crawlVersion = 0.26;
 var weapons = [];
 
 function reset()
@@ -121,6 +122,11 @@ function parseData()
         var line = lines[i];
         if (line.match(/spell levels/)) {
             break;
+        }
+
+        var version = line.match(/version\s+(\d+\.\d+)/);
+        if (version != null) {
+            crawlVersion = parseFloat(version[1]);
         }
 
         var str = /Str:\s*(\d+)/.exec(line);
@@ -337,6 +343,8 @@ function numStringWithSign(e) {
     return (e<0?"":"+") + e.toString();
 }
 
+// Ref: attack::calc_damage() method in:
+// https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
 function calcDamage(weapon)
 {
     var refData = weapon["ref_data"];
@@ -352,59 +360,83 @@ function calcDamage(weapon)
     var enemy_ac = parseInt($('#enemy_ac').val());
 
     // base damage
-    var max_damage = refData["damage"];
+    var base_damage = refData["damage"];
     if (unarmed) {
-        max_damage += weaponSkill;
+        base_damage += weaponSkill;
     }
     
     // strength modifier
-    var strModifier = 1.0;
-    if (str > 10) {
-        // [39 + (random2(you.strength() - 9) * 2)] / 39
-        // avg = (39 + str-9)/39
-        //     = (str + 30) / 39
-        strModifier = (str + 30.0) / 39.0;
+    var strModifier;
+    if (crawlVersion >= 0.27) {
+        // this has changed in version 0.27
+        // there's no longer a random element
+        // max(1.0, 75 + 2.5 * you.strength()) / 100
+        strModifier = Math.max(1.0, 75 + 2.5 * str) / 100;
     }
-    else if (str < 10) {
-        // [39 - (random2(11 - you.strength()) * 3)] / 39
-        // avg = [39-((11-str)*3/2)]/39
-        //     = 1 - (11-str)/26
-        strModifier = 1.0 - ((11-str)/26.0);
+    else {
+        strModifier = 1.0;
+        if (str > 10) {
+            // [39 + (random2(you.strength() - 9) * 2)] / 39]
+            // = 1 + (0->str-10)*2/39
+            // avg = 1 + (str-10)/39
+            strModifier = 1 + (str-10)/39;
+        }
+        else if (str < 10) {
+            // [39 - (random2(11 - you.strength()) * 3)] / 39
+            // = 1 - (0->10-str)*3/39
+            // = 1 - (0->10-str)/13
+            // avg = 1 -((10-str)/2)/13
+            //     = 1 -(10-str)/26
+            strModifier = 1.0 - ((10-str)/26.0);
+        }
     }
-    max_damage *= strModifier;
-    max_damage = Math.floor(max_damage);
 
-    var weaponSkillMod = 1.0;
-    if (!unarmed) {
-        // weapon skill modifier
-        // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
-        // avg = 1 + 100*weapon_skill/2/2500
-        //     = 1 + (weapon_skill/50)
-        weaponSkillMod += (weaponSkill/50.0);
-    }
+    var max_damage = Math.floor(base_damage * strModifier);
 
+
+    // actual damage is
+    // random2(max_damage+1) * weaponSkillMod * fightingMod + slaying_bonus - ac_reduction
+    // but all those things are randomized
+    // We can't just take the average of all the terms because there is a floor of zero, which messes things up
+    // Note that random2(n) returns a number between 0 and n-1
+    //
+    // weapon skill modifier
+    // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
+    // = 1 + (0->weapon_skill*100)/2500
+    //
     // fighting skill modifier
     // [30 * 100 + (random2(you.skill(SK_FIGHTING, 100) + 1))] / (30 * 100)
-    // avg = 1 + fighting_skill/2/30
-    //     = 1 + fighting_skill/60
-    var fightingMod = 1.0 + (fighting/60.0);
+    // = 1 + (0->fighting_skill*100)/3000
 
-    // slaying/enchantment
+    // slaying bonus
+    // a random number between 0 and effective enchantment (which can be negative)
     var slaying = 0; // TODO
     var effective_enchant = weapon["enchantment"] + slaying;
     var slay_bonus_min = Math.min(effective_enchant, 0)
     var slay_bonus_max = Math.max(effective_enchant, 0)
 
-    // damage is randomized, as is slaying bonus, and protection provided by enemy ac
+    // to do every possible value of the random part of weapon and fighting modifiers is too much processing, so skip some
+    w_max = Math.floor(weaponSkill * 100);
+    f_max = Math.floor(fighting * 100);
+    w_step = Math.max(1, Math.round(w_max/50));
+    f_step = Math.max(1, Math.round(w_max/50));
+
     // work out the average
     var sum = 0;
     var count = 0;
-    for (var dam = 0; dam <= max_damage; dam++) {
-        var damage = Math.floor(dam * weaponSkillMod * fightingMod);
-        for (var slay_bonus = slay_bonus_min; slay_bonus <= slay_bonus_max; slay_bonus++) {
-            for (var saved = 0; saved <= enemy_ac; saved++) {
-                count++;
-                sum += Math.max(0, damage + slay_bonus - saved);
+    for (var w = 0; w <= w_max; w += w_step) {
+        var weaponSkillMod = 1 + (w/2500);
+        for (var f = 0; f <= f_max; f += f_step) {
+            var fightingSkillMod = 1 + (f/3000);
+            for (var dam = 0; dam <= max_damage; dam++) {
+                var damage = Math.floor(Math.floor(dam * weaponSkillMod) * fightingSkillMod);
+                for (var slay_bonus = slay_bonus_min; slay_bonus <= slay_bonus_max; slay_bonus++) {
+                    for (var saved = 0; saved <= enemy_ac; saved++) {
+                        // actual damage can't go below zero
+                        sum += Math.max(0, damage + slay_bonus - saved);
+                        count++;
+                    }
+                }
             }
         }
     }
