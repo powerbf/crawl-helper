@@ -499,22 +499,24 @@ function calcDamage(weapon)
 
     // apply ac reduction
 
-    prevWeightedDamage = weightedDamage;
-    weightedDamage = {};
+    if (enemy_ac > 0) {
+        prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
 
-   for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
-       var dam = parseInt(damage);
-       for (var saved = 0; saved <= enemy_ac; saved++) {
-            // damage can't go below zero
-            var newDam = Math.max(0, dam - saved);
-            addWeight(weightedDamage, newDam, weight);
+       for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+           var dam = parseInt(damage);
+           for (var saved = 0; saved <= enemy_ac; saved++) {
+                // damage can't go below zero
+                var newDam = Math.max(0, dam - saved);
+                addWeight(weightedDamage, newDam, weight);
+            }
         }
     }
 
     // work out the weighted average
     var sum = 0;
     var count = 0;
-    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+    for (const [damage, weight] of Object.entries(weightedDamage)) {
         var dam = parseInt(damage);
         count += weight;
         sum += (dam * weight)
