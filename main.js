@@ -91,6 +91,10 @@ $("#enemy_ac").on("change paste keyup", function() {
     return true;
 });
 
+// enable tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 
 var crawlVersion = 0.26;
 var weapons = [];
@@ -294,7 +298,12 @@ function calculate()
             row += "<td></td><td></td><td></td>";
         }
         else {
-            row += "<td>" + weap["damage_per_hit"]["base"].toFixed(1) + "</td>";
+            row += '<td data-toggle="tooltip" data-placement="auto" title="'
+            for (const [damage, pcnt] of Object.entries(weap["damage_per_hit"]["base_distro"])) {
+                row += damage + ": " + pcnt.toFixed(1) + "%\n";
+            }
+            row += '">'
+            row += weap["damage_per_hit"]["base"].toFixed(1) + "</td>";
             row += "<td>" + weap["damage_per_hit"]["brand"].toFixed(1) + "</td>";
             row += "<td>" + weap["damage_per_hit"]["total"].toFixed(1) + "</td>";
         }
@@ -523,8 +532,18 @@ function calcDamage(weapon)
     }
     var avg_damage = sum/count;
 
+    // convert weights to percentages
+    var sumWeights = 0;
+    for (const [damage, weight] of Object.entries(weightedDamage)) {
+        sumWeights += weight;
+    }
+    for (const [damage, weight] of Object.entries(weightedDamage)) {
+        weightedDamage[damage] = 100 * weight / sumWeights;
+    }
+
     var damage_per_hit = {}
     damage_per_hit["base"] = avg_damage;
+    damage_per_hit["base_distro"] = weightedDamage;
 
     damage_per_hit["brand"] = 0.0;
     if (weapon["brand"] == "vorpal") {
