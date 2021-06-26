@@ -104,8 +104,8 @@ function reset()
     weapons = [];
 
     $('#strength').val(10);
-
     $('#fighting').val(0);
+
     $('#short_blades').val(0);
     $('#long_blades').val(0);
     $('#axes').val(0);
@@ -113,6 +113,11 @@ function reset()
     $('#polearms').val(0);
     $('#staves').val(0);
     $('#unarmed').val(0);
+
+    $('#slings').val(0);
+    $('#bows').val(0);
+    $('#crossbows').val(0);
+    $('#throwing').val(0);
 }
 
 function parseData()
