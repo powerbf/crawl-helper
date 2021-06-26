@@ -72,22 +72,22 @@ var weaponData = {
 
 $("#data").on("change paste keyup", function() {
     parseData();
-    calculate();
+    updateResults();
     return true;
 });
 
 $("#skills1").on("change paste keyup", function() {
-    calculate();
+    updateResults();
     return true;
 });
 
 $("#skills2").on("change paste keyup", function() {
-    calculate();
+    updateResults();
     return true;
 });
 
 $("#enemy_ac").on("change paste keyup", function() {
-    calculate();
+    updateResults();
     return true;
 });
 
@@ -270,7 +270,7 @@ function parseBrand(s) {
     return "";
 }
 
-function calculate()
+function updateResults()
 {
     for(var i = 0; i < weapons.length; i++) {
         calcDamage(weapons[i]);
