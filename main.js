@@ -298,10 +298,8 @@ function updateResults()
             row += "<td></td><td></td><td></td>";
         }
         else {
-            row += '<td data-toggle="tooltip" data-placement="auto" title="'
-            for (const [damage, pcnt] of Object.entries(weap["damage_per_hit"]["base_distro"])) {
-                row += damage + ": " + pcnt.toFixed(1) + "%\n";
-            }
+            row += '<td data-toggle="tooltip" data-placement="auto" title="';
+            row += distroToString(weap["damage_per_hit"]["base_distro"]);
             row += '">'
             row += weap["damage_per_hit"]["base"].toFixed(1) + "</td>";
             row += "<td>" + weap["damage_per_hit"]["brand"].toFixed(1) + "</td>";
@@ -353,12 +351,52 @@ function numStringWithSign(e) {
 }
 
 
-function addWeight(dict, key, weight)
+// add value to a dictionary entry, creating the entry if needed
+function addToEntry(dict, key, value)
 {
     if (dict[key] == null)
-        dict[key] = weight;
+        dict[key] = value;
     else
-        dict[key] += weight;
+        dict[key] += value;
+}
+
+// convert distribution to string
+function distroToString(distro)
+{
+    var result = "";
+    if (Object.entries(distro).length <= 20) {
+        // display all values
+        for (const [key, pcnt] of Object.entries(distro)) {
+            result += key + ": ";
+            result += pcnt < 0.1 ? pcnt.toPrecision(1) : pcnt.toFixed(1);
+            result += "%\n";
+        }
+    }
+    else {
+        // group into buckets
+        const bucketSize = 5;
+        var buckets = {};
+        var distroMax = 0;
+        for (const [k, pcnt] of Object.entries(distro)) {
+            var key = parseInt(k);
+            var bucket = Math.floor((key + bucketSize - 1) / bucketSize) * bucketSize;
+            addToEntry(buckets, bucket, pcnt);
+            if (key > distroMax)
+                distroMax = key;
+        }
+        for (const [k, pcnt] of Object.entries(buckets)) {
+            var key = parseInt(k);
+            var bucketMin = Math.max(0, key - bucketSize + 1);
+            var bucketMax = Math.min(key, distroMax);
+            result += bucketMin.toString();
+            if (bucketMax != bucketMin)
+                result += "-" + bucketMax.toString();
+            result += ": ";
+            result += pcnt < 0.1 ? pcnt.toPrecision(1) : pcnt.toFixed(1);
+            result += "%\n";
+        }
+    }
+    return result;
 }
 
 // Ref: attack::calc_damage() method in:
@@ -413,7 +451,7 @@ function calcDamage(weapon)
             var dam = parseInt(damage);
             var newDam = Math.floor(dam * Math.max(1.0, 75 + 2.5 * str));
             newDam = Math.floor(newDam / 100);
-            addWeight(weightedDamage, newDam, weight);
+            addToEntry(weightedDamage, newDam, weight);
         }
     }
     else {
@@ -424,7 +462,7 @@ function calcDamage(weapon)
                 var dam = parseInt(damage);
                 for (var i = 0; i <= str - 10; i++) {
                     var newDam = Math.floor(dam + dam*i*2/39);
-                    addWeight(weightedDamage, newDam, weight);
+                    addToEntry(weightedDamage, newDam, weight);
                 }
             }
         }
@@ -436,7 +474,7 @@ function calcDamage(weapon)
                 var dam = parseInt(damage);
                 for (var i = 0; i <= 10-str; i++) {
                     var newDam = Math.floor(dam - dam*i/13);
-                    addWeight(weightedDamage, newDam, weight);
+                    addToEntry(weightedDamage, newDam, weight);
                 }
             }
         }
@@ -452,7 +490,7 @@ function calcDamage(weapon)
     for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
         var dam = parseInt(damage);
         for (var i = 0; i <= dam; i++) {
-            addWeight(weightedDamage, i, weight);
+            addToEntry(weightedDamage, i, weight);
         }
     }
 
@@ -468,7 +506,7 @@ function calcDamage(weapon)
             var dam = parseInt(damage);
             for (var i = 0; i <= weaponSkill*100; i++) {
                 var newDam = Math.floor(dam + dam*i/2500);
-                addWeight(weightedDamage, newDam, weight);
+                addToEntry(weightedDamage, newDam, weight);
             }
         }
     }
@@ -484,7 +522,7 @@ function calcDamage(weapon)
         var dam = parseInt(damage);
         for (var i = 0; i <= fighting*100; i++) {
             var newDam = Math.floor(dam + dam*i/3000);
-            addWeight(weightedDamage, newDam, weight);
+            addToEntry(weightedDamage, newDam, weight);
         }
     }
 
@@ -502,7 +540,7 @@ function calcDamage(weapon)
         var dam = parseInt(damage);
         for (var i = slay_bonus_min; i <= slay_bonus_max; i++) {
             var newDam = dam + i;
-            addWeight(weightedDamage, newDam, weight);
+            addToEntry(weightedDamage, newDam, weight);
         }
     }
 
@@ -517,7 +555,7 @@ function calcDamage(weapon)
            for (var saved = 0; saved <= enemy_ac; saved++) {
                 // damage can't go below zero
                 var newDam = Math.max(0, dam - saved);
-                addWeight(weightedDamage, newDam, weight);
+                addToEntry(weightedDamage, newDam, weight);
             }
         }
     }
