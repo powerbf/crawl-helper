@@ -52,9 +52,9 @@ var weaponData = {
     "lajatang": { category: "staves", damage: 16, hit: -3, delay: { base: 14, min: 7 }, img: "lajatang" },
     "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
-    // damage listed here is when using bullets. Subtract 2 if using stones.
-    "hunting sling": { category: "slings", damage: 5+4, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
-    "fustibalus": { category: "slings", damage: 8+4, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
+    // missile base damage must be added to these (+2 for stones, +4 for bullets)
+    "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
+    "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
 
     "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
     "longbow": { category: "bows", damage: 15, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
@@ -164,6 +164,14 @@ function parseData()
                 var w = parseWeapon(weapon);
                 if (w != null) {
                     weapons.push(w);
+                    if (w["ref_data"]["category"] == "slings") {
+                        // handle for both stones and bullets as ammo
+                        var w2 = {};
+                        Object.assign(w2, w);
+                        weapons.push(w2);
+                        w["description"] += " with stones";
+                        w2["description"] += " with bullets";
+                    }
                 }
             }
             catch(err) {
@@ -343,10 +351,6 @@ function weaponToString(w) {
             s += " (" + w["brand"] + ")";
         }
 
-        if (w["ref_data"]["category"] == "slings") {
-            s += " with bullets"
-        }
-
         return s;
     }
 }
@@ -439,6 +443,12 @@ function calcDamage(weapon)
         }
     }
     else {
+        if (refData["category"] == "slings") {
+            if (weapon["description"].match(/bullets/))
+                base_damage += 4; // using sling bullets
+            else
+                base_damage += 2; // using stones
+        }
         weightedDamage[base_damage] = 1;
     }
 
