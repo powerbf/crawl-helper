@@ -91,6 +91,11 @@ $("#enemy_ac").on("change paste keyup", function() {
     return true;
 });
 
+$("#slaying").on("change paste keyup", function() {
+    updateResults();
+    return true;
+});
+
 // enable tooltips
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
@@ -423,6 +428,7 @@ function calcDamage(weapon)
     var fighting = parseFloat($('#fighting').val());
     var weaponSkill = parseFloat($('#'+refData["category"]).val());
     var enemy_ac = parseInt($('#enemy_ac').val());
+    var slaying = parseInt($('#slaying').val());
 
     // all possible damage values, weighted by probability
     var weightedDamage = {};
@@ -543,7 +549,6 @@ function calcDamage(weapon)
 
     // slaying bonus
     // a random number between 0 and effective enchantment (which can be negative)
-    var slaying = 0; // TODO
     var effective_enchant = weapon["enchantment"] + slaying;
     var slay_bonus_min = Math.min(effective_enchant, 0)
     var slay_bonus_max = Math.max(effective_enchant, 0)
