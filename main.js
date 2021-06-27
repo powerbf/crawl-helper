@@ -40,6 +40,7 @@ var weaponData = {
     "giant spiked club": { category: "maces", damage: 22, hit: -7, delay: { base: 18, min: 7 }, img: "spiked_giant_club" },
 
     "spear": { category: "polearms", damage: 6, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
+    "lance": { category: "polearms", damage: 8, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
     "trident": { category: "polearms", damage: 9, hit: +1, delay: { base: 13, min: 6 }, img: "trident" },
     "halberd": { category: "polearms", damage: 13, hit: -3, delay: { base: 15, min: 7 }, img: "halberd" },
     "scythe": { category: "polearms", damage: 14, hit: -4, delay: { base: 20, min: 7 }, img: "scythe" },
@@ -271,7 +272,7 @@ function parseWeapon(s) {
 }
 
 function parseBrand(s) {
-    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom)/.exec(s);
+    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac)/.exec(s);
     if (m != null) {
         return m[1];
     }
@@ -638,6 +639,11 @@ function calcDamage(weapon)
         // flat 75% on chaotic monsters
         damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
         //TODO: (1 + random2(damage_done) / 3) on others
+    }
+    else if (weapon["brand"] == "slay drac") {
+        // bonus_dam = 1 + random2(3 * dam / 2);
+        // avg = 1 + 75% * dam
+        damage_per_hit["brand"] = 1 + 0.75 * damage_per_hit["base"];
     }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
