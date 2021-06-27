@@ -271,7 +271,7 @@ function parseWeapon(s) {
 }
 
 function parseBrand(s) {
-    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver)/.exec(s);
+    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom)/.exec(s);
     if (m != null) {
         return m[1];
     }
