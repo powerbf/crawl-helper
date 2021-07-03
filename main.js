@@ -321,9 +321,9 @@ function updateResults()
         var weap = weapons[i];
 
         var row = "<tr>";
-        row += "<td>" + weap["description"] + "</td>";
+        row += "<td class='fit'>" + weap["description"] + "</td>";
 
-        row += "<td>";
+        row += "<td class='fit'>";
         if (weap["delay"] != null) {
             if (weap["brand"] == "speed" || weap["is_pair"])
                 row += weap["delay"].toFixed(2);
@@ -336,21 +336,21 @@ function updateResults()
             row += "<td></td><td></td><td></td>";
         }
         else {
-            row += '<td data-toggle="tooltip" data-placement="auto" title="';
+            row += '<td class="fit" data-toggle="tooltip" data-placement="auto" title="';
             row += distroToString(weap["damage_per_hit"]["base_distro"]);
             row += '">'
             row += weap["damage_per_hit"]["base"].toFixed(1) + "</td>";
-            row += "<td>" + weap["damage_per_hit"]["brand"].toFixed(1) + "</td>";
-            row += "<td>" + weap["damage_per_hit"]["total"].toFixed(1) + "</td>";
+            row += "<td class='fit'>" + weap["damage_per_hit"]["brand"].toFixed(1) + "</td>";
+            row += "<td class='fit'>" + weap["damage_per_hit"]["total"].toFixed(1) + "</td>";
         }
 
         if (weap["damage_per_turn"] == null) {
             row += "<td></td><td></td><td></td>";
         }
         else {
-            row += "<td>" + weap["damage_per_turn"]["base"].toFixed(1) + "</td>";
-            row += "<td>" + weap["damage_per_turn"]["brand"].toFixed(1) + "</td>";
-            row += "<td>" + weap["damage_per_turn"]["total"].toFixed(1) + "</td>";
+            row += "<td class='fit'>" + weap["damage_per_turn"]["base"].toFixed(1) + "</td>";
+            row += "<td class='fit'>" + weap["damage_per_turn"]["brand"].toFixed(1) + "</td>";
+            row += "<td class='fit'>" + weap["damage_per_turn"]["total"].toFixed(1) + "</td>";
             row += "</tr>";
         }
 
