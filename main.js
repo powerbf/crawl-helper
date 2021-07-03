@@ -105,6 +105,10 @@ $(function () {
 var crawlVersion = 0.26;
 var weapons = [];
 
+parseData();
+updateResults();
+
+
 function reset()
 {
     weapons = [];
