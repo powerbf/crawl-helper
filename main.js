@@ -272,7 +272,7 @@ function parseWeapon(s) {
 }
 
 function parseBrand(s) {
-    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac)/.exec(s);
+    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
     if (m != null) {
         return m[1];
     }
@@ -582,14 +582,7 @@ function calcDamage(weapon)
     }
 
     // work out the weighted average
-    var sum = 0;
-    var count = 0;
-    for (const [damage, weight] of Object.entries(weightedDamage)) {
-        var dam = parseInt(damage);
-        count += weight;
-        sum += (dam * weight)
-    }
-    var avg_damage = sum/count;
+    var avg_damage = getWeightedAverage(weightedDamage);
 
     // convert weights to percentages
     var sumWeights = 0;
@@ -645,6 +638,9 @@ function calcDamage(weapon)
         // avg = 1 + 75% * dam
         damage_per_hit["brand"] = 1 + 0.75 * damage_per_hit["base"];
     }
+    else if (weapon["brand"] == "spect") {
+        damage_per_hit["brand"] = calcSpectralDamage(weapon);
+    }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
     weapon["damage_per_hit"] = damage_per_hit;
@@ -673,5 +669,104 @@ function calcDamage(weapon)
     damage_per_turn["brand"] = damage_per_hit["brand"] / delay;
     damage_per_turn["total"] = damage_per_hit["total"] / delay;
     weapon["damage_per_turn"] = damage_per_turn;
+}
+
+// calculate damage from spectral weapon
+// ref: player::handle_spectral_brand() and attack::calc_damage()
+// If you trace through player::handle_spectral_brand() you see that spectral wepon is implemented
+// as a monster with damage 6 wielding the original wepaon (I think)
+function calcSpectralDamage(weapon)
+{
+    var refData = weapon["ref_data"];
+    if (refData == null) {
+        return;
+    }
+
+    var enemy_ac = parseInt($('#enemy_ac').val());
+
+    // all possible damage values, weighted by probability
+    var weightedDamage = {};
+    var prevWeightedDamage;
+
+    // weapon base damage
+    var base_damage = refData["damage"];
+    for (var i = 0; i < base_damage; i++) {
+        weightedDamage[i] = 1;
+    }
+
+    // weapon enchantment damage
+    var enchant = weapon["enchantment"]
+    var bonus_min, bonus_max;
+    if (enchant < 0) {
+        bonus_min = enchant;
+        bonus_max = 0;
+    }
+    else {
+        bonus_min = 0;
+        bonus_max = Math.max(0, enchant - 1); // ripped off!
+    }
+
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = bonus_min; i <= bonus_max; i++) {
+            var newDam = Math.max(dam + i, 0);
+            addToEntry(weightedDamage, newDam, weight);
+        }
+    }
+
+    // subtract 1-3 for monster wielding weapon
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = 1; i <= 3; i++) {
+            var newDam = Math.max(dam - i, 0);
+            addToEntry(weightedDamage, newDam, weight);
+        }
+    }
+
+    // now add random value from 1 to monster damage (6 for spectral weapons - see mon-data.h)
+    prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+    for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+        var dam = parseInt(damage);
+        for (var i = 1; i <= 6; i++) {
+            var newDam = dam + i;
+            addToEntry(weightedDamage, newDam, weight);
+        }
+    }
+
+    // apply ac reduction
+    if (enemy_ac > 0) {
+        prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
+
+       for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+           var dam = parseInt(damage);
+           for (var saved = 0; saved <= enemy_ac; saved++) {
+                // damage can't go below zero
+                var newDam = Math.max(0, dam - saved);
+                addToEntry(weightedDamage, newDam, weight);
+            }
+        }
+    }
+
+    return getWeightedAverage(weightedDamage);
+}
+
+// work out average of weighted values
+function getWeightedAverage(weightedValues)
+{
+    var sum = 0;
+    var count = 0;
+    for (const [value, weight] of Object.entries(weightedValues)) {
+        var val = parseInt(value);
+        count += weight;
+        sum += (val * weight)
+    }
+    return count == 0 ? 0 : sum/count;
 }
 
