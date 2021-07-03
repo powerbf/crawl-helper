@@ -266,6 +266,21 @@ function parseWeapon(s) {
     
     weapon["brand"] = parseBrand(s);
 
+    // get artefact name
+    var m = s.match('"[A-Za-z "]+"');
+    if (m) {
+        weapon["name"] = m[0];
+    }
+    else {
+        m = s.match(' of [A-Za-z ]+');
+        if (m && !m[0].includes(weapon["brand"])) {
+            weapon["name"] = m[0].trim();
+        }
+    }
+
+    // Gyre and Giimble
+    weapon["is_pair"] = (s.match(' pair of ') != null);
+
     weapon["description"] = weaponToString(weapon);
 
     return weapon;
@@ -306,7 +321,7 @@ function updateResults()
 
         row += "<td>";
         if (weap["delay"] != null) {
-            if (weap["brand"] == "speed")
+            if (weap["brand"] == "speed" || weap["is_pair"])
                 row += weap["delay"].toFixed(2);
             else
                 row += weap["delay"].toFixed(1);
@@ -352,7 +367,13 @@ function weaponToString(w) {
         if (w["ref_data"]["category"] != "throwing") {
             s += numStringWithSign(w["enchantment"]) + " ";
         }
-        s += wtype
+        if (w["is_pair"])
+            s += 'pair of ' + wtype + 's';
+        else
+            s += wtype
+        if (w["name"] != null) {
+            s += " " + w["name"];
+        }
         if (w["brand"] != "") {
             s += " (" + w["brand"] + ")";
         }
@@ -660,6 +681,10 @@ function calcDamage(weapon)
     delay = Math.max(delay, min_delay);
     if (weapon["brand"] == "speed") {
         delay = 2.0/3.0 * delay;
+    }
+    else if (weapon["is_pair"]) {
+        // gets two attacks
+        delay /= 2;
     }
     weapon["delay"] = delay;
 
