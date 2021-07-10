@@ -339,10 +339,7 @@ function updateResults()
 
         row += "<td class='fit'>";
         if (weap["delay"] != null) {
-            if (weap["brand"] == "speed" || weap["is_pair"])
-                row += weap["delay"].toFixed(2);
-            else
-                row += weap["delay"].toFixed(1);
+            row += weap["delay"].toFixed(2);
         }
         row += "</td>";
 
@@ -694,7 +691,7 @@ function calcDamage(weapon)
         delay -= weaponSkill * (base_delay - min_delay) / 27.0;
     }
     else {
-        delay -= 0.1 * Math.floor(weaponSkill/2.0);
+        delay -= 0.1 * weaponSkill/2.0;
     }
     delay = Math.max(delay, min_delay);
     if (weapon["brand"] == "speed") {
