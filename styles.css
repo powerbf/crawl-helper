@@ -4,16 +4,13 @@
     width: 1%;
 }
 
-span {
+.number-val {
   display: inline-block;
   width: 20px;
   text-align: center;
 }
 
-.bi-caret-left-fill {
-    color: violet;
-}
-
-.bi-caret-right-fill {
+.bi-caret-left-fill, .bi-caret-right-fill {
+    display: inline-block;
     color: violet;
 }

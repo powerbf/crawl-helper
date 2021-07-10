@@ -22,133 +22,165 @@
         <div class="row">
             <div class="col-sm-5">
                 <textarea id="data" class="form-control" rows="10" cols="80" placeholder="Paste text from morgue or character file"></textarea>
-                <div class="form-group row">
-                    <div class="col-sm-4">
-                    </div>
-                    <div class="col-sm-1">
-                        <label for="slaying" class="col-form-label text-nowrap">Slaying:</label>
-                    </div>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="slaying">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
-                    <div class="col-sm-2">
-                        <label for="enemy_ac" class="col-form-label text-nowrap">Enemy AC:</label>
-                    </div>
-                    <div class="col-sm-2">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="enemy_ac" min="0">1</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    &nbsp;
                 </div>
             </div>
             <div class="col-sm-2" id="skills1">
-                <div class="form-group row mb-0">
-                    <label for="strength" class="col-sm-6 col-form-label text-nowrap">Strength:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="strength" min="0">10</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Strength:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="strength" min="0">10</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="fighting" class="col-sm-6 col-form-label text-nowrap">Fighting:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="fighting" min="0" max="27">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Fighting:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="fighting" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="slings" class="col-sm-6 col-form-label text-nowrap">Slings:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="slings" min="0" max="27">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Slings:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="slings" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="bows" class="col-sm-6 col-form-label text-nowrap">Bows:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="bows" min="0" max="27">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Bows:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="bows" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                 <div class="form-group row mb-0">
-                    <label for="crossbows" class="col-sm-6 col-form-label text-nowrap">Crossbows:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="crossbows" min="0" max="27">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Crossbows:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="crossbows" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="throwing" class="col-sm-6 col-form-label text-nowrap">Throwing:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="throwing" min="0" max="27">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Throwing:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="throwing" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
+                </div>
+                <div class="row">
+                    &nbsp;
+                </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Slaying:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="slaying" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
+                </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Enemy AC:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="enemy_ac" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
             </div>
             <div class="col-sm-2" id="skills2">
-                <div class="form-group row mb-0">
-                    <label for="short_blades" class="col-sm-6 col-form-label text-nowrap">Short Blades:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="short_blades" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Short Blades:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="short_blades" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="long_blades" class="col-sm-6 col-form-label text-nowrap">Long Blades:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="long_blades" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Long Blades:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="long_blades" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-               <div class="form-group row mb-0">
-                    <label for="axes" class="col-sm-6 col-form-label">Axes:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="axes" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Axes:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="axes" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="maces" class="col-sm-6 col-form-label text-nowrap">Maces & Flails:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="maces" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Maces & Flails:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="maces" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="polearms" class="col-sm-6 col-form-label">Polearms:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="polearms" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Polearms:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="polearms" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="staves" class="col-sm-6 col-form-label">Staves:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="staves" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Staves:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="staves" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
-                <div class="form-group row mb-0">
-                    <label for="unarmed" class="col-sm-6 col-form-label">Unarmed:</label>
-                    <div class="col-sm-2 text-nowrap">
-                        <i class="bi bi-caret-left-fill"></i>
-                        <span class="number-val" id="unarmed" min="0">0</span>
-                        <i class="bi bi-caret-right-fill"></i>
-                    </div>
+                <div class="row">
+                    <span>
+                        <label class="text-nowrap">Unarmed:</label>
+                        <span style="float:right">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="unarmed" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </span>
+                    </span>
                 </div>
             </div>
         </div>
