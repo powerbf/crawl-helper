@@ -5,9 +5,9 @@
 }
 
 .number-val {
-  display: inline-block;
-  width: 20px;
-  text-align: center;
+    display: inline-block;
+    width: 1.5em;
+    text-align: center;
 }
 
 .bi-caret-left-fill, .bi-caret-right-fill {
@@ -16,11 +16,11 @@
 }
 
 #results {
-   margin-top: 5px;
+    margin-top: 5px;
 }
 
 tr {
-   line-height: 1.2em;
-   min-height: 1.2em;
-   height: 1.2em;
+    line-height: 1.2em;
+    min-height: 1.2em;
+    height: 1.2em;
 }
