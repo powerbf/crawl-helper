@@ -70,19 +70,45 @@ var weaponData = {
     "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
 };
 
+// decrement value when left arrow clicked
+$(document).on('click', '.bi-caret-left-fill', function () {
+    var valElmt = $(this).parent().children(".number-val").first();
+    //var valElmt = $('#' + $(this).attr('for'));
+    var oldVal = parseInt(valElmt.text());
+    var newVal = oldVal - 1;
+    
+    var min = valElmt.attr('min');
+    if (typeof min !== 'undefined' && min !== false) {
+        newVal = Math.max(newVal, min);
+    }
+
+    if (newVal != oldVal) {
+        valElmt.text(newVal);
+        updateResults();
+    }
+});
+
+// decrement value when left arrow clicked
+$(document).on('click', '.bi-caret-right-fill', function () {
+    var valElmt = $(this).parent().children(".number-val").first();
+    //var valElmt = $('#' + $(this).attr('for'));
+    var oldVal = parseInt(valElmt.text());
+    var newVal = oldVal + 1;
+    
+    var max = valElmt.attr('max');
+    if (typeof max !== 'undefined' && max !== false) {
+        newVal = Math.min(newVal, max);
+    }
+
+    if (newVal != oldVal) {
+        valElmt.text(newVal);
+        updateResults();
+    }
+});
+
 
 $("#data").on("change paste keyup", function() {
     parseData();
-    updateResults();
-    return true;
-});
-
-$("#skills1").on("change paste keyup", function() {
-    updateResults();
-    return true;
-});
-
-$("#skills2").on("change paste keyup", function() {
     updateResults();
     return true;
 });
@@ -113,21 +139,21 @@ function reset()
 {
     weapons = [];
 
-    $('#strength').val(10);
-    $('#fighting').val(0);
+    $('#strength').text(10);
+    $('#fighting').text(0);
 
-    $('#short_blades').val(0);
-    $('#long_blades').val(0);
-    $('#axes').val(0);
-    $('#maces').val(0);
-    $('#polearms').val(0);
-    $('#staves').val(0);
-    $('#unarmed').val(0);
+    $('#short_blades').text(0);
+    $('#long_blades').text(0);
+    $('#axes').text(0);
+    $('#maces').text(0);
+    $('#polearms').text(0);
+    $('#staves').text(0);
+    $('#unarmed').text(0);
 
-    $('#slings').val(0);
-    $('#bows').val(0);
-    $('#crossbows').val(0);
-    $('#throwing').val(0);
+    $('#slings').text(0);
+    $('#bows').text(0);
+    $('#crossbows').text(0);
+    $('#throwing').text(0);
 }
 
 function parseData()
@@ -150,7 +176,7 @@ function parseData()
 
         var str = /Str:\s*(\d+)/.exec(line);
         if (str && str.length >= 2) {
-            $('#strength').val(parseInt(str[1]));
+            $('#strength').text(parseInt(str[1]));
         }
 
         // unarmed
@@ -211,29 +237,29 @@ function parseSkill(line)
         }
 
         if (name == "Fighting")
-            $('#fighting').val(val);
+            $('#fighting').text(val);
         else if (name == "Short Blades")
-            $('#short_blades').val(val);
+            $('#short_blades').text(val);
         else if (name == "Long Blades")
-            $('#long_blades').val(val);
+            $('#long_blades').text(val);
         else if (name == "Axes")
-            $('#axes').val(val);
+            $('#axes').text(val);
         else if (name == "Maces & Flails")
-            $('#maces').val(val);
+            $('#maces').text(val);
         else if (name == "Polearms")
-            $('#polearms').val(val);
+            $('#polearms').text(val);
         else if (name == "Staves")
-            $('#staves').val(val);
+            $('#staves').text(val);
         else if (name == "Unarmed Combat")
-            $('#unarmed').val(val);
+            $('#unarmed').text(val);
         else if (name == "Slings")
-            $('#slings').val(val);
+            $('#slings').text(val);
         else if (name == "Bows")
-            $('#bows').val(val);
+            $('#bows').text(val);
         else if (name == "Crossbows")
-            $('#crossbows').val(val);
+            $('#crossbows').text(val);
         else if (name == "Throwing")
-            $('#throwing').val(val);
+            $('#throwing').text(val);
     }
     catch (err) {
     }
@@ -450,11 +476,11 @@ function calcDamage(weapon)
 
     var unarmed = (refData["category"] == "unarmed");
 
-    var str = parseFloat($('#strength').val());
-    var fighting = parseFloat($('#fighting').val());
-    var weaponSkill = parseFloat($('#'+refData["category"]).val());
-    var enemy_ac = parseInt($('#enemy_ac').val());
-    var slaying = parseInt($('#slaying').val());
+    var str = parseFloat($('#strength').text());
+    var fighting = parseFloat($('#fighting').text());
+    var weaponSkill = parseFloat($('#'+refData["category"]).text());
+    var enemy_ac = parseInt($('#enemy_ac').text());
+    var slaying = parseInt($('#slaying').text());
 
     // all possible damage values, weighted by probability
     var weightedDamage = {};
@@ -711,7 +737,7 @@ function calcSpectralDamage(weapon)
         return;
     }
 
-    var enemy_ac = parseInt($('#enemy_ac').val());
+    var enemy_ac = parseInt($('#enemy_ac').text());
 
     // all possible damage values, weighted by probability
     var weightedDamage = {};

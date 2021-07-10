@@ -1,10 +1,12 @@
-.number-sm {
-    width: 70px;
-    height: 30px;
-}
-
 .table td.fit,
 .table th.fit {
     white-space: nowrap;
     width: 1%;
 }
+
+span {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
