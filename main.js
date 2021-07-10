@@ -87,7 +87,7 @@ $(document).on('click', '.bi-caret-left-fill', function () {
     }
 });
 
-// decrement value when left arrow clicked
+// increment value when right arrow clicked
 $(document).on('click', '.bi-caret-right-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
     var oldVal = parseInt(valElmt.text());
