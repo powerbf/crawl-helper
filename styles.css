@@ -14,3 +14,8 @@
     display: inline-block;
     color: violet;
 }
+
+#results {
+   margin-left: 30px;
+   margin-right: 30px; 
+}
