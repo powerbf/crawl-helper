@@ -73,7 +73,6 @@ var weaponData = {
 // decrement value when left arrow clicked
 $(document).on('click', '.bi-caret-left-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
-    //var valElmt = $('#' + $(this).attr('for'));
     var oldVal = parseInt(valElmt.text());
     var newVal = oldVal - 1;
     
@@ -91,7 +90,6 @@ $(document).on('click', '.bi-caret-left-fill', function () {
 // decrement value when left arrow clicked
 $(document).on('click', '.bi-caret-right-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
-    //var valElmt = $('#' + $(this).attr('for'));
     var oldVal = parseInt(valElmt.text());
     var newVal = oldVal + 1;
     
@@ -109,16 +107,6 @@ $(document).on('click', '.bi-caret-right-fill', function () {
 
 $("#data").on("change paste keyup", function() {
     parseData();
-    updateResults();
-    return true;
-});
-
-$("#enemy_ac").on("change paste keyup", function() {
-    updateResults();
-    return true;
-});
-
-$("#slaying").on("change paste keyup", function() {
     updateResults();
     return true;
 });
