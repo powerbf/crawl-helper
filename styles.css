@@ -19,3 +19,9 @@
    margin-left: 30px;
    margin-right: 30px; 
 }
+
+tr {
+   line-height: 1.2em;
+   min-height: 1.2em;
+   height: 1.2em;
+}
