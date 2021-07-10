@@ -10,3 +10,10 @@ span {
   text-align: center;
 }
 
+.bi-caret-left-fill {
+    color: violet;
+}
+
+.bi-caret-right-fill {
+    color: violet;
+}
