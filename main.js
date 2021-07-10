@@ -140,55 +140,63 @@ function parseData()
     var data = $('textarea#data').val();
     var lines = data.split('\n');
 
+    var section = "Header";
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (line.match(/spell levels/)) {
             break;
         }
-
-        var version = line.match(/version\s+(\d+\.\d+)/);
-        if (version != null) {
-            crawlVersion = parseFloat(version[1]);
+        else if (line.match(/Inventory/)) {
+            section = "Inventory";
+            continue;
+        }
+        else if (line.match(/Skills/)) {
+            section = "Skills";
+            continue;
         }
 
-        var str = /Str:\s*(\d+)/.exec(line);
-        if (str && str.length >= 2) {
-            $('#strength').text(parseInt(str[1]));
-        }
-
-        // unarmed
-        if (weapons.length == 0) {
-            var claws = line.match(/claws [1-3]/);
-            if (claws != null) {
-                weapons.push(parseWeapon(claws[0]));
+        if (section == "Header") {
+            var version = line.match(/version\s+(\d+\.\d+)/);
+            if (version != null) {
+                crawlVersion = parseFloat(version[1]);
             }
-            else if (line.match(/Inventory/)) {
+
+            var str = /Str:\s*(\d+)/.exec(line);
+            if (str && str.length >= 2) {
+                $('#strength').text(parseInt(str[1]));
+            }
+
+            if (weapons.length == 0) {
+                var claws = line.match(/claws [1-3]/);
+                if (claws != null) {
+                    weapons.push(parseWeapon(claws[0]));
+                }
+            }
+        }
+        else if (section == "Inventory") {
+            // unarmed
+            if (weapons.length == 0) {
+                // didn't find claws in header
                 // standard unarmed (fist, tentacle, etc.)
                 weapons.push(parseWeapon("unarmed"));
             }
-        }
 
-        parseSkill(line);
-
-        if (line.match(/^\s*[a-zA-Z]\s+\-\s+/)) {
             // inventory item - try to parse as weapon
-            try {
-                var weapon = /^\s*[a-zA-Z]\s+\-\s+(.*)$/.exec(line)[1];
-                var w = parseWeapon(weapon);
-                if (w != null) {
-                    weapons.push(w);
-                    if (w["ref_data"]["category"] == "slings") {
-                        // handle for both stones and bullets as ammo
-                        var w2 = {};
-                        Object.assign(w2, w);
-                        weapons.push(w2);
-                        w["description"] += " with stones";
-                        w2["description"] += " with bullets";
-                    }
+            var w = parseWeapon(line);
+            if (w != null) {
+                weapons.push(w);
+                if (w["ref_data"]["category"] == "slings") {
+                    // handle for both stones and bullets as ammo
+                    var w2 = {};
+                    Object.assign(w2, w);
+                    weapons.push(w2);
+                    w["description"] += " with stones";
+                    w2["description"] += " with bullets";
                 }
             }
-            catch(err) {
-            }
+        }
+        else {
+            parseSkill(line);
         }
     }
 }
@@ -243,6 +251,11 @@ function parseSkill(line)
 }
 
 function parseWeapon(s) {
+    if (s.match("tremorstone")) {
+        // this is not a weapon, but it would match on "stone"
+        return null;
+    }
+
     var weapon = {
         enchantment: 0,
         brand: ""
@@ -280,7 +293,7 @@ function parseWeapon(s) {
     }
     else {
         m = s.match(' of [A-Za-z ]+');
-        if (m && !m[0].includes(weapon["brand"])) {
+        if (m && parseBrand(m[0]) == "") {
             weapon["name"] = m[0].trim();
         }
     }
