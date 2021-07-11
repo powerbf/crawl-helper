@@ -171,6 +171,10 @@ $(document).on('click', '.bi-caret-right-fill', function () {
     }
 });
 
+// blur selectors on change so that tooltip goes way
+$("select").on("change", function(){
+    $(this).blur();
+});
 
 $("#data").on("change paste keyup", function() {
     parseData();
