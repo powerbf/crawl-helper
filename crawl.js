@@ -898,7 +898,7 @@ function calcShieldPenalty()
          racialFactor = -2;
     }
 
-    var shieldsSkill = parseInt($("#shields").text());
+    var shieldsSkill = parseFloat($("#shields").text());
 
     // ref: player::adjusted_shield_penalty (player.cc)
     penalty -= shieldsSkill / (5 + racialFactor);
