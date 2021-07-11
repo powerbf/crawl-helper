@@ -20,7 +20,7 @@
     <h5>DCSS Damage Calculator</h5>
     <div id="inputs" class="container">
         <div class="row">
-            <div class="col col-md-6">
+            <div class="col col-sm-12 col-md-6">
                 <textarea id="data" class="form-control" rows="10" cols="80" placeholder="Paste text from morgue or character file"></textarea>
                 <div class="row">
                     &nbsp;
@@ -43,6 +43,40 @@
                         <td>
                     </tr>
                     <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left"
+                        title="Larger species get more benefit from training shields skill.<br><br> Little: felid, spriggan<br>Small: kobold, halfling<br>Large: centaur, palentonga, naga, ogre, troll<br>Medium: others<br><br>NOTE: Formicid is a medium species, but treats shields as per large species.">
+                        <td>
+                            <label class="text-nowrap">Species:</label>
+                        </td>
+                        <td>
+                            <!-- full species list will be populated by javascript -->
+                            <select id="species" class="form-select form-select-sm">
+                              <option value="minotaur">Minotaur</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="The larger the shield, the slower your attacks. This is mitigated by training shields skill.">
+                        <td>
+                            <label class="text-nowrap">Shield:</label>
+                        </td>
+                        <td>
+                            <select id="shield" class="form-select form-select-sm">
+                              <option value="none">None</option>
+                              <option value="buckler">Buckler</option>
+                              <option value="kite_shield">Kite Shield</option>
+                              <option value="tower_shield">Tower Shield</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
                         <td>
                             Fighting:
                         </td>
@@ -52,43 +86,14 @@
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="Shields skill reduces the attack speed penalty (and EV penalty) from wearing a shield. Larger species get more benefit from less shields skill.">
                         <td>
-                            <label>Slings:</label>
+                            Shields:
                         </td>
                         <td>
                             <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="slings" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Bows:</label>
-                        </td>
-                        <td class="col">
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="bows" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Crossbows:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="crossbows" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Throwing:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="throwing" min="0" max="27">0</span>
+                            <span class="number-val" id="shields" min="0" max="27">0</span>
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>
@@ -187,6 +192,50 @@
                         <td>
                             <i class="bi bi-caret-left-fill"></i>
                             <span class="number-val" id="unarmed" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Slings:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="slings" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Bows:</label>
+                        </td>
+                        <td class="col">
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="bows" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Crossbows:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="crossbows" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Throwing:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="throwing" min="0" max="27">0</span>
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>

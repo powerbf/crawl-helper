@@ -24,3 +24,12 @@ tr {
     min-height: 1.2em;
     height: 1.2em;
 }
+
+.form-select-sm {
+    width: 10em;
+}
+
+/* this works in Chrome, but not in Firefox */
+option.obsolete {
+    color: red;
+}

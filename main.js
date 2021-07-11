@@ -70,6 +70,73 @@ var weaponData = {
     "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
 };
 
+var speciesData = {
+    "barachi": { size: "medium" },
+    "deep dwarf": { size: "medium" },
+    "deep elf": { size: "medium" },
+    "demigod": { size: "medium" },
+    "demonspawn": { size: "medium" },
+    "djinni": { size: "medium" },
+    "draconian": { size: "medium" },
+    "felid": { size: "little" },
+    "formicid": { size: "medium" },
+    "gargoyle": { size: "medium" },
+    "ghoul": { size: "medium" },
+    "gnoll": { size: "medium" },
+    "hill orc": { size: "medium" },
+    "human": { size: "medium" },
+    "kobold": { size: "small" },
+    "merfolk": { size: "medium" },
+    "minotaur": { size: "medium" },
+    "mummy": { size: "medium" },
+    "naga": { size: "large" },
+    "octopode": { size: "medium" },
+    "ogre": { size: "large" },
+    "palentonga": { size: "large" },
+    "spriggan": { size: "little" },
+    "tengu": { size: "medium" },
+    "troll": { size: "large" },
+    "vampire": { size: "medium" },
+    "vine stalker": { size: "medium" },
+
+    // recently obsolete
+    "centaur": { size: "large", obsolete: true },
+    "halfling": { size: "small", obsolete: true },
+
+    // really obsolete
+    "sludge elf": { size: "medium", obsolete: true },
+    "high elf": { size: "medium", obsolete: true },
+    "lava orc": { size: "medium", obsolete: true },
+};
+
+// capitalize first letter of all words
+function capitalizeWords(str) {
+    var result = str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase());
+    return result;
+}
+
+function populateSpeciesSelector()
+{
+    var selector = $('#species');
+    selector.empty(); // remove old options
+
+    var obsoleteStarted = false;
+    for (var sp in speciesData) {
+        var name = capitalizeWords(sp);
+        var option = $("<option></option>").text(name);
+        option.attr("value", sp);
+        if (speciesData[sp]["obsolete"]) {
+            if (!obsoleteStarted) {
+                // stick in a separator
+                selector.append("<option disabled>-- obsolete --</option>");
+                obsoleteStarted = true;
+            }
+            option.attr("class", "obsolete");
+        }
+        selector.append(option);
+    }
+}
+
 // decrement value when left arrow clicked
 $(document).on('click', '.bi-caret-left-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
@@ -113,11 +180,13 @@ $("#data").on("change paste keyup", function() {
 
 // enable tooltips
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-bs-toggle="tooltip"]').tooltip()
 })
 
 var crawlVersion = 0.26;
 var weapons = [];
+
+populateSpeciesSelector();
 
 parseData();
 updateResults();
@@ -131,6 +200,9 @@ function reset()
 
     $('#strength').text("10");
     $('#enemy_ac').text("1");
+
+    $('#species').val("minotaur");
+    $('#shield').val("none");    
 }
 
 function parseData()
@@ -159,6 +231,25 @@ function parseData()
             var version = line.match(/version\s+(\d+\.\d+)/);
             if (version != null) {
                 crawlVersion = parseFloat(version[1]);
+            }
+
+            // get player species
+            if (line.match(/began as/i)) {
+                for (var sp in speciesData) {
+                    if (line.includes(sp)) {
+                        $('#species').val(sp);
+                    }   
+                }
+            }
+
+            if (line.match(/buckler|small shield/i)) {
+                $('#shield').val("buckler");
+            }
+            else if (line.match(/(kite|medium) shield/i)) {
+                $('#shield').val("kite_shield");
+            }
+            else if (line.match(/(tower|large) shield/i)) {
+                $('#shield').val("tower_shield");
             }
 
             var str = /Str:\s*(\d+)/.exec(line);
@@ -223,6 +314,8 @@ function parseSkill(line)
 
         if (name == "Fighting")
             $('#fighting').text(val);
+        else if (name == "Shields")
+            $('#shields').text(val);
         else if (name == "Short Blades")
             $('#short_blades').text(val);
         else if (name == "Long Blades")
@@ -326,8 +419,10 @@ function parseBrand(s) {
 
 function updateResults()
 {
+    var shieldSpeedPenalty = calcShieldSpeedPenalty();
+
     for(var i = 0; i < weapons.length; i++) {
-        calcDamage(weapons[i]);
+        calcDamage(weapons[i], shieldSpeedPenalty);
     }
 
     $('#stats').empty();
@@ -349,7 +444,7 @@ function updateResults()
             row += "<td></td><td></td><td></td>";
         }
         else {
-            row += '<td class="fit" data-toggle="tooltip" data-placement="auto" title="';
+            row += '<td class="fit" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="';
             row += distroToString(weap["damage_per_hit"]["base_distro"]);
             row += '">'
             row += weap["damage_per_hit"]["base"].toFixed(1) + "</td>";
@@ -422,7 +517,7 @@ function distroToString(distro)
         for (const [key, pcnt] of Object.entries(distro)) {
             result += key + ": ";
             result += pcnt < 0.1 ? pcnt.toPrecision(1) : pcnt.toFixed(1);
-            result += "%\n";
+            result += "%<br>";
         }
     }
     else {
@@ -446,7 +541,7 @@ function distroToString(distro)
                 result += "-" + bucketMax.toString();
             result += ": ";
             result += pcnt < 0.1 ? pcnt.toPrecision(1) : pcnt.toFixed(1);
-            result += "%\n";
+            result += "%<br>";
         }
     }
     return result;
@@ -454,7 +549,7 @@ function distroToString(distro)
 
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
-function calcDamage(weapon)
+function calcDamage(weapon, shieldSpeedPenalty)
 {
     var refData = weapon["ref_data"];
     if (refData == null) {
@@ -703,6 +798,9 @@ function calcDamage(weapon)
         // gets two attacks
         delay /= 2;
     }
+
+    delay += shieldSpeedPenalty;
+
     weapon["delay"] = delay;
 
 
@@ -810,5 +908,77 @@ function getWeightedAverage(weightedValues)
         sum += (val * weight)
     }
     return count == 0 ? 0 : sum/count;
+}
+
+function calcShieldPenalty()
+{
+    var penalty;
+
+    var shield = $("#shield").val();
+    switch (shield) {
+        case "buckler": penalty = 0.8; break;
+        case "kite_shield": penalty = 3; break;
+        case "tower_shield": penalty = 5; break;
+        default: return 0;
+    }
+
+    var species = $("#species").val();
+    var size = speciesData[species]["size"];
+
+    var  racialFactor = 0; // default for most medium species
+    if (size == "little") {
+         racialFactor = 4;
+    }
+    else if (size == "small") {
+         racialFactor = 2;
+    }
+    else if (size == "large" || species == "formicid") {
+        // Formicid is a special case: Due to having an extra set of arms,
+        // this medium species gets the reduced shield penalty of large species
+         racialFactor = -2;
+    }
+
+    var shieldsSkill = parseInt($("#shields").text());
+
+    // ref: player::adjusted_shield_penalty (player.cc)
+    penalty -= shieldsSkill / (5 + racialFactor);
+
+    return Math.max(0, penalty);
+}
+
+function calcShieldSpeedPenalty() {
+    var shieldPenalty = calcShieldPenalty();
+    if (shieldPenalty == 0) {
+        return 0;
+    }
+
+    // scale for the roll
+    var scale = 20;
+    var scaledPenalty = shieldPenalty * scale;
+
+    weightedValues = {};
+
+    // DCSS rolls two dice with scaled shieldPenalty sides and takes the lower one
+    for (var i = 1; i <= scaledPenalty; i++) {
+        for (var j = 1; j <= scaledPenalty; j++) {
+            addToEntry(weightedValues, Math.min(i, j), 1);
+        }
+    }
+
+    weightedValues2 = {};
+
+    for (var v = 1; v <= scaledPenalty; v++) {
+        var key = Math.floor(v / scale);
+        var rem = v % scale;
+        addToEntry(weightedValues2, key, weightedValues[v] * (scale - rem));
+        if (rem != 0) {
+            addToEntry(weightedValues2, key + 1, weightedValues[v] * rem);
+        }
+    }
+
+    var avg = getWeightedAverage(weightedValues2);
+
+    // this is in auts, so convert to turns
+    return avg / 10;
 }
 
