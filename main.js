@@ -41,6 +41,7 @@ $("#data").on("change paste keyup", function() {
 
 $("select").on("change", function() {
     updateResults();
+    $(this).blur();
     return true;
 });
 
