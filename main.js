@@ -120,20 +120,31 @@ function populateSpeciesSelector()
     var selector = $('#species');
     selector.empty(); // remove old options
 
-    var obsoleteStarted = false;
+    var sizes = ["little", "small", "medium", "large"];
+
+    var speciesBySize = {};
+    for (const size of sizes) {
+        speciesBySize[size] = [];
+    }
+
     for (var sp in speciesData) {
+        var size = speciesData[sp]["size"];
         var name = capitalizeWords(sp);
-        var option = $("<option></option>").text(name);
+        var option = $("<option></option>");
         option.attr("value", sp);
         if (speciesData[sp]["obsolete"]) {
-            if (!obsoleteStarted) {
-                // stick in a separator
-                selector.append("<option disabled>-- obsolete --</option>");
-                obsoleteStarted = true;
-            }
+            name = "(" + name + ")";
             option.attr("class", "obsolete");
         }
-        selector.append(option);
+        option.text(name);
+        speciesBySize[size].push(option);
+    }
+
+    for (const size of sizes) {
+        selector.append("<option disabled>-- " + size + " --</option>")
+        for (const species of speciesBySize[size]) {
+            selector.append(species);
+        }
     }
 }
 
