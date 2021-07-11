@@ -188,6 +188,11 @@ $("#data").on("change paste keyup", function() {
     return true;
 });
 
+$("select").on("change", function() {
+    updateResults();
+    return true;
+});
+
 // enable tooltips
 $(function () {
   $('[data-bs-toggle="tooltip"]').tooltip()
