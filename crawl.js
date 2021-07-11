@@ -196,7 +196,8 @@ function parseData()
             // get player species
             if (line.match(/began as/i)) {
                 for (var sp in speciesData) {
-                    if (line.includes(sp)) {
+                    var re = new RegExp(sp, 'i');
+                    if (re.test(line)) {
                         $('#species').val(sp);
                     }   
                 }
