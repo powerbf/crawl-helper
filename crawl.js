@@ -161,7 +161,7 @@ function reset()
     $('#strength').text("10");
     $('#enemy_ac').text("1");
 
-    $('#species').val("minotaur");
+    $('#species').val("human");
     $('#shield').val("none");    
 }
 
