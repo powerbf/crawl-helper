@@ -172,6 +172,8 @@ function parseData()
     var data = $('textarea#data').val();
     var lines = data.split('\n');
 
+    weapons.push(parseWeapon("unarmed"));
+
     var section = "Header";
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
@@ -218,21 +220,14 @@ function parseData()
                 $('#strength').text(parseInt(str[1]));
             }
 
-            if (weapons.length == 0) {
+            if (!weapons[0]["type"].includes("claws")) {
                 var claws = line.match(/claws [1-3]/);
                 if (claws != null) {
-                    weapons.push(parseWeapon(claws[0]));
+                    weapons[0] = parseWeapon(claws[0]);
                 }
             }
         }
         else if (section == "Inventory") {
-            // unarmed
-            if (weapons.length == 0) {
-                // didn't find claws in header
-                // standard unarmed (fist, tentacle, etc.)
-                weapons.push(parseWeapon("unarmed"));
-            }
-
             // inventory item - try to parse as weapon
             var w = parseWeapon(line);
             if (w != null) {
