@@ -470,9 +470,9 @@ function weaponToString(w) {
             s += 'pair of ' + wtype + 's';
         else
             s += wtype
-        if (w["name"] != null) {
+        /*if (w["name"] != null) {
             s += " " + w["name"];
-        }
+        }*/
         if (w["brand"] != "") {
             s += " (" + w["brand"] + ")";
         }
