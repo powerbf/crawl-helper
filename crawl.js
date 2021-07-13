@@ -137,7 +137,7 @@ function populateSpeciesSelector()
         var option = $("<option></option>");
         option.attr("value", sp);
         if (speciesData[sp]["obsolete"]) {
-            name = "(" + name + ")";
+            name += "(✝)";
             option.attr("class", "obsolete");
         }
         option.text(name);
