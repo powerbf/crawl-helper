@@ -181,6 +181,22 @@ function defaultUnarmed()
     }
 }
 
+// add weapon to list, but only if it's not a duplicate
+function addWeapon(weapon)
+{
+    var exists = false;
+    for (w of weapons) {
+        if (w["description"] == weapon["description"]) {
+            exists = true;
+            break;
+        }
+    }
+
+    if (!exists) {
+        weapons.push(weapon);
+    }
+}
+
 function parseData()
 {
     reset();
@@ -246,12 +262,12 @@ function parseData()
             // inventory item - try to parse as weapon
             var w = parseWeapon(line);
             if (w != null) {
-                weapons.push(w);
+                addWeapon(w);
                 if (w["ref_data"]["category"] == "slings") {
                     // handle for both stones and bullets as ammo
                     var w2 = {};
                     Object.assign(w2, w);
-                    weapons.push(w2);
+                    addWeapon(w2);
                     w["description"] += " with stones";
                     w2["description"] += " with bullets";
                 }
