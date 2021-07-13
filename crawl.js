@@ -165,14 +165,29 @@ function reset()
     $('#shield').val("none");    
 }
 
+// add default unarmed type for species 
+function defaultUnarmed()
+{
+    var species = $('#species').val();
+    if (species == "felid" || species == "ghoul") {
+        weapons[0] = parseWeapon("claws 1");
+    }
+    else if (species == "troll") {
+        weapons[0] = parseWeapon("claws 3");
+    }
+    else {
+        // standard unarmed (fists, tentacles, etc.)
+        weapons[0] = parseWeapon("unarmed");
+    }
+}
+
 function parseData()
 {
     reset();
+    defaultUnarmed();
 
     var data = $('textarea#data').val();
     var lines = data.split('\n');
-
-    weapons.push(parseWeapon("unarmed"));
 
     var section = "Header";
     for(var i = 0; i < lines.length; i++) {
@@ -201,7 +216,8 @@ function parseData()
                     var re = new RegExp(sp, 'i');
                     if (re.test(line)) {
                         $('#species').val(sp);
-                    }   
+                        defaultUnarmed();
+                    }
                 }
             }
 
@@ -220,11 +236,10 @@ function parseData()
                 $('#strength').text(parseInt(str[1]));
             }
 
-            if (!weapons[0]["type"].includes("claws")) {
-                var claws = line.match(/claws [1-3]/);
-                if (claws != null) {
-                    weapons[0] = parseWeapon(claws[0]);
-                }
+            // replace unarmed with current claws rank
+            var claws = line.match(/claws [1-3]/);
+            if (claws != null) {
+                weapons[0] = parseWeapon(claws[0]);
             }
         }
         else if (section == "Inventory") {

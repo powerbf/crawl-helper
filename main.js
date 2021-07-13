@@ -39,6 +39,12 @@ $("#data").on("change paste keyup", function() {
     return true;
 });
 
+$("#species").on("change", function() {
+    // if species changes then unarmed attack could change
+    defaultUnarmed();
+    return true;
+});
+
 $("select").on("change", function() {
     updateResults();
     $(this).blur();
