@@ -143,9 +143,9 @@ const armourData =
     "boots": { ac: 1, ev_penalty: 0, slot: "boots" },
     "barding": { ac: 4, ev_penalty: 6, slot: "boots" },
 
-    "buckler": { sh: 3, ev_penalty: 0.8, slot: "shield" },
-    "kite shield": { sh: 8, ev_penalty: 3, slot: "shield"  },
-    "tower shield": { sh: 13, ev_penalty: 5, slot: "shield" }, 
+    "buckler": { old_name: "small shield", sh: 3, ev_penalty: 0.8, slot: "shield"},
+    "kite shield": { old_name: "medium shield", sh: 8, ev_penalty: 3, slot: "shield"  },
+    "tower shield": { old_name: "large shield", sh: 13, ev_penalty: 5, slot: "shield" }, 
 
 };
 
@@ -534,10 +534,25 @@ function parseBrand(s) {
 // parse a worn armour line from inventory
 function parseArmour(s) {
 
+    if (!/ [a-zA-Z] \- /.test(s)) {
+        return;
+    }
+
     var armType = null;
 
     for (var t in armourData) {
-        if (s.includes(t) && / [a-zA-Z] \- /.test(s)) {
+        var found = false;
+        if (s.includes(t)) {
+            found = true;
+        }
+        else {
+            var oldName = armourData[t]["old_name"];
+            if (oldName && s.includes(oldName)) {
+                found = true;
+            }
+        }
+
+        if (found) {
             // some armour names include other armour names
             // we want to take the longest match
             if (armType == null || t.length > armType.length) {
