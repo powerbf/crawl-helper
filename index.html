@@ -17,10 +17,10 @@
 </head>
 
 <body>
-    <h5>DCSS Damage Calculator</h5>
     <div id="inputs" class="container">
+        <h5>DCSS Helper</h5>
         <div class="row">
-            <div class="col col-sm-12 col-md-5 col-lg-6">
+            <div class="col col-sm-12 col-md-5 col-lg-5">
                 <textarea id="data" class="form-control" rows="10" cols="80" placeholder="Paste text from morgue or character file"></textarea>
                 <div class="row">
                     &nbsp;
@@ -30,22 +30,8 @@
             <!-- Force next columns to break to new line below md -->
             <div class="w-100 d-block d-md-none"></div>
 
-            <div class="col col-md-4 col-lg-3 text-nowrap" id="skills1">
+            <div class="col col-md-4 col-lg-3 text-nowrap" id="stats1">
                 <table>
-                    <tr>
-                        <td>
-                            Strength:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="strength" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                    </tr>
                     <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
                         title="Large species and formicids need less shields skill than normal to offset shield penalties. Small species need more. Little species need a lot more.">
                         <td>
@@ -59,11 +45,76 @@
                         </td>
                     </tr>
                     <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                        title="The larger the shield, the slower your attacks. This is mitigated by training shields skill.">
+                        title="Heavier armour increases AC, but decreases EV.">
+                        <td>
+                            <label class="text-nowrap">Armour:</label>
+                        </td>
+                        <td>
+                            <select id="body_armour_enchantment" class="form-select form-select-sm enchantment">
+                              <option value="+0">+0</option>
+                            </select>
+                            <select id="body_armour" class="form-select form-select-sm">
+                              <option value="none">None</option>
+                              <option value="robe">Robe</option>
+                              <option value="chain">Chain mail</option>
+                              <option value="plate">Plate</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">Helmet:</label>
+                        </td>
+                        <td>
+                            <select id="helmet_enchantment" class="form-select form-select-sm enchantment">
+                              <option value="+0">+0</option>
+                            </select>
+                            <select id="helmet" class="form-select form-select-sm">
+                              <option value="none">None</option>
+                              <option value="hat">hat</option>
+                              <option value="helmet">helmet</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">Boots:</label>
+                        </td>
+                        <td>
+                            <select id="boots_enchantment" class="form-select form-select-sm enchantment">
+                              <option value="+0">+0</option>
+                            </select>
+                            <select id="boots" class="form-select form-select-sm">
+                              <option value="none">None</option>
+                              <option value="boots">boots</option>
+                              <option value="barding">barding</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">Cloak:</label>
+                        </td>
+                        <td>
+                            <select id="cloak_enchantment" class="form-select form-select-sm enchantment">
+                              <option value="+0">+0</option>
+                            </select>
+                            <select id="cloak" class="form-select form-select-sm">
+                              <option value="none">None</option>
+                              <option value="cloak">cloak</option>
+                              <option value="scarf">scarf</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
+                        title="Shields carry EV and attack speed penalties.">
                         <td>
                             <label class="text-nowrap">Shield:</label>
                         </td>
                         <td>
+                            <select id="shield_enchantment" class="form-select form-select-sm enchantment">
+                              <option value="+0">+0</option>
+                            </select>
                             <select id="shield" class="form-select form-select-sm">
                               <option value="none">None</option>
                               <option value="buckler">Buckler</option>
@@ -78,22 +129,21 @@
                     </tr>
                     <tr>
                         <td>
-                            Fighting:
+                            Strength:
                         </td>
                         <td>
                             <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="fighting" min="0" max="27">0</span>
+                            <span class="number-val" id="strength" min="0">10</span>
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
-                        title="Shields skill reduces the attack speed penalty (and EV penalty) from wearing a shield.">
+                    <tr>
                         <td>
-                            Shields:
+                            Dexterity:
                         </td>
                         <td>
                             <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="shields" min="0" max="27">0</span>
+                            <span class="number-val" id="dexterity" min="0">10</span>
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>
@@ -102,29 +152,21 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td>
-                            <label class="text-nowrap">Slaying:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="slaying">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
+                        <td>AC:</td>
+                        <td id="AC">0</td>
                     </tr>
                     <tr>
-                        <td>
-                            <label class="text-nowrap">Enemy AC:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="enemy_ac" min="0" max="20">1</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
+                        <td>EV:</td>
+                        <td id="EV">0</td>
                     </tr>
-                </table>
+                    <tr>
+                        <td>SH:</td>
+                        <td id="SH">0</td>
+                    </tr>
+               </table>
             </div>
-            <div class="col col-md-3 text-nowrap" id="skills2">
-                <table data-bs-toggle="tooltip" data-bs-placement="left"
+            <div class="col col-md-2 col-lg-2 text-nowrap" id="skills1">
+                <table data-bs-toggle="off" data-bs-placement="left"
                        title="Training the relevant weapon skill increases damage and attack speed.">
                     <tr>
                         <td>
@@ -200,6 +242,56 @@
                         <td>&nbsp;</td>
                         <td></td>
                     </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
+                        title="AC bonus from rings, artefacts, etc.">
+                        <td>
+                            <label class="text-nowrap">AC Bonus:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="ac_bonus">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
+                        title="EV bonus from rings, artefacts, etc.">
+                        <td>
+                            <label class="text-nowrap">EV Bonus:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="ev_bonus">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">Slaying:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="slaying">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">Enemy AC:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="enemy_ac" min="0" max="20">1</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                 </table>
+            </div>
+            <div class="col col-md-2 text-nowrap" id="skills2">
+                <table>
                     <tr>
                         <td>
                             <label>Slings:</label>
@@ -237,6 +329,50 @@
                         <td>
                             <i class="bi bi-caret-left-fill"></i>
                             <span class="number-val" id="throwing" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Fighting:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="fighting" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Armour:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="armour" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Dodging:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="dodging" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Shields:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="shields" min="0" max="27">0</span>
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>

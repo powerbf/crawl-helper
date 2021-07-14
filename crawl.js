@@ -109,6 +109,49 @@ const speciesData = {
     "lava orc": { size: "medium", obsolete: true },
 };
 
+const armourData =
+{
+    "animal skin": { ac: 2, ev_penalty: 0, slot: "body_armour" },
+    "robe": { ac: 2, ev_penalty: 0, slot: "body_armour" },
+    "leather armour": { ac: 3, ev_penalty: 4, slot: "body_armour" }, 
+    "troll leather armour": { ac: 4, ev_penalty: 4, slot: "body_armour" },
+    "ring mail": { ac: 5, ev_penalty: 7, slot: "body_armour" },
+    "scale mail": { ac: 6, ev_penalty: 10, slot: "body_armour" },
+    "chain mail": { ac: 8, ev_penalty: 15, slot: "body_armour" },
+    "plate armour": { ac: 10, ev_penalty: 18, slot: "body_armour" },
+    "crystal plate armour": { ac: 14, ev_penalty: 23, slot: "body_armour" },
+
+    "steam dragon scales": { ac: 5, ev_penalty: 0, slot: "body_armour" },
+    "acid dragon scales": { ac: 6, ev_penalty: 5, slot: "body_armour" },
+    "swamp dragon scales": { ac: 7, ev_penalty: 7, slot: "body_armour" },
+    "quicksilver dragon scales": { ac: 9, ev_penalty: 7, slot: "body_armour" },
+    "fire dragon scales": { ac: 8, ev_penalty: 11, slot: "body_armour" },
+    "ice dragon scales": { ac: 9, ev_penalty: 11, slot: "body_armour" },
+    "pearl dragon scales": { ac: 10, ev_penalty: 11, slot: "body_armour" },
+    "shadow dragon scales": { ac: 10, ev_penalty: 15, slot: "body_armour" },
+    "storm dragon scales": { ac: 10, ev_penalty: 15, slot: "body_armour" },
+    "gold dragon scales": { ac: 12, ev_penalty: 23, slot: "body_armour" },
+
+    "cloak": { ac: 1, ev_penalty: 0, slot: "cloak" },
+    "scarf": { ac: 0, ev_penalty: 0, slot: "cloak" },
+
+    "gloves": { ac: 1, ev_penalty: 0, slot: "gloves" },
+
+    "helmet": { ac: 1, ev_penalty: 0, slot: "helmet" },
+    "hat": { ac: 0, ev_penalty: 0, slot: "helmet" },
+
+    "boots": { ac: 1, ev_penalty: 0, slot: "boots" },
+    "barding": { ac: 4, ev_penalty: 6, slot: "boots" },
+
+    "buckler": { sh: 3, ev_penalty: 0.8, slot: "shield" },
+    "kite shield": { sh: 8, ev_penalty: 3, slot: "shield"  },
+    "tower shield": { sh: 13, ev_penalty: 5, slot: "shield" }, 
+
+};
+
+const slots = ["body_armour", "helmet", "boots", "cloak", "shield"];
+
+
 // globals - yuck
 var crawlVersion = 0.26;
 var weapons = [];
@@ -117,6 +160,22 @@ var weapons = [];
 function capitalizeWords(str) {
     var result = str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase());
     return result;
+}
+
+// add option to selector
+function addToSelector(selectorId, value, description, disabled = false)
+{
+    var selector = $('#' + selectorId);
+    if (selector == null) {
+        return;
+    }
+
+    var option = $("<option></option>");
+    option.attr("value", value);
+    option.attr("disabled", disabled);
+    option.text(description);
+
+    selector.append(option);
 }
 
 function populateSpeciesSelector()
@@ -152,6 +211,50 @@ function populateSpeciesSelector()
     }
 }
 
+function populateEnchantmentSelector(id)
+{
+    var selector = $('#' + id);
+    selector.empty(); // remove old options
+
+    for (var i = 20; i >= -20; i--) {
+        var value = (i >= 0 ? '+' : '');
+        value += i.toString();
+        addToSelector(id, value, value);
+    }
+
+    selector.val("+0");
+}
+
+function populateEnchantmentSelectors()
+{
+    populateEnchantmentSelector("body_armour_enchantment");
+    populateEnchantmentSelector("helmet_enchantment");
+    populateEnchantmentSelector("boots_enchantment");
+    populateEnchantmentSelector("cloak_enchantment");
+    populateEnchantmentSelector("shield_enchantment");
+}
+
+function populateArmourSelectors()
+{
+    $('#body_armour').empty();
+    $('#helmet').empty();
+    $('#boots').empty();
+    $('#cloak').empty();
+    $('#shield').empty();
+
+    addToSelector("body_armour", "none", "None");
+    addToSelector("helmet", "none", "None");
+    addToSelector("boots", "none", "None");
+    addToSelector("cloak", "none", "None");
+    addToSelector("shield", "none", "None");
+
+    for (const [key, value] of Object.entries(armourData)) {
+        var description = key.replace(/ (armour|scales)/, '');
+        description = description.replace(/^(.)/, c => c.toUpperCase());
+        addToSelector(value["slot"], key, description);
+    }
+}
+
 function reset()
 {
     weapons = [];
@@ -159,10 +262,15 @@ function reset()
     $(".number-val").text("0");
 
     $('#strength').text("10");
+    $('#dexterity').text("10");
     $('#enemy_ac').text("1");
 
     $('#species').val("human");
-    $('#shield').val("none");    
+    $('#body_armour').val("none");
+    $('#helmet').val("none");
+    $('#boots').val("none");
+    $('#cloak').val("none");
+    $('#shield').val("none");
 }
 
 // add default unarmed type for species 
@@ -227,7 +335,7 @@ function parseData()
             }
 
             // get player species
-            if (line.match(/began as/i)) {
+            if (line.match(/Turns:/i)) {
                 for (var sp in speciesData) {
                     var re = new RegExp(sp, 'i');
                     if (re.test(line)) {
@@ -237,19 +345,14 @@ function parseData()
                 }
             }
 
-            if (line.match(/buckler|small shield/i)) {
-                $('#shield').val("buckler");
-            }
-            else if (line.match(/(kite|medium) shield/i)) {
-                $('#shield').val("kite_shield");
-            }
-            else if (line.match(/(tower|large) shield/i)) {
-                $('#shield').val("tower_shield");
-            }
-
-            var str = /Str:\s*(\d+)/.exec(line);
+            var str = /str:\s*(\d+)/i.exec(line);
             if (str && str.length >= 2) {
                 $('#strength').text(parseInt(str[1]));
+            }
+
+            var dex = /dex:\s*(\d+)/i.exec(line);
+            if (dex && dex.length >= 2) {
+                $('#dexterity').text(parseInt(dex[1]));
             }
 
             // replace unarmed with current claws rank
@@ -257,6 +360,14 @@ function parseData()
             if (claws != null) {
                 weapons[0] = parseWeapon(claws[0]);
             }
+
+            parseArmour(line);
+
+            parseBonus('#ac_bonus', /AC([\+\-][0-9]+)/, line);
+            parseBonus('#ac_bonus', /([\+\-][0-9]+) ring of protection/, line);
+
+            parseBonus('#ev_bonus', /EV([\+\-][0-9]+)/, line);
+            parseBonus('#ev_bonus', /([\+\-][0-9]+) ring of evasion/, line);
         }
         else if (section == "Inventory") {
             // inventory item - try to parse as weapon
@@ -272,10 +383,22 @@ function parseData()
                     w2["description"] += " with bullets";
                 }
             }
+            else {
+            }
         }
         else {
             parseSkill(line);
         }
+    }
+}
+
+function parseBonus(id, regex, line)
+{
+    var m = regex.exec(line);
+    if (m && m[1].length >= 2) {
+        var bonus = getNumericInput(id);
+        bonus += parseInt(m[1]);
+        $(id).text(bonus.toString());
     }
 }
 
@@ -301,6 +424,10 @@ function parseSkill(line)
 
         if (name == "Fighting")
             $('#fighting').text(val);
+        else if (name == "Armour")
+            $('#armour').text(val);
+        else if (name == "Dodging")
+            $('#dodging').text(val);
         else if (name == "Shields")
             $('#shields').text(val);
         else if (name == "Short Blades")
@@ -404,8 +531,46 @@ function parseBrand(s) {
     return "";
 }
 
+// parse a worn armour line from inventory
+function parseArmour(s) {
+
+    var armType = null;
+
+    for (var t in armourData) {
+        if (s.includes(t)) {
+            // some armour names include other armour names
+            // we want to take the longest match
+            if (armType == null || t.length > armType.length) {
+                armType = t;
+            }
+        }   
+    }
+
+    if (armType == null) {
+        return;
+    }
+
+    var refData = armourData[armType]
+    if (refData == null) {
+        return;
+    }
+
+    var slot = refData["slot"];
+
+    $('#' + slot).val(armType);
+
+    // enchantment
+    var m = /([\+\-][0-9]+)\s/.exec(s);
+    if (m && m[1].length >= 2) {
+        $('#' + slot + '_enchantment').val(m[1]);
+    }
+}
+
+
 function updateResults()
 {
+    calculate_AC_EV_SH();
+
     var shieldSpeedPenalty = calcShieldSpeedPenalty();
 
     for(var i = 0; i < weapons.length; i++) {
@@ -904,8 +1069,8 @@ function calcShieldPenalty()
     var shield = $("#shield").val();
     switch (shield) {
         case "buckler": penalty = 0.8; break;
-        case "kite_shield": penalty = 3; break;
-        case "tower_shield": penalty = 5; break;
+        case "kite shield": penalty = 3; break;
+        case "tower shield": penalty = 5; break;
         default: return 0;
     }
 
@@ -968,4 +1133,233 @@ function calcShieldSpeedPenalty() {
     // this is in auts, so convert to turns
     return avg / 10;
 }
+
+function getSizeFactor()
+{
+    var speciesName = $('#species').val();
+    var size = speciesData[speciesName]["size"];  
+
+    if (size == "little") {
+        return 4;
+    }
+    else if (size == "small") {
+        return 2;
+    }
+    else if (size == "large") {
+        return -2;
+    }
+    else {
+        return 0;
+    }
+}
+
+// Determines racial shield penalties (formicids get a bonus compared to
+// other medium-sized races)
+function player_shield_racial_factor()
+{
+    var modifier;
+    if ($("#species").val() == "formicid") {
+        modifier = -2;
+    }
+    else {
+        modifier = getSizeFactor();
+    }
+    return 5 + modifier;
+}
+
+
+function calculate_AC_EV_SH()
+{
+    var ac = 0;
+    var sh = 0;
+
+
+    for (var slot of slots) {
+        var selection = $('#' + slot).val();
+        var armour = armourData[selection];
+        if (armour != null) {
+            var enchantment = parseInt($('#' + slot + '_enchantment').val());
+            if (slot == "shield") {
+                sh += armour["sh"] + enchantment;
+            }
+            else {
+                ac += armour["ac"] + enchantment;
+            }
+        }
+    }
+
+    var ev = player_evasion();
+
+    $("#AC").text(ac.toString());
+    $("#EV").text(ev.toString());
+    $("#SH").text(sh.toString());
+}
+
+function getNumericInput(id)
+{
+    var elmt = $((id.startsWith('#') ? '' : '#') + id);
+    if (elmt) {
+        if (elmt.attr("value") != null)
+            return parseFloat(elmt.val());
+        else
+            return parseFloat(elmt.text());
+    }
+    return 0;
+}
+
+function unadjusted_body_armour_penalty()
+{
+    var armour = armourData[$('#body_armour').val()];
+    if (armour == null) {
+        return 0;
+    }
+    return armour["ev_penalty"];    
+}
+
+function adjusted_body_armour_penalty(scale)
+{
+    var strength = getNumericInput('#strength');
+    var armourSkill = getNumericInput('#armour');
+
+    var base_ev_penalty = unadjusted_body_armour_penalty();
+
+    var result = 2 * base_ev_penalty * base_ev_penalty * scale;
+    result *= (450 - 10 * armourSkill);
+    result = Math.trunc(result / (5 * (strength + 3)));
+    result = Math.trunc(result / 450);
+
+    return result;
+}
+
+function player_armour_adjusted_dodge_bonus(scale)
+{
+    var dex = getNumericInput('#dexterity');
+    var dodging = getNumericInput('#dodging');
+
+    // step down dex > 18, step up dex < 18
+    var evDex = Math.round(18 * Math.log2(1 + dex / 18));
+
+    var dodge_bonus = Math.trunc(Math.trunc((70 + dodging * 10 * evDex) * scale / (20 - getSizeFactor())) / 10);
+
+    var armour_dodge_penalty = unadjusted_body_armour_penalty() - 3;
+    if (armour_dodge_penalty <= 0)
+        return dodge_bonus;
+
+    var str = Math.max(1, getNumericInput('#strength'));
+    if (armour_dodge_penalty >= str)
+        return Math.trunc(dodge_bonus * str / (armour_dodge_penalty * 2));
+    else
+        return dodge_bonus - Math.trunc(dodge_bonus * armour_dodge_penalty / (str * 2));
+}
+
+function player_adjusted_evasion_penalty(scale)
+{
+    // penalties from auxilliary armour (helmet, boot, cloak)
+    var aux_armour_penalty = 0;
+    for (var slot of slots) {
+        if (slot == "shield" || slot == "body_armour") {
+            continue;
+        }
+        var selection = $('#' + slot).val();
+        var armour = armourData[selection];
+        if (armour != null) {
+            var penalty = Math.trunc(armour["ev_penalty"] * 10 / 3);
+            if (penalty > 0)
+                aux_armour_penalty += penalty;
+        }
+    }
+
+    aux_armour_penalty = Math.trunc(aux_armour_penalty * scale / 10);
+    var body_armour_penalty = adjusted_body_armour_penalty(scale);
+    return aux_armour_penalty + body_armour_penalty;
+}
+
+function adjusted_shield_penalty(scale)
+{
+    var shield = armourData[$("#shield").val()];
+    if (shield == null) {
+        return 0;
+    }
+
+    var shieldsSkill = parseFloat($("#shields").text());
+
+    var penalty = shield["ev_penalty"] * 10 * scale;
+
+    penalty -= shieldsSkill * scale / player_shield_racial_factor() * 10;
+
+    penalty = penalty / 10;
+
+    return Math.max(0, penalty);
+}
+
+// get evasion bonuses from rings and artefacts
+function player_evasion_bonuses()
+{
+    return getNumericInput('#ev_bonus');
+}
+
+function player_evasion()
+{
+    var scale = 100;
+
+    var size_factor = getSizeFactor();
+    var size_base_ev = (10 + size_factor) * scale;
+    var adj_dodge_bonus = player_armour_adjusted_dodge_bonus(scale);
+    var adj_evasion_penalty = player_adjusted_evasion_penalty(scale);
+    var adj_shield_penalty = adjusted_shield_penalty(scale);
+
+    var prestepdown_evasion = size_base_ev + adj_dodge_bonus - adj_evasion_penalty - adj_shield_penalty;
+
+    var poststepdown_evasion =
+        stepdown_value(prestepdown_evasion, 20*scale, 30*scale, 60*scale, -1);
+
+    var evasion_bonuses = player_evasion_bonuses() * scale;
+
+    var final_evasion = poststepdown_evasion + evasion_bonuses;
+
+    // descale
+    final_evasion = Math.ceil(final_evasion / scale);
+
+    return final_evasion;
+}
+
+// returns double in C++ (so no trunc)
+function _stepdown(value, step)
+{
+    return step * Math.log2(1 + value / step);
+}
+
+// returns int in C++
+function stepdown(value, step, roundDown, max)
+{
+    var ret = _stepdown(value, step);
+
+    if (max > 0 && ret > max)
+        return max;
+
+    if (roundDown)
+        return Math.floor(ret);
+    else
+        return Math.round(ret);
+}
+
+// returns int in C++
+function stepdown_value(base_value, stepping, first_step,
+                   last_step, ceiling_value)
+{
+    if (ceiling_value < 0)
+        ceiling_value = 0;
+
+    if (ceiling_value && ceiling_value < first_step)
+        return min(base_value, ceiling_value);
+    if (base_value < first_step)
+        return base_value;
+
+    var diff = first_step - stepping;
+    // Since diff < first_step, we can assume here that ceiling_value > diff
+    // or ceiling_value == 0.
+    return diff + stepdown(base_value - diff, stepping, true,
+                           ceiling_value ? ceiling_value - diff : 0);
+}
+
 

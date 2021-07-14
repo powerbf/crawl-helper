@@ -57,6 +57,8 @@ $(function () {
 })
 
 populateSpeciesSelector();
+populateArmourSelectors();
+populateEnchantmentSelectors();
 
 parseData();
 updateResults();
