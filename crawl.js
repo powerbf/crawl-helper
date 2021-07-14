@@ -537,7 +537,7 @@ function parseArmour(s) {
     var armType = null;
 
     for (var t in armourData) {
-        if (s.includes(t)) {
+        if (s.includes(t) && / [a-zA-Z] \- /.test(s)) {
             // some armour names include other armour names
             // we want to take the longest match
             if (armType == null || t.length > armType.length) {
@@ -1170,9 +1170,10 @@ function player_shield_racial_factor()
 
 function calculate_AC_EV_SH()
 {
-    var ac = 0;
-    var sh = 0;
+    var armourSkill = getNumericInput('#armour');
 
+    var ac = racial_ac();
+    var sh = 0;
 
     for (var slot of slots) {
         var selection = $('#' + slot).val();
@@ -1183,16 +1184,41 @@ function calculate_AC_EV_SH()
                 sh += armour["sh"] + enchantment;
             }
             else {
-                ac += armour["ac"] + enchantment;
+                ac += armour["ac"] * (1 + armourSkill / 22);
+                ac += enchantment;
             }
         }
     }
+    ac += getNumericInput('#ac_bonus');
+    ac = Math.trunc(ac);
 
     var ev = player_evasion();
 
     $("#AC").text(ac.toString());
     $("#EV").text(ev.toString());
     $("#SH").text(sh.toString());
+}
+
+function racial_ac()
+{
+    var species = $('#species').val();
+    var experience_level = getNumericInput('#XL');
+
+    var AC = 0;
+    if (species == "draconian") {
+        AC = 4 + (experience_level / 3);  // max 13
+        //if (species == SP_GREY_DRACONIAN) // no breath
+        //    AC += 5;
+    }
+    else if (species == "naga") {
+        AC = experience_level / 3;
+    }
+    else if (species == "gargoyle") {
+        AC = 2 + experience_level * 2 / 5
+             + Math.max(0, experience_level - 7) * 2 / 5;
+    }
+
+    return Math.trunc(AC);
 }
 
 function getNumericInput(id)
