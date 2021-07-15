@@ -1198,17 +1198,13 @@ function calculate_AC_EV_SH()
     var armourSkill = getNumericInput('#armour');
 
     var ac = racial_ac();
-    var sh = 0;
 
     for (var slot of slots) {
         var selection = $('#' + slot).val();
         var armour = armourData[selection];
         if (armour != null) {
             var enchantment = parseInt($('#' + slot + '_enchantment').val());
-            if (slot == "shield") {
-                sh += armour["sh"] + enchantment;
-            }
-            else {
+            if (slot != "shield") {
                 ac += armour["ac"] * (1 + armourSkill / 22);
                 ac += enchantment;
             }
@@ -1218,6 +1214,7 @@ function calculate_AC_EV_SH()
     ac = Math.trunc(ac);
 
     var ev = player_evasion();
+    var sh = getShieldClass();
 
     $("#AC").text(ac.toString());
     $("#EV").text(ev.toString());
@@ -1250,7 +1247,7 @@ function getNumericInput(id)
 {
     var elmt = $((id.startsWith('#') ? '' : '#') + id);
     if (elmt) {
-        if (elmt.attr("value") != null)
+        if (elmt.is('input') || elmt.is('select'))
             return parseFloat(elmt.val());
         else
             return parseFloat(elmt.text());
@@ -1411,6 +1408,49 @@ function stepdown_value(base_value, stepping, first_step,
     // or ceiling_value == 0.
     return diff + stepdown(base_value - diff, stepping, true,
                            ceiling_value ? ceiling_value - diff : 0);
+}
+
+function getShieldClass()
+{
+    var shield = $('#shield').val();
+    if (shield == "none") {
+        return 0;
+    }
+
+    var enchantment = getNumericInput('#shield_enchantment');
+    var shieldsSkill = getNumericInput('#shields');
+    var dex = getNumericInput('#dexterity');
+    var str = getNumericInput('#strength');
+
+    var sizeFactor;
+    switch (shield) {
+        case "buckler": sizeFactor = getSizeFactor(); break;
+        case "kite shield": sizeFactor = getSizeFactor() / 2; break;
+        default: sizeFactor = 0;
+    }
+
+    var baseShield = armourData[shield]["sh"] * 2 + sizeFactor;
+    
+    var sh = baseShield * 50;
+    sh += Math.trunc(baseShield * shieldsSkill * 5 / 2);
+    sh += enchantment * 200;
+    sh += shieldsSkill * 38 + Math.min(shieldsSkill, 3) * 38;
+
+    var stat = 0;
+    if (shield == "buckler")
+        stat = dex * 38;
+    else if (shield == "tower shield")
+        stat = dex * 12 + str * 26;
+    else
+        stat = dex * 19 + str * 19;
+    stat = Math.trunc(stat * (baseShield + 13) / 26);
+
+    sh += stat;
+
+    sh = Math.round(sh / 100);
+    sh = Math.round(sh / 2);
+
+    return sh;
 }
 
 
