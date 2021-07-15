@@ -143,9 +143,9 @@ const armourData =
     "boots": { ac: 1, ev_penalty: 0, slot: "boots" },
     "barding": { ac: 4, ev_penalty: 6, slot: "boots" },
 
-    "buckler": { old_name: "small shield", sh: 3, ev_penalty: 0.8, slot: "shield"},
-    "kite shield": { old_name: "medium shield", sh: 8, ev_penalty: 3, slot: "shield"  },
-    "tower shield": { old_name: "large shield", sh: 13, ev_penalty: 5, slot: "shield" }, 
+    "buckler": { alt_names: ["small shield"], sh: 3, ev_penalty: 0.8, slot: "shield"},
+    "kite shield": { alt_names: ["medium shield", "shield"], sh: 8, ev_penalty: 3, slot: "shield"  },
+    "tower shield": { alt_names: ["large shield"], sh: 13, ev_penalty: 5, slot: "shield" }, 
 
 };
 
@@ -551,9 +551,14 @@ function parseArmour(s) {
             found = true;
         }
         else {
-            var oldName = armourData[t]["old_name"];
-            if (oldName && s.includes(oldName)) {
-                found = true;
+            var altNames = armourData[t]["alt_names"];
+            if (altNames != null) {
+                for (var altName of altNames) {
+                    if (s.includes(altName)) {
+                        found = true;
+                        break;
+                    }
+                }
             }
         }
 
