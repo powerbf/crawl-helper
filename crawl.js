@@ -135,7 +135,7 @@ const armourData =
     "cloak": { ac: 1, ev_penalty: 0, slot: "cloak" },
     "scarf": { ac: 0, ev_penalty: 0, slot: "cloak" },
 
-    "gloves": { ac: 1, ev_penalty: 0, slot: "gloves" },
+    "gloves": { alt_names: ["gauntlets"], ac: 1, ev_penalty: 0, slot: "gloves" },
 
     "helmet": { ac: 1, ev_penalty: 0, slot: "helmet" },
     "hat": { ac: 0, ev_penalty: 0, slot: "helmet" },
@@ -211,12 +211,12 @@ function populateSpeciesSelector()
     }
 }
 
-function populateEnchantmentSelector(id)
+function populateEnchantmentSelector(id, max)
 {
     var selector = $('#' + id);
     selector.empty(); // remove old options
 
-    for (var i = 20; i >= -20; i--) {
+    for (var i = max; i >= -max; i--) {
         var value = (i >= 0 ? '+' : '');
         value += i.toString();
         addToSelector(id, value, value);
@@ -227,11 +227,12 @@ function populateEnchantmentSelector(id)
 
 function populateEnchantmentSelectors()
 {
-    populateEnchantmentSelector("body_armour_enchantment");
-    populateEnchantmentSelector("helmet_enchantment");
-    populateEnchantmentSelector("boots_enchantment");
-    populateEnchantmentSelector("cloak_enchantment");
-    populateEnchantmentSelector("shield_enchantment");
+    populateEnchantmentSelector("body_armour_enchantment", 20);
+    populateEnchantmentSelector("helmet_enchantment", 5);
+    populateEnchantmentSelector("boots_enchantment", 5);
+    populateEnchantmentSelector("gloves_enchantment", 5);
+    populateEnchantmentSelector("cloak_enchantment", 5);
+    populateEnchantmentSelector("shield_enchantment", 20);
 }
 
 function populateArmourSelectors()
@@ -239,12 +240,14 @@ function populateArmourSelectors()
     $('#body_armour').empty();
     $('#helmet').empty();
     $('#boots').empty();
+    $('#gloves').empty();
     $('#cloak').empty();
     $('#shield').empty();
 
     addToSelector("body_armour", "none", "None");
     addToSelector("helmet", "none", "None");
     addToSelector("boots", "none", "None");
+    addToSelector("gloves", "none", "None");
     addToSelector("cloak", "none", "None");
     addToSelector("shield", "none", "None");
 
