@@ -355,6 +355,11 @@ function parseData()
                 $('#dexterity').text(parseInt(dex[1]));
             }
 
+            var xl = /XL:\s*(\d+)/i.exec(line);
+            if (xl && xl.length >= 2) {
+                $('#XL').text(parseInt(xl[1]));
+            }
+
             // replace unarmed with current claws rank
             var claws = line.match(/claws [1-3]/);
             if (claws != null) {
