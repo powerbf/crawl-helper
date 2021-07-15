@@ -376,6 +376,10 @@ function parseData()
 
             parseBonus('#ev_bonus', /EV([\+\-][0-9]+)/, line);
             parseBonus('#ev_bonus', /([\+\-][0-9]+) ring of evasion/, line);
+
+            if (line.match(/amulet.*reflect/)) {
+                $('#sh_bonus').text(getNumericInput('#sh_bonus') + 5);
+            }
         }
         else if (section == "Inventory") {
             // inventory item - try to parse as weapon
@@ -1452,6 +1456,8 @@ function getShieldClass()
 
     sh = Math.round(sh / 100);
     sh = Math.round(sh / 2);
+
+    sh += getNumericInput('#sh_bonus');
 
     return sh;
 }
