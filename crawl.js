@@ -411,6 +411,7 @@ function updateResults()
     for(var i = 0; i < weapons.length; i++) {
         calcDamage(weapons[i], shieldSpeedPenalty);
     }
+    weapons.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
 
     $('#stats').empty();
     $('#weapons > tbody:last-child').empty();
