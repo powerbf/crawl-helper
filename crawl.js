@@ -227,7 +227,7 @@ function parseData()
             }
 
             // get player species
-            if (line.match(/began as/i)) {
+            if (line.match(/Turns:/i)) {
                 for (var sp in speciesData) {
                     var re = new RegExp(sp, 'i');
                     if (re.test(line)) {
