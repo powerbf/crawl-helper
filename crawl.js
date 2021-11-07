@@ -227,11 +227,14 @@ function parseData()
 
             // get player species
             if (line.match(/Turns:/i)) {
+                // remove the player name in case it contains a species name
+                line = line.replace(/^.*\(/, '');
                 for (var sp in speciesData) {
                     var re = new RegExp(sp, 'i');
                     if (re.test(line)) {
                         $('#species').val(sp);
                         defaultUnarmed();
+                        break;
                     }
                 }
             }
