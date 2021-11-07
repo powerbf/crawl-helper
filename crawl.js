@@ -267,9 +267,9 @@ function parseData()
                     // handle for both stones and bullets as ammo
                     var w2 = {};
                     Object.assign(w2, w);
-                    addWeapon(w2);
                     w["description"] += " with stones";
                     w2["description"] += " with bullets";
+                    addWeapon(w2);
                 }
             }
         }
