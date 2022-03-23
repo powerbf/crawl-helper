@@ -281,6 +281,8 @@ function parseData()
             parseSkill(line);
         }
     }
+
+    handleCrossTraining();
 }
 
 function parseSkill(line)
@@ -331,6 +333,68 @@ function parseSkill(line)
             $('#throwing').text(val);
     }
     catch (err) {
+    }
+}
+
+function handleCrossTraining() {
+    // If a base skill is zero, it won't appear in char dump for game in progress
+    // (although it will appear in the morgue of a completed game).
+    // So, we have to manually add.
+
+    var cross_train_factor = 0.6; // TODO: account for aptitudes
+
+    // throwing and slings cross-train with eachother
+    var throwing = parseFloat($('#throwing').text());
+    var slings = parseFloat($('#slings').text());
+    if (throwing == 0.0 && slings > 0.0) {
+        throwing = slings * cross_train_factor;
+        $('#throwing').text(niceNumber(throwing));
+    }
+    else if (slings == 0.0 && throwing > 0.0) {
+        slings = throwing * cross_train_factor;
+        $('#slings').text(niceNumber(slings));
+    }
+
+    // short blades and long blades cross-train with eachother
+    var short_blades = parseFloat($('#short_blades').text());
+    var long_blades = parseFloat($('#long_blades').text());
+    if (short_blades == 0.0 && long_blades > 0.0) {
+        short_blades = long_blades * cross_train_factor;
+        $('#short_blades').text(niceNumber(short_blades));
+    }
+    else if (long_blades == 0.0 && short_blades > 0.0) {
+        long_blades = short_blades * cross_train_factor;
+        $('#long_blades').text(niceNumber(long_blades));
+    }
+
+    // axes, m&f, polearms and staves have a complicated cross-training relationship
+    var axes = parseFloat($('#axes').text());
+    var maces = parseFloat($('#maces').text());
+    var polearms = parseFloat($('#polearms').text());
+    var staves = parseFloat($('#staves').text());
+
+    // axes are cross-trained by maces&flails and polearms
+    if (axes == 0.0 && (maces > 0.0 || polearms > 0.0)) {
+        var axes_adj = cross_train_factor * Math.max(maces, polearms);
+        $('#axes').text(niceNumber(axes_adj));
+    }
+
+    // staves are cross-trained by maces&flails and polearms
+    if (staves == 0.0 && (maces > 0.0 || polearms > 0.0)) {
+        var staves_adj = cross_train_factor * Math.max(maces, polearms);
+        $('#staves').text(niceNumber(staves_adj));
+    }
+
+    // maces&flails are cross-trained by axes and staves
+    if (maces == 0.0 && (axes > 0.0 || staves > 0.0)) {
+        var maces_adj = cross_train_factor * Math.max(axes, staves);
+        $('#maces').text(niceNumber(maces_adj));
+    }
+
+    // polearms are cross-trained by axes and staves
+    if (polearms == 0.0 && (axes > 0.0 || staves > 0.0)) {
+        var polearms_adj = cross_train_factor * Math.max(axes, staves);
+        $('#polearms').text(niceNumber(polearms_adj));
     }
 }
 
@@ -488,6 +552,11 @@ function weaponToString(w) {
 
 function numStringWithSign(e) {
     return (e<0?"":"+") + e.toString();
+}
+
+// round number to 1 decimal place, but omit the decimal if it's an integer
+function niceNumber(n) {
+    return n.toFixed(1).replace('.0', '');
 }
 
 
