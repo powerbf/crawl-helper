@@ -11,6 +11,7 @@ const weaponData = {
     "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
     "cutlass": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "cutlass" },
+    "arc blade": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
     "falchion": { category: "long_blades", damage: 7, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
     "long sword": { category: "long_blades", damage: 9, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
@@ -160,6 +161,7 @@ function reset()
     $(".number-val").text("0");
 
     $('#strength').text("10");
+    $('#dexterity').text("10");
     $('#enemy_ac').text("1");
 
     $('#species').val("human");
@@ -254,6 +256,11 @@ function parseData()
             var str = /Str:\s*(\d+)/.exec(line);
             if (str && str.length >= 2) {
                 $('#strength').text(parseInt(str[1]));
+            }
+
+            var dex = /Dex:\s*(\d+)/.exec(line);
+            if (dex && dex.length >= 2) {
+                $('#dexterity').text(parseInt(dex[1]));
             }
 
             // replace unarmed with current claws rank
@@ -620,6 +627,7 @@ function calcDamage(weapon, shieldSpeedPenalty)
     var unarmed = (refData["category"] == "unarmed");
 
     var str = parseFloat($('#strength').text());
+    var dex = parseFloat($('#dexterity').text());
     var fighting = parseFloat($('#fighting').text());
     var weaponSkill = parseFloat($('#'+refData["category"]).text());
     var enemy_ac = parseInt($('#enemy_ac').text());
@@ -654,18 +662,23 @@ function calcDamage(weapon, shieldSpeedPenalty)
     }
 
 
-    // strength modifier
+    // stat modifier
 
     prevWeightedDamage = weightedDamage;
     weightedDamage = {};
 
     if (crawlVersion >= 0.27) {
-        // this has changed in version 0.27
-        // there's no longer a random element
-        // max(1.0, 75 + 2.5 * you.strength()) / 100
+        var stat = str;
+        if (crawlVersion >= 0.29) {
+            var dex_weapons = ["short_blades", "long_blades", "bows", "crossbows", "slings"];
+            if (dex_weapons.includes(refData["category"])) {
+                stat = dex;
+            }
+        }
+        // max(1.0, 75 + 2.5 * stat) / 100
         for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
             var dam = parseInt(damage);
-            var newDam = Math.floor(dam * Math.max(1.0, 75 + 2.5 * str));
+            var newDam = Math.floor(dam * Math.max(1.0, 75 + 2.5 * stat));
             newDam = Math.floor(newDam / 100);
             addToEntry(weightedDamage, newDam, weight);
         }
