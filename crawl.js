@@ -75,7 +75,6 @@ const weaponData = {
 
 const speciesData = {
     "barachi": { size: "medium" },
-    "deep dwarf": { size: "medium" },
     "deep elf": { size: "medium" },
     "demigod": { size: "medium" },
     "demonspawn": { size: "medium" },
@@ -91,6 +90,7 @@ const speciesData = {
     "kobold": { size: "small" },
     "merfolk": { size: "medium" },
     "minotaur": { size: "medium" },
+    "meteoran": { size: "medium" },
     "mummy": { size: "medium" },
     "naga": { size: "large" },
     "octopode": { size: "medium" },
@@ -104,6 +104,7 @@ const speciesData = {
 
     // recently obsolete
     "centaur": { size: "large", obsolete: true },
+    "deep dwarf": { size: "medium", obsolete: true },
     "halfling": { size: "small", obsolete: true },
 
     // really obsolete
