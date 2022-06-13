@@ -532,7 +532,7 @@ function updateResults()
 {
     var crawlVersion = parseInt($('#version').val());
 
-    var shieldSpeedPenalty = calcShieldSpeedPenalty();
+    var shieldSpeedPenalty = calcShieldSpeedPenalty(crawlVersion);
 
     // make sure we've got the right weapon ref data for the current crawl version
     for (const w of weapons) {
@@ -1060,21 +1060,10 @@ function getWeightedAverage(weightedValues)
     return count == 0 ? 0 : sum/count;
 }
 
-function calcShieldPenalty()
+function calcShieldPenalty(crawlVersion)
 {
-    var penalty;
-
-    var shield = $("#shield").val();
-    switch (shield) {
-        case "buckler": penalty = 0.8; break;
-        case "kite_shield": penalty = 3; break;
-        case "tower_shield": penalty = 5; break;
-        default: return 0;
-    }
-
     var species = $("#species").val();
     var size = speciesData[species]["size"];
-
     var  racialFactor = 0; // default for most medium species
     if (size == "little") {
          racialFactor = 4;
@@ -1089,15 +1078,40 @@ function calcShieldPenalty()
     }
 
     var shieldsSkill = parseFloat($("#shields").text());
+    var shield = $("#shield").val();
 
-    // ref: player::adjusted_shield_penalty (player.cc)
-    penalty -= shieldsSkill / (5 + racialFactor);
+    var penalty = 0;
+
+    if (crawlVersion >= 28) {
+        switch (shield) {
+            case "buckler": penalty = 5; break;
+            case "kite_shield": penalty = 10; break;
+            case "tower_shield": penalty = 15; break;
+            default: return 0;
+        }
+
+        penalty = 2 * penalty * penalty;
+        penalty *= (270 - shieldsSkill * 10);
+        penalty /= (5 * (20 - 3 * racialFactor));
+        penalty /= 270;
+    }
+    else {
+        switch (shield) {
+            case "buckler": penalty = 0.8; break;
+            case "kite_shield": penalty = 3; break;
+            case "tower_shield": penalty = 5; break;
+            default: return 0;
+        }
+
+        // ref: player::adjusted_shield_penalty (player.cc)
+        penalty -= shieldsSkill / (5 + racialFactor);
+    }
 
     return Math.max(0, penalty);
 }
 
-function calcShieldSpeedPenalty() {
-    var shieldPenalty = calcShieldPenalty();
+function calcShieldSpeedPenalty(crawlVersion) {
+    var shieldPenalty = calcShieldPenalty(crawlVersion);
     if (shieldPenalty == 0) {
         return 0;
     }
