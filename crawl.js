@@ -135,7 +135,7 @@ const artefactData = {
         "arc blade": { base_type: "rapier" },
         "majin-bo": { base_type: "quarterstaff" },
         "frostbite": { base_type: "executioner's axe" },
-        "maxwell's thermic engine" : { base_type: "double sword" },
+        "thermic engine" : { base_type: "double sword" },
         "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7 },
         "throatcutter": { base_type: "long sword" },
         "staff of the meek": { base_type: "quarterstaff" },
