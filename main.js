@@ -56,6 +56,7 @@ $(function () {
   $('[data-bs-toggle="tooltip"]').tooltip()
 })
 
+populateVersionSelector();
 populateSpeciesSelector();
 
 parseData();

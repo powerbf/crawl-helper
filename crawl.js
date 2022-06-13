@@ -136,13 +136,30 @@ const MIN_VERSION = 26;
 const MAX_VERSION = 29;
 
 // globals - yuck
-var crawlVersion = MAX_VERSION;
 var weapons = [];
 
 // capitalize first letter of all words
 function capitalizeWords(str) {
     var result = str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase());
     return result;
+}
+
+function clampValue(val, min, max) {
+    return val < min ? min : (val > max ? max : val);
+}
+
+function populateVersionSelector()
+{
+    var selector = $('#version');
+    selector.empty(); // remove old options
+
+    for (let ver = MAX_VERSION; ver >= MIN_VERSION; ver--) {
+        let name = "0." + ver.toString();
+        var option = $("<option></option>");
+        option.attr("value", ver);
+        option.text(name);
+        selector.append(option);
+    }
 }
 
 function populateSpeciesSelector()
@@ -187,6 +204,7 @@ function reset()
     $('#dexterity').text("10");
     $('#enemy_ac').text("1");
 
+    $('#version').val(MAX_VERSION);
     $('#species').val("human");
     $('#shield').val("none");    
 }
@@ -249,13 +267,9 @@ function parseData()
         if (section == "Header") {
             var version = line.match(/version\s+0\.(\d+)/);
             if (version != null) {
-                crawlVersion = parseInt(version[1]);
-                if (crawlVersion < MIN_VERSION) {
-                    crawlVersion = MIN_VERSION;
-                }
-                else if (crawlVersion > MAX_VERSION) {
-                    crawlVersion = MAX_VERSION;
-                }
+                let crawlVersion = parseInt(version[1]);
+                crawlVersion = clampValue(crawlVersion, MIN_VERSION, MAX_VERSION);
+                $('#version').val(crawlVersion);
             }
 
             // get player species
@@ -303,14 +317,6 @@ function parseData()
             var w = parseWeapon(line);
             if (w != null) {
                 addWeapon(w);
-                if (crawlVersion <= 28 && w["ref_data"]["category"] == "slings") {
-                    // handle for both stones and bullets as ammo
-                    var w2 = {};
-                    Object.assign(w2, w);
-                    w["description"] += " with stones";
-                    w2["description"] += " with bullets";
-                    addWeapon(w2);
-                }
             }
         }
         else {
@@ -434,6 +440,19 @@ function handleCrossTraining() {
     }
 }
 
+function getWeaponRefData(weapType, crawlVersion) {
+    // search for older weapon data where relevant
+    // take the oldest match where version >= target version
+    for (let ver = crawlVersion; ver < MAX_VERSION; ver++) {
+        if (ver in oldWeaponData && weapType in oldWeaponData[ver]) {
+            return oldWeaponData[ver][weapType];
+        }
+    }
+
+    // use current weapon data
+    return weaponData[weapType];
+}
+
 function parseWeapon(s) {
     if (s.match("tremorstone")) {
         // this is not a weapon, but it would match on "stone"
@@ -460,20 +479,7 @@ function parseWeapon(s) {
     }
 
     var weapType = weapon["type"];
-    var refData = null;
-
-    // search for older weapon data where relevant
-    // take the oldest match
-    for (let ver = crawlVersion; ver < MAX_VERSION; ver += 1) {
-        if (ver in oldWeaponData && weapType in oldWeaponData[ver]) {
-            refData = oldWeaponData[ver][weapType];
-            break;
-        }
-    }
-    if (refData == null) {
-        // use current weapon data
-        refData = weaponData[weapType];
-    }
+    var refData = getWeaponRefData(weapType, MAX_VERSION);
     weapon["ref_data"] = refData;
 
     try {
@@ -524,18 +530,44 @@ function parseBrand(s) {
 
 function updateResults()
 {
+    var crawlVersion = parseInt($('#version').val());
+
     var shieldSpeedPenalty = calcShieldSpeedPenalty();
 
-    for(var i = 0; i < weapons.length; i++) {
-        calcDamage(weapons[i], shieldSpeedPenalty);
+    // make sure we've got the right weapon ref data for the current crawl version
+    for (const w of weapons) {
+        w["ref_data"] = getWeaponRefData(w["type"], crawlVersion);
     }
-    weapons.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
+
+    var weaps = weapons;
+    if (crawlVersion <= 28) {
+        // handle sling with both stones and bullets as ammo
+        weaps = [];
+        for (const w of weapons) {
+            if (w["ref_data"]["category"] == "slings") {
+                let w1 = Object.assign({}, w);
+                w1["description"] += " with stones";
+                weaps.push(w1);
+
+                let w2 = Object.assign({}, w);
+                w2["description"] += " with bullets";
+                weaps.push(w2);
+            }
+            else {
+                weaps.push(w);
+            }
+        }
+    }
+
+    for (const weap of weaps) {
+        calcDamage(weap, shieldSpeedPenalty, crawlVersion);
+    }
+    weaps.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
 
     $('#stats').empty();
     $('#weapons > tbody:last-child').empty();
 
-    for(var i = 0; i < weapons.length; i++) {
-        var weap = weapons[i];
+    for (const weap of weaps) {
 
         var row = "<tr>";
         row += "<td class='fit'>" + weap["description"] + "</td>";
@@ -660,7 +692,7 @@ function distroToString(distro)
 
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
-function calcDamage(weapon, shieldSpeedPenalty)
+function calcDamage(weapon, shieldSpeedPenalty, crawlVersion)
 {
     var refData = weapon["ref_data"];
     if (refData == null) {

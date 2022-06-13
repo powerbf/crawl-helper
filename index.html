@@ -21,7 +21,7 @@
     <div id="inputs" class="container">
         <div class="row">
             <div class="col col-sm-12 col-md-5 col-lg-6">
-                <textarea id="data" class="form-control" rows="10" cols="80" placeholder="Paste text from morgue or character file"></textarea>
+                <textarea id="data" class="form-control" rows="11" cols="80" placeholder="Paste text from morgue or character file"></textarea>
                 <div class="row">
                     &nbsp;
                 </div>
@@ -32,29 +32,16 @@
 
             <div class="col col-md-4 col-lg-3 text-nowrap" id="skills1">
                 <table>
-                    <tr>
+                    <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
+                        title="Weapon stats and the way damage is calculated vary from version to version.">
                         <td>
-                            Strength:
+                            <label class="text-nowrap">Version:</label>
                         </td>
                         <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="strength" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Dexterity:
+                            <!-- full version list will be populated by javascript -->
+                            <select id="version" class="form-select form-select-sm">
+                            </select>
                         </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="dexterity" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
                     </tr>
                     <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
                         title="Large species and formicids need less shields skill than normal to offset shield penalties. Small species need more. Little species need a lot more.">
@@ -81,6 +68,30 @@
                               <option value="tower_shield">Tower Shield</option>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Strength:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="strength" min="0">10</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        <td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Dexterity:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="dexterity" min="0">10</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        <td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
