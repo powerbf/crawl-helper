@@ -56,21 +56,40 @@ const weaponData = {
     "lajatang": { category: "staves", damage: 16, hit: -3, delay: { base: 14, min: 7 }, img: "lajatang" },
     "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
-    // missile base damage must be added to these (+2 for stones, +4 for bullets)
-    "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
-    "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
+    // missile base damage is no longer added to these
+    "hunting sling": { category: "slings", damage: 7, hit: +0, delay: { base: 15, min: 6 }, img: "ranged/sling" },
+    "fustibalus": { category: "slings", damage: 10, hit: -2, delay: { base: 16, min: 7 }, img: "ranged/fustibalus" },
 
-    "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
-    "longbow": { category: "bows", damage: 15, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
+    "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 15, min: 6 }, img: "ranged/shortbow" },
+    "longbow": { category: "bows", damage: 13, hit: 0, delay: { base: 18, min: 7 }, img: "ranged/longbow" },
 
-    "hand crossbow": { category: "crossbows", damage: 12, hit: +5, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
-    "arbalest": { category: "crossbows", damage: 18, hit: +2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
-    "triple crossbow": { category: "crossbows", damage: 22, hit: +0, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    "hand crossbow": { category: "crossbows", damage: 8, hit: +3, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
+    "arbalest": { category: "crossbows", damage: 15, hit: +0, delay: { base: 18, min: 10 }, img: "ranged/arbalest" },
+    "triple crossbow": { category: "crossbows", damage: 21, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    // artefact: sniper
+    "heavy crossbow": { category: "crossbows", damage: 21, hit: +0, delay: { base: 27, min: 13 }, img: "ranged/triple_crossbow" },
 
     "stone": { category: "throwing", damage: 2, hit: +0, delay: { base: 11, min: 7 }, },
     "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
     "javelin": { category: "throwing", damage: 11, hit: +0, delay: { base: 15, min: 7 }, },
     "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
+
+};
+
+// old weapon data - indexed by *last* version they were valid for
+const oldWeaponData = {
+    28: {
+        // missile base damage must be added to these (+2 for stones, +4 for bullets)
+        "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
+        "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
+
+        "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
+        "longbow": { category: "bows", damage: 15, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
+
+        "hand crossbow": { category: "crossbows", damage: 12, hit: +5, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
+        "arbalest": { category: "crossbows", damage: 18, hit: +2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
+        "triple crossbow": { category: "crossbows", damage: 22, hit: +0, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    }
 };
 
 const speciesData = {
@@ -113,8 +132,11 @@ const speciesData = {
     "lava orc": { size: "medium", obsolete: true },
 };
 
+const MIN_VERSION = 26;
+const MAX_VERSION = 29;
+
 // globals - yuck
-var crawlVersion = 0.26;
+var crawlVersion = MAX_VERSION;
 var weapons = [];
 
 // capitalize first letter of all words
@@ -225,9 +247,15 @@ function parseData()
         }
 
         if (section == "Header") {
-            var version = line.match(/version\s+(\d+\.\d+)/);
+            var version = line.match(/version\s+0\.(\d+)/);
             if (version != null) {
-                crawlVersion = parseFloat(version[1]);
+                crawlVersion = parseInt(version[1]);
+                if (crawlVersion < MIN_VERSION) {
+                    crawlVersion = MIN_VERSION;
+                }
+                else if (crawlVersion > MAX_VERSION) {
+                    crawlVersion = MAX_VERSION;
+                }
             }
 
             // get player species
@@ -275,7 +303,7 @@ function parseData()
             var w = parseWeapon(line);
             if (w != null) {
                 addWeapon(w);
-                if (w["ref_data"]["category"] == "slings") {
+                if (crawlVersion <= 28 && w["ref_data"]["category"] == "slings") {
                     // handle for both stones and bullets as ammo
                     var w2 = {};
                     Object.assign(w2, w);
@@ -431,7 +459,21 @@ function parseWeapon(s) {
         return null;
     }
 
-    var refData = weaponData[weapon["type"]]
+    var weapType = weapon["type"];
+    var refData = null;
+
+    // search for older weapon data where relevant
+    // take the oldest match
+    for (let ver = crawlVersion; ver < MAX_VERSION; ver += 1) {
+        if (ver in oldWeaponData && weapType in oldWeaponData[ver]) {
+            refData = oldWeaponData[ver][weapType];
+            break;
+        }
+    }
+    if (refData == null) {
+        // use current weapon data
+        refData = weaponData[weapType];
+    }
     weapon["ref_data"] = refData;
 
     try {
@@ -653,7 +695,8 @@ function calcDamage(weapon, shieldSpeedPenalty)
         }
     }
     else {
-        if (refData["category"] == "slings") {
+        if (crawlVersion <= 28 && refData["category"] == "slings") {
+            // add missile base damage
             if (weapon["description"].match(/bullets/))
                 base_damage += 4; // using sling bullets
             else
@@ -668,9 +711,9 @@ function calcDamage(weapon, shieldSpeedPenalty)
     prevWeightedDamage = weightedDamage;
     weightedDamage = {};
 
-    if (crawlVersion >= 0.27) {
+    if (crawlVersion >= 27) {
         var stat = str;
-        if (crawlVersion >= 0.29) {
+        if (crawlVersion >= 29) {
             var dex_weapons = ["short_blades", "long_blades", "bows", "crossbows", "slings"];
             if (dex_weapons.includes(refData["category"])) {
                 stat = dex;
