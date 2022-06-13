@@ -10,15 +10,12 @@ const weaponData = {
     "quick blade": { category: "short_blades", damage: 5, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
     "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
-    "cutlass": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "cutlass" },
-    "arc blade": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
     "falchion": { category: "long_blades", damage: 8, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
     "long sword": { category: "long_blades", damage: 10, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
     "scimitar": { category: "long_blades", damage: 12, hit: +0, delay: { base: 14, min: 7 }, img: "scimitar" },
     "demon blade": { category: "long_blades", damage: 13, hit: -1, delay: { base: 13, min: 6 }, img: "demon_blade" },
     "eudemon blade": { category: "long_blades", damage: 14, hit: -2, delay: { base: 12, min: 6 }, img: "blessed_blade" },
-    "autumn katana": { category: "long_blades", damage: 14, hit: +3, delay: { base: 12, min: 6 }, img: "blessed_blade" },
     "double sword": { category: "long_blades", damage: 15, hit: -1, delay: { base: 15, min: 7 }, img: "double_sword" },
     "great sword": { category: "long_blades", damage: 17, hit: -3, delay: { base: 17, min: 7 }, img: "greatsword" },
     "triple sword": { category: "long_blades", damage: 19, hit: -4, delay: { base: 18, min: 7 }, img: "triple_sword" },
@@ -43,7 +40,6 @@ const weaponData = {
     "giant spiked club": { category: "maces", damage: 22, hit: -7, delay: { base: 18, min: 7 }, img: "spiked_giant_club" },
 
     "spear": { category: "polearms", damage: 6, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
-    "lance": { category: "polearms", damage: 8, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
     "trident": { category: "polearms", damage: 9, hit: +1, delay: { base: 13, min: 6 }, img: "trident" },
     "halberd": { category: "polearms", damage: 13, hit: -3, delay: { base: 15, min: 7 }, img: "halberd" },
     "scythe": { category: "polearms", damage: 14, hit: -4, delay: { base: 20, min: 7 }, img: "scythe" },
@@ -66,8 +62,6 @@ const weaponData = {
     "hand crossbow": { category: "crossbows", damage: 8, hit: +3, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
     "arbalest": { category: "crossbows", damage: 15, hit: +0, delay: { base: 18, min: 10 }, img: "ranged/arbalest" },
     "triple crossbow": { category: "crossbows", damage: 21, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
-    // artefact: sniper
-    "heavy crossbow": { category: "crossbows", damage: 21, hit: +0, delay: { base: 27, min: 13 }, img: "ranged/triple_crossbow" },
 
     "stone": { category: "throwing", damage: 2, hit: +0, delay: { base: 11, min: 7 }, },
     "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
@@ -106,6 +100,48 @@ const oldWeaponData = {
     },
     26: {
         "broad axe": { category: "axes", damage: 13, hit: -2, delay: { base: 17, min: 7 }, img: "broad_axe" },
+    }
+};
+
+// map artefact name to weapon type
+// (only for artefacts that don't have the base type in the name and/or modify the base type)
+// values for damage/hit/delay are modifiers relative to the base type (i.e. not absolute values)
+const artefactData = {
+    29: {
+        "singing sword" : { base_type: "double sword" },
+        "wrath of trog" : { base_type: "battleaxe" },
+        "sword of power" : { base_type: "great sword" },
+        "vampire's tooth" : { base_type: "quick blade" },
+        "sceptre of torment" : { base_type: "eveningstar" },
+        "sword of zonguldrok" : { base_type: "double sword" },
+        "sword of cerebov" : { base_type: "great sword", new_type: "sword of cerebov", damage: +1, hit: +1 },
+        "sceptre of asmodeus" : { base_type: "staff" },
+        "punk": { base_type: "fustibalus" },
+        "zealot's sword": { base_type: "eudemon blade" },
+        "sword of the doom knight" : { base_type: "great sword" },
+        "arga" : { base_type: "broad axe" },
+        "sniper" : { base_type: "triple crossbow", new_type: "heavy crossbow", base_delay: +4 },
+        "wyrmbane" : { base_type: "spear", new_type: "lance", damage: +2 },
+        "spriggan's knife" : { base_type: "dagger" },
+        "plutonium sword" : { base_type: "triple sword" },
+        "knife of accuracy" : { base_type: "dagger" },
+        "captain's cutlass" : { base_type: "rapier" },
+        "storm bow" : { base_type: "long bow" },
+        "obsidian axe": { base_type: "broad axe" },
+        "autumn katana": { base_type: "long sword", new_type: "katana", damage: +4, hit: +2, base_delay: -2 },
+        "devastator": { base_type: "club", new_type: "shillelagh", damage: +3 },
+        "axe of woe": { base_type: "executioner's axe" },
+        "dark maul": { base_type: "great mace", new_type: "maul", damage: +35, hit: +2, base_delay: +13 },
+        "arc blade": { base_type: "rapier" },
+        "majin-bo": { base_type: "quarterstaff" },
+        "frostbite": { base_type: "executioner's axe" },
+        "maxwell's thermic engine" : { base_type: "double sword" }, // TODO: Handle 2 brands
+        "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7 },
+        "throatcutter": { base_type: "long sword" },
+        "staff of the meek": { base_type: "quarterstaff" },
+    },
+    28: {
+        "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5 },
     }
 };
 
@@ -457,17 +493,83 @@ function handleCrossTraining() {
     }
 }
 
-function getWeaponRefData(weapType, crawlVersion) {
+function getBaseWeaponRefData(weapType, crawlVersion) {
+
+    // if version is not specified, assume current version
+    if (crawlVersion == null) {
+        crawlVersion = MAX_VERSION;
+    }
+
+    var result = null;
+
     // search for older weapon data where relevant
     // take the oldest match where version >= target version
     for (let ver = crawlVersion; ver < MAX_VERSION; ver++) {
         if (ver in oldWeaponData && weapType in oldWeaponData[ver]) {
-            return oldWeaponData[ver][weapType];
+            result = oldWeaponData[ver][weapType];
+            break;
         }
     }
 
-    // use current weapon data
-    return weaponData[weapType];
+    if (result == null) {
+        // use current weapon data
+        result = weaponData[weapType];
+    }
+
+    result["type"] = weapType;
+    return result;
+}
+
+function getArtefactRefData(weapon, crawlVersion) {
+    if (!("art_type" in weapon)) {
+        return null;
+    }
+
+    // if version is not specified, assume current version
+    if (crawlVersion == null) {
+        crawlVersion = MAX_VERSION;
+    }
+
+    var artType = weapon["art_type"];
+
+    for (let ver = crawlVersion; ver <= MAX_VERSION; ver++) {
+        if (ver in artefactData && artType in artefactData[ver]) {
+            let artData = artefactData[ver][artType];
+            let baseWeaponData = getBaseWeaponRefData(artData["base_type"], crawlVersion);
+            if ("new_type" in artData) {
+                // construct a new base weapon type
+                let newWeapType = Object.assign({}, baseWeaponData);
+                newWeapType["delay"] = Object.assign({}, baseWeaponData["delay"]);
+                if ("damage" in artData) {
+                    newWeapType["damage"] += artData["damage"];
+                }
+                if ("hit" in artData) {
+                    newWeapType["hit"] += artData["hit"];
+                }
+                if ("base_delay" in artData) {
+                    newWeapType["delay"]["base"] += artData["base_delay"];
+                }
+                newWeapType["type"] = artData["new_type"];
+                return newWeapType;
+            }
+            else {
+                return baseWeaponData;
+            }
+        }
+    }
+
+    return null;
+}
+
+function getWeaponRefData(weapon, crawlVersion) {
+
+    var refData = getArtefactRefData(weapon, crawlVersion);
+
+    if (refData == null) {
+        refData = getBaseWeaponRefData(weapon["type"], crawlVersion);
+    }
+
+    return refData;
 }
 
 function parseWeapon(s) {
@@ -481,7 +583,7 @@ function parseWeapon(s) {
         brand: ""
     }
 
-    for (var t in weaponData) {
+    for (let t in weaponData) {
         if (s.includes(t)) {
             // some weapon names include other weapon names (e.g. "demon whip" includes "whip")
             // we want to take the longest match
@@ -491,12 +593,21 @@ function parseWeapon(s) {
         }   
     }
 
+    var lower = s.toLowerCase();
     if (weapon["type"] == null) {
+        for (let art in artefactData[MAX_VERSION]) {
+            if (lower.includes(art)) {
+                weapon["art_type"] = art;
+                break;
+            }
+        }
+    }
+
+    if (weapon["type"] == null && weapon["art_type"] == null) {
         return null;
     }
 
-    var weapType = weapon["type"];
-    var refData = getWeaponRefData(weapType, MAX_VERSION);
+    var refData = getWeaponRefData(weapon);
     weapon["ref_data"] = refData;
 
     try {
@@ -553,7 +664,10 @@ function updateResults()
 
     // make sure we've got the right weapon ref data for the current crawl version
     for (const w of weapons) {
-        w["ref_data"] = getWeaponRefData(w["type"], crawlVersion);
+        w["ref_data"] = getWeaponRefData(w, crawlVersion);
+        if ("type" in w["ref_data"]) {
+            w["type"] = w["ref_data"]["type"];
+        }
     }
 
     var weaps = weapons;
@@ -622,7 +736,14 @@ function updateResults()
 }
 
 function weaponToString(w) {
-    var wtype = w["type"];
+    var wtype;
+    if ("ref_data" in w) {
+        wtype = w["ref_data"]["type"];
+    }
+    else {
+        wtype  = w["type"];
+    }
+
     if (wtype == "unarmed") {
         return wtype;
     }
@@ -636,8 +757,10 @@ function weaponToString(w) {
         }
         if (w["is_pair"])
             s += 'pair of ' + wtype + 's';
+        else if ("art_type" in w && !(w["art_type"].includes(wtype)))
+            s += wtype + " (\"" + w["art_type"] + "\")";
         else
-            s += wtype
+            s += wtype;
         /*if (w["name"] != null) {
             s += " " + w["name"];
         }*/
