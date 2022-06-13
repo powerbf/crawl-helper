@@ -135,7 +135,7 @@ const artefactData = {
         "arc blade": { base_type: "rapier" },
         "majin-bo": { base_type: "quarterstaff" },
         "frostbite": { base_type: "executioner's axe" },
-        "maxwell's thermic engine" : { base_type: "double sword" }, // TODO: Handle 2 brands
+        "maxwell's thermic engine" : { base_type: "double sword" },
         "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7 },
         "throatcutter": { base_type: "long sword" },
         "staff of the meek": { base_type: "quarterstaff" },
@@ -639,6 +639,10 @@ function parseWeapon(s) {
 }
 
 function parseBrand(s) {
+    if (s.includes("thermic engine")) {
+        return "flame+freeze";
+    }
+
     var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
     if (m != null) {
         return m[1];
@@ -1029,6 +1033,9 @@ function calcDamage(weapon, shieldSpeedPenalty, crawlVersion)
     else if (weapon["brand"] == "flame" || weapon["brand"] == "freeze") {
         // 0-50% -> avg = 25%
         damage_per_hit["brand"] = 0.25 * damage_per_hit["base"];
+    }
+    else if (weapon["brand"] == "flame+freeze") {
+        damage_per_hit["brand"] = 0.5 * damage_per_hit["base"];
     }
     else if (weapon["brand"] == "holy") {
         // 0-150% -> avg = 75%
