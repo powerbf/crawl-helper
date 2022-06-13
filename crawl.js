@@ -642,6 +642,9 @@ function parseBrand(s) {
     if (s.includes("thermic engine")) {
         return "flame+freeze";
     }
+    else if (s.includes("arc blade")) {
+        return "discharge";
+    }
 
     var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
     if (m != null) {
@@ -1070,6 +1073,11 @@ function calcDamage(weapon, shieldSpeedPenalty, crawlVersion)
     }
     else if (weapon["brand"] == "spect") {
         damage_per_hit["brand"] = calcSpectralDamage(weapon);
+    }
+    else if (weapon["brand"] == "discharge") {
+        // 1 in 3 chance of casting discharge with an average power of 150
+        // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
+        damage_per_hit["brand"] = (3 + (20 + 15/2) / 2) / 3;
     }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
