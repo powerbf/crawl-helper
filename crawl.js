@@ -13,21 +13,21 @@ const weaponData = {
     "cutlass": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "cutlass" },
     "arc blade": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
-    "falchion": { category: "long_blades", damage: 7, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
-    "long sword": { category: "long_blades", damage: 9, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
-    "scimitar": { category: "long_blades", damage: 11, hit: +0, delay: { base: 14, min: 7 }, img: "scimitar" },
-    "demon blade": { category: "long_blades", damage: 12, hit: -1, delay: { base: 13, min: 6 }, img: "demon_blade" },
-    "eudemon blade": { category: "long_blades", damage: 13, hit: -2, delay: { base: 12, min: 6 }, img: "blessed_blade" },
+    "falchion": { category: "long_blades", damage: 8, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
+    "long sword": { category: "long_blades", damage: 10, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
+    "scimitar": { category: "long_blades", damage: 12, hit: +0, delay: { base: 14, min: 7 }, img: "scimitar" },
+    "demon blade": { category: "long_blades", damage: 13, hit: -1, delay: { base: 13, min: 6 }, img: "demon_blade" },
+    "eudemon blade": { category: "long_blades", damage: 14, hit: -2, delay: { base: 12, min: 6 }, img: "blessed_blade" },
     "autumn katana": { category: "long_blades", damage: 14, hit: +3, delay: { base: 12, min: 6 }, img: "blessed_blade" },
-    "double sword": { category: "long_blades", damage: 14, hit: -1, delay: { base: 15, min: 7 }, img: "double_sword" },
-    "great sword": { category: "long_blades", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "greatsword" },
-    "triple sword": { category: "long_blades", damage: 17, hit: -4, delay: { base: 19, min: 7 }, img: "triple_sword" },
+    "double sword": { category: "long_blades", damage: 15, hit: -1, delay: { base: 15, min: 7 }, img: "double_sword" },
+    "great sword": { category: "long_blades", damage: 17, hit: -3, delay: { base: 17, min: 7 }, img: "greatsword" },
+    "triple sword": { category: "long_blades", damage: 19, hit: -4, delay: { base: 18, min: 7 }, img: "triple_sword" },
 
     "hand axe": { category: "axes", damage: 7, hit: +3, delay: { base: 13, min: 6 }, img: "hand_axe" },
     "war axe": { category: "axes", damage: 11, hit: 0, delay: { base: 15, min: 7 }, img: "war_axe" },
     "broad axe": { category: "axes", damage: 13, hit: -2, delay: { base: 16, min: 7 }, img: "broad_axe" },
     "battleaxe": { category: "axes", damage: 15, hit: -4, delay: { base: 17, min: 7 }, img: "battle_axe" },
-    "executioner's axe": { category: "axes", damage: 17, hit: -6, delay: { base: 20, min: 7 }, img: "executioner_axe" },
+    "executioner's axe": { category: "axes", damage: 18, hit: -6, delay: { base: 19, min: 7 }, img: "executioner_axe" },
 
     "whip": { category: "maces", damage: 6, hit: +2, delay: { base: 11, min: 5 }, img: "bullwhip" },
     "club": { category: "maces", damage: 5, hit: +3, delay: { base: 13, min: 6 }, img: "club" },
@@ -50,7 +50,7 @@ const weaponData = {
     "demon trident": { category: "polearms", damage: 12, hit: +1, delay: { base: 13, min: 6 }, img: "demon_trident" },
     "trishula": { category: "polearms", damage: 13, hit: +0, delay: { base: 13, min: 6 }, img: "trishula" },
     "glaive": { category: "polearms", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "glaive" },
-    "bardiche": { category: "polearms", damage: 18, hit: -6, delay: { base: 20, min: 7 }, img: "bardiche" },
+    "bardiche": { category: "polearms", damage: 18, hit: -6, delay: { base: 19, min: 7 }, img: "bardiche" },
 
     "quarterstaff": { category: "staves", damage: 10, hit: +3, delay: { base: 13, min: 6 }, img: "quarterstaff" },
     "lajatang": { category: "staves", damage: 16, hit: -3, delay: { base: 14, min: 7 }, img: "lajatang" },
@@ -89,6 +89,23 @@ const oldWeaponData = {
         "hand crossbow": { category: "crossbows", damage: 12, hit: +5, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
         "arbalest": { category: "crossbows", damage: 18, hit: +2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
         "triple crossbow": { category: "crossbows", damage: 22, hit: +0, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    },
+    27: {
+        "falchion": { category: "long_blades", damage: 7, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
+        "long sword": { category: "long_blades", damage: 9, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
+        "scimitar": { category: "long_blades", damage: 11, hit: +0, delay: { base: 14, min: 7 }, img: "scimitar" },
+        "demon blade": { category: "long_blades", damage: 12, hit: -1, delay: { base: 13, min: 6 }, img: "demon_blade" },
+        "eudemon blade": { category: "long_blades", damage: 13, hit: -2, delay: { base: 12, min: 6 }, img: "blessed_blade" },
+        "double sword": { category: "long_blades", damage: 14, hit: -1, delay: { base: 15, min: 7 }, img: "double_sword" },
+        "great sword": { category: "long_blades", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "greatsword" },
+        "triple sword": { category: "long_blades", damage: 17, hit: -4, delay: { base: 19, min: 7 }, img: "triple_sword" },
+
+        "executioner's axe": { category: "axes", damage: 18, hit: -6, delay: { base: 20, min: 7 }, img: "executioner_axe" },
+
+        "bardiche": { category: "polearms", damage: 18, hit: -6, delay: { base: 20, min: 7 }, img: "bardiche" },
+    },
+    26: {
+        "broad axe": { category: "axes", damage: 13, hit: -2, delay: { base: 17, min: 7 }, img: "broad_axe" },
     }
 };
 
