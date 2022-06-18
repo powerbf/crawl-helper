@@ -255,7 +255,7 @@ function reset()
 
     $('#strength').text("10");
     $('#dexterity').text("10");
-    $('#enemy_ac').text("1");
+    $('#enemy_ac').text("10");
 
     $('#version').val(MAX_VERSION);
     $('#species').val("human");
