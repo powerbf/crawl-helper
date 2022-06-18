@@ -301,7 +301,7 @@ function parseData()
 
     var data = $('textarea#data').val();
 
-    // line breaks could be removed by copy-paste (e.g. android), so we can't replay on them being there
+    // line breaks could be removed by copy-paste (e.g. android), so we can't rely on them being there
 
     // remove junk at the end
     var sections = data.split('Dungeon Overview');
