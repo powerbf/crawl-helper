@@ -53,7 +53,7 @@ const weaponData = {
     "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
     // missile base damage is no longer added to these
-    "hunting sling": { category: "slings", damage: 7, hit: +0, delay: { base: 15, min: 6 }, img: "ranged/sling" },
+    "sling": { category: "slings", damage: 7, hit: +0, delay: { base: 15, min: 6 }, img: "ranged/sling" },
     "fustibalus": { category: "slings", damage: 10, hit: -2, delay: { base: 16, min: 7 }, img: "ranged/fustibalus" },
 
     "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 15, min: 6 }, img: "ranged/shortbow" },
