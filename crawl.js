@@ -375,6 +375,15 @@ function parseData()
         weapons[0] = parseWeapon(claws[0]);
     }
 
+    // process slaying
+    const slayRe = /Slay([+-]\d+)/g;
+    const slayMatches = [...header.matchAll(slayRe)];
+    let slaying = 0;
+    for (const sm of slayMatches) {
+        slaying += parseInt(sm[1])
+    }
+    $('#slaying').text(slaying);
+
     //
     // process inventory
     //
