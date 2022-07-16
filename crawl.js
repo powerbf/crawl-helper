@@ -464,6 +464,11 @@ function parseSkill(line)
             $('#crossbows').text(val);
         else if (name == "Throwing")
             $('#throwing').text(val);
+        else if (name == "Ranged Weapons") {
+            $('#slings').text(val);
+            $('#bows').text(val);
+            $('#crossbows').text(val);
+        }
     }
     catch (err) {
     }
