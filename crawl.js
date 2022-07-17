@@ -7,9 +7,9 @@ const weaponData = {
     "claws 3": { category: "unarmed", damage: 9, hit: +6, delay: { base: 10, min: 5 }, },
 
     "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
-    "quick blade": { category: "short_blades", damage: 5, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
-    "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
-    "rapier": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
+    "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
+    "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
+    "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
     "falchion": { category: "long_blades", damage: 8, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
     "long sword": { category: "long_blades", damage: 10, hit: +1, delay: { base: 14, min: 7 }, img: "long_sword" },
@@ -53,15 +53,15 @@ const weaponData = {
     "staff": { category: "staves", damage: 5, hit: +5, delay: { base: 12, min: 6 }, img: "staff" },
 
     // missile base damage is no longer added to these
-    "sling": { category: "slings", damage: 7, hit: +0, delay: { base: 15, min: 6 }, img: "ranged/sling" },
+    "sling": { category: "slings", damage: 7, hit: +0, delay: { base: 14, min: 6 }, img: "ranged/sling" },
     "fustibalus": { category: "slings", damage: 10, hit: -2, delay: { base: 16, min: 7 }, img: "ranged/fustibalus" },
 
     "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 15, min: 6 }, img: "ranged/shortbow" },
-    "longbow": { category: "bows", damage: 13, hit: 0, delay: { base: 18, min: 7 }, img: "ranged/longbow" },
+    "longbow": { category: "bows", damage: 12, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
 
-    "hand crossbow": { category: "crossbows", damage: 8, hit: +3, delay: { base: 15, min: 10 }, img: "ranged/hand_crossbow" },
-    "arbalest": { category: "crossbows", damage: 15, hit: +0, delay: { base: 18, min: 10 }, img: "ranged/arbalest" },
-    "triple crossbow": { category: "crossbows", damage: 21, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
+    "hand crossbow": { category: "crossbows", damage: 17, hit: +3, delay: { base: 18, min: 10 }, img: "ranged/hand_crossbow" },
+    "arbalest": { category: "crossbows", damage: 17, hit: -2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
+    "triple crossbow": { category: "crossbows", damage: 23, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
 
     "stone": { category: "throwing", damage: 2, hit: +0, delay: { base: 11, min: 7 }, },
     "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
@@ -73,8 +73,12 @@ const weaponData = {
 // old weapon data - indexed by *last* version they were valid for
 const oldWeaponData = {
     28: {
+        "quick blade": { category: "short_blades", damage: 5, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
+        "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
+        "rapier": { category: "short_blades", damage: 8, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
+
         // missile base damage must be added to these (+2 for stones, +4 for bullets)
-        "hunting sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
+        "sling": { category: "slings", damage: 5, hit: +2, delay: { base: 12, min: 6 }, img: "ranged/sling" },
         "fustibalus": { category: "slings", damage: 8, hit: -1, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
 
         "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 13, min: 6 }, img: "ranged/shortbow" },
