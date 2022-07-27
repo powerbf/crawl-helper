@@ -1314,6 +1314,12 @@ function calcShieldPenalty(crawlVersion)
 
 function calcShieldSpeedPenalty(crawlVersion) {
     var shieldPenalty = calcShieldPenalty(crawlVersion);
+
+    if (crawlVersion >= 27) {
+        // this is in auts, so convert to turns
+        return shieldPenalty / 10;
+    }
+
     if (shieldPenalty == 0) {
         return 0;
     }
