@@ -58,6 +58,7 @@ $(function () {
 
 populateVersionSelector();
 populateSpeciesSelector();
+populateBodyArmourSelector();
 
 parseData();
 updateResults();

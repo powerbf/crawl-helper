@@ -149,6 +149,33 @@ const artefactData = {
     }
 };
 
+const armourData = {
+    // Ref: https://github.com/crawl/crawl/blob/master/crawl-ref/source/item-prop.cc
+
+    "none": { ac: 0, encumbrance: 0 },
+
+    "robe": { ac: 2, encumbrance: 0 },
+    "animal skin": { ac: 2, encumbrance: 0 },
+    "leather armour": { ac: 3, encumbrance: 40 },
+    "ring mail": { ac: 5, encumbrance: 70 },
+    "scale mail": { ac: 6, encumbrance: 100 },
+    "chain mail": { ac: 8, encumbrance: 150 },
+    "plate armour": { ac: 10, encumbrance: 180 },
+    "crystal plate armour": { ac: 14, encumbrance: 230 },
+
+
+    "steam dragon armour": { ac: 5, encumbrance: 0 },
+    "acid dragon armour": { ac: 6,  encumbrance: 50 },
+    "quicksilver dragon armour": { ac: 9,  encumbrance: 70 },
+    "swamp dragon armour": { ac: 7,  encumbrance: 70 },
+    "fire dragon armour": { ac: 8, encumbrance: 110 },
+    "ice dragon armour": { ac: 9, encumbrance: 110 },
+    "pearl dragon armour": { ac: 10, encumbrance: 110 },
+    "storm dragon armour": { ac: 10, encumbrance: 150 },
+    "shadow dragon armour": { ac: 11, encumbrance: 150 },
+    "gold dragon armour": { ac: 12, encumbrance: 230 },
+};
+
 const speciesData = {
     "barachi": { size: "medium" },
     "deep elf": { size: "medium" },
@@ -251,6 +278,19 @@ function populateSpeciesSelector()
     }
 }
 
+function populateBodyArmourSelector()
+{
+    var selector = $('#body_armour');
+    selector.empty(); // remove old options
+
+    for (var arm in armourData) {
+        var option = $("<option></option>");
+        option.attr("value", arm);
+        option.text(capitalizeWords(arm));
+        selector.append(option);
+    }
+}
+
 function reset()
 {
     weapons = [];
@@ -350,6 +390,13 @@ function parseData()
         }
     }
 
+    // get current armour
+    for (let arm in armourData) {
+        if (header.includes(arm)) {
+            $('#body_armour').val(arm);
+        }
+    }
+
     // get current shield
     if (header.match(/buckler|small shield/i)) {
         $('#shield').val("buckler");
@@ -444,6 +491,8 @@ function parseSkill(line)
 
         if (name == "Fighting")
             $('#fighting').text(val);
+        else if (name == "Armour")
+            $('#armour').text(val);
         else if (name == "Shields")
             $('#shields').text(val);
         else if (name == "Short Blades")
@@ -715,6 +764,7 @@ function updateResults()
     var crawlVersion = parseInt($('#version').val());
 
     var shieldSpeedPenalty = calcShieldSpeedPenalty(crawlVersion);
+    var armourSpeedPenalty = calcArmourSpeedPenalty(crawlVersion);
 
     // make sure we've got the right weapon ref data for the current crawl version
     for (const w of weapons) {
@@ -745,7 +795,7 @@ function updateResults()
     }
 
     for (const weap of weaps) {
-        calcDamage(weap, shieldSpeedPenalty, crawlVersion);
+        calcDamage(weap, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion);
     }
     weaps.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
 
@@ -886,7 +936,7 @@ function distroToString(distro)
 
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
-function calcDamage(weapon, shieldSpeedPenalty, crawlVersion)
+function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion)
 {
     var refData = weapon["ref_data"];
     if (refData == null) {
@@ -1153,6 +1203,12 @@ function calcDamage(weapon, shieldSpeedPenalty, crawlVersion)
 
     delay += shieldSpeedPenalty;
 
+    if (crawlVersion >= 29) {
+        if (refData["category"] == "bows" || refData["category"] == "crossbows" || refData["category"] == "slings") {
+            delay += armourSpeedPenalty;
+        }
+    }
+
     weapon["delay"] = delay;
 
 
@@ -1352,5 +1408,34 @@ function calcShieldSpeedPenalty(crawlVersion) {
 
     // this is in auts, so convert to turns
     return avg / 10;
+}
+
+function calcArmourPenalty(crawlVersion)
+{
+    // Ref: player.cc
+
+    var str = parseFloat($('#strength').text());
+    var armourSkill = parseFloat($("#armour").text());
+    var bodyArmour = $("#body_armour").val();
+
+    var armourStats = armourData[bodyArmour];
+    var base_ev_penalty = armourStats["encumbrance"] / 10;
+
+    var penalty =  2 / 5 * base_ev_penalty * base_ev_penalty / (str + 3)
+
+    penalty *= (450 - armourSkill*10) / 450;
+
+    return penalty;
+}
+
+function calcArmourSpeedPenalty(crawlVersion) {
+    if (crawlVersion < 29) {
+        return 0;
+    }
+
+    var penalty = calcArmourPenalty(crawlVersion);
+
+    // convert from auts to turns
+    return penalty / 10;
 }
 
