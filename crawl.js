@@ -164,16 +164,16 @@ const armourData = {
     "crystal plate armour": { ac: 14, encumbrance: 230 },
 
 
-    "steam dragon armour": { ac: 5, encumbrance: 0 },
-    "acid dragon armour": { ac: 6,  encumbrance: 50 },
-    "quicksilver dragon armour": { ac: 9,  encumbrance: 70 },
-    "swamp dragon armour": { ac: 7,  encumbrance: 70 },
-    "fire dragon armour": { ac: 8, encumbrance: 110 },
-    "ice dragon armour": { ac: 9, encumbrance: 110 },
-    "pearl dragon armour": { ac: 10, encumbrance: 110 },
-    "storm dragon armour": { ac: 10, encumbrance: 150 },
-    "shadow dragon armour": { ac: 11, encumbrance: 150 },
-    "gold dragon armour": { ac: 12, encumbrance: 230 },
+    "steam dragon scales": { ac: 5, encumbrance: 0 },
+    "acid dragon scales": { ac: 6,  encumbrance: 50 },
+    "quicksilver dragon scales": { ac: 9,  encumbrance: 70 },
+    "swamp dragon scales": { ac: 7,  encumbrance: 70 },
+    "fire dragon scales": { ac: 8, encumbrance: 110 },
+    "ice dragon scales": { ac: 9, encumbrance: 110 },
+    "pearl dragon scales": { ac: 10, encumbrance: 110 },
+    "storm dragon scales": { ac: 10, encumbrance: 150 },
+    "shadow dragon scales": { ac: 11, encumbrance: 150 },
+    "gold dragon scales": { ac: 12, encumbrance: 230 },
 };
 
 const speciesData = {
