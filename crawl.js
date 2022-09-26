@@ -1146,8 +1146,10 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         damage_per_hit["brand"] = (0.25 * damage_per_hit["base"]) + 2.0;
     }
     else if (weapon["brand"] == "elec") {
-        // 1/3 chance to inflict 7+1d13 -> avg = 14/3
-        damage_per_hit["brand"] = 14.0/3.0;
+        // chance to trigger is 1/4 (1/3 prior to 0.28)
+        trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
+        // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
+        damage_per_hit["brand"] = 14 * trigger_chance;
     }
     else if (weapon["brand"] == "disrupt") {
         // only found on the unrand artefact "Undeadhunter"
