@@ -509,18 +509,27 @@ function parseSkill(line)
             $('#staves').text(val);
         else if (name == "Unarmed Combat")
             $('#unarmed').text(val);
-        else if (name == "Slings")
+        else if (name == "Slings") {
             $('#slings').text(val);
-        else if (name == "Bows")
+        }
+        else if (name == "Bows") {
             $('#bows').text(val);
-        else if (name == "Crossbows")
+        }
+        else if (name == "Crossbows") {
             $('#crossbows').text(val);
+        }
         else if (name == "Throwing")
             $('#throwing').text(val);
         else if (name == "Ranged Weapons") {
+            $('#ranged').text(val);
             $('#slings').text(val);
             $('#bows').text(val);
             $('#crossbows').text(val);
+        }
+
+        if (["Slings", "Bows", "Crossbows"].includes(name)) {
+            let ranged = parseFloat($('#ranged').text());
+            $('#ranged').text(Math.max(val, ranged));
         }
     }
     catch (err) {
@@ -763,6 +772,21 @@ function updateResults()
 {
     var crawlVersion = parseInt($('#version').val());
 
+    if (crawlVersion >= 29) {
+        // slings/bows/crossbows use a single skill "ranged"
+        $('#ranged_container').show();
+        $('#slings_container').hide();
+        $('#bows_container').hide();
+        $('#crossbows_container').hide();
+    }
+    else {
+        // slings/bows/crossbows use separate skills
+        $('#ranged_container').hide();
+        $('#slings_container').show();
+        $('#bows_container').show();
+        $('#crossbows_container').show();
+    }
+
     var shieldSpeedPenalty = calcShieldSpeedPenalty(crawlVersion);
     var armourSpeedPenalty = calcArmourSpeedPenalty(crawlVersion);
 
@@ -943,12 +967,19 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         return;
     }
 
-    var unarmed = (refData["category"] == "unarmed");
+    var skillName = refData["category"];
+    if (crawlVersion >= 29) {
+        // in 0.29, slings/bows/crossbows skills were combined into a single skill "ranged"
+        if (skillName == "slings" || skillName == "bows" || skillName == "crossbows") {
+            skillName = "ranged"
+        }
+    }
+    var unarmed = (skillName == "unarmed");
 
     var str = parseFloat($('#strength').text());
     var dex = parseFloat($('#dexterity').text());
     var fighting = parseFloat($('#fighting').text());
-    var weaponSkill = parseFloat($('#'+refData["category"]).text());
+    var weaponSkill = parseFloat($('#'+skillName).text());
     var enemy_ac = parseInt($('#enemy_ac').text());
     var slaying = parseInt($('#slaying').text());
 
