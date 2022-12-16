@@ -476,12 +476,31 @@ function parseData()
     handleCrossTraining();
 }
 
+const spellSchools = [
+    "Summonings", "Translocations", "Transmutations", "Charms",
+    "Conjurations", "Necromancy", "Hexes", "Poison Magic",
+    "Earth Magic", "Fire Magic", "Ice Magic", "Air Magic"
+];
+
+function skillNameToElementId(skill)
+{
+    if (skill == "Maces & Flails") {
+        return "maces";
+    }
+    else if (skill == "Unarmed Combat") {
+        return "unarmed";
+    }
+    else if (skill == "Ranged Weapons") {
+        return "ranged";
+    }
+    else {
+        let id = skill.toLowerCase().replaceAll(' ', '_');
+        return id;
+    }
+}
+
 function parseSkill(line)
 {
-    const spell_schools = ["Conjurations", "Necromancy", "Hexes", "Poison Magic",
-                          "Summonings", "Translocations", "Transmutations",
-                          "Earth Magic", "Fire Magic", "Ice Magic", "Air Magic"];
-
     var m = line.match(/^\s*.\s+Level\s+(\S+)\s+(.*)$/)
     if (m == null || m.length != 3) {
         return;
@@ -500,59 +519,29 @@ function parseSkill(line)
             val = Math.max(parseFloat(nums[1]), parseFloat(nums[0]));
         }
 
-        if (name == "Fighting")
-            $('#fighting').text(val);
-        else if (name == "Armour")
-            $('#armour').text(val);
-        else if (name == "Shields")
-            $('#shields').text(val);
-        else if (name == "Short Blades")
-            $('#short_blades').text(val);
-        else if (name == "Long Blades")
-            $('#long_blades').text(val);
-        else if (name == "Axes")
-            $('#axes').text(val);
-        else if (name == "Maces & Flails")
-            $('#maces').text(val);
-        else if (name == "Polearms")
-            $('#polearms').text(val);
-        else if (name == "Staves")
-            $('#staves').text(val);
-        else if (name == "Unarmed Combat")
-            $('#unarmed').text(val);
-        else if (name == "Slings") {
-            $('#slings').text(val);
-        }
-        else if (name == "Bows") {
-            $('#bows').text(val);
-        }
-        else if (name == "Crossbows") {
-            $('#crossbows').text(val);
-        }
-        else if (name == "Throwing")
-            $('#throwing').text(val);
-        else if (name == "Ranged Weapons") {
-            $('#ranged').text(val);
-            $('#slings').text(val);
-            $('#bows').text(val);
-            $('#crossbows').text(val);
-        }
-        else if (name == "Spellcasting") {
-            $('#spellcasting').text(val);
-        }
-        else if (name == "Spellcasting") {
-            $('#spellcasting').text(val);
-        }
-        else if (spell_schools.includes(name)) {
+        if (spellSchools.includes(name)) {
             let schools = parseFloat($('#avg_spell_schools').text());
             if (val > schools) {
                 $('#avg_spell_schools').text(val);
             }
+            return;
         }
 
+        let id = skillNameToElementId(name);
+        let element = $("#"+id);
+        if (element.length) {
+            element.text(val);
+        }
+
+        // cross-populate ranged with slings/bows/crossbows.
         if (["Slings", "Bows", "Crossbows"].includes(name)) {
             let ranged = parseFloat($('#ranged').text());
             $('#ranged').text(Math.max(val, ranged));
+        }
+        else if (name == "Ranged Weapons") {
+            $('#slings').text(val);
+            $('#bows').text(val);
+            $('#crossbows').text(val);
         }
     }
     catch (err) {
