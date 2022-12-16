@@ -299,6 +299,7 @@ function reset()
 
     $('#strength').text("10");
     $('#dexterity').text("10");
+    $('#intelligence').text("10");
     $('#enemy_ac').text("10");
 
     $('#version').val(MAX_VERSION);
@@ -420,6 +421,12 @@ function parseData()
         $('#dexterity').text(parseInt(dex[1]));
     }
 
+    // get int
+    var int = /Int:\s*(\d+)/.exec(header);
+    if (int && int.length >= 2) {
+        $('#intelligence').text(parseInt(int[1]));
+    }
+
     // replace unarmed with current claws rank
     var claws = header.match(/claws [1-3]/);
     if (claws != null) {
@@ -471,6 +478,10 @@ function parseData()
 
 function parseSkill(line)
 {
+    const spell_schools = ["Conjurations", "Necromancy", "Hexes", "Poison Magic",
+                          "Summonings", "Translocations", "Transmutations",
+                          "Earth Magic", "Fire Magic", "Ice Magic", "Air Magic"];
+
     var m = line.match(/^\s*.\s+Level\s+(\S+)\s+(.*)$/)
     if (m == null || m.length != 3) {
         return;
@@ -525,6 +536,18 @@ function parseSkill(line)
             $('#slings').text(val);
             $('#bows').text(val);
             $('#crossbows').text(val);
+        }
+        else if (name == "Spellcasting") {
+            $('#spellcasting').text(val);
+        }
+        else if (name == "Spellcasting") {
+            $('#spellcasting').text(val);
+        }
+        else if (spell_schools.includes(name)) {
+            let schools = parseFloat($('#avg_spell_schools').text());
+            if (val > schools) {
+                $('#avg_spell_schools').text(val);
+            }
         }
 
         if (["Slings", "Bows", "Crossbows"].includes(name)) {
@@ -769,6 +792,14 @@ function parseBrand(s) {
 }
 
 function updateResults()
+{
+    if ($("#weapons").is(":visible"))
+        updateCombatResults();
+    else
+        updateSpellResults();
+}
+
+function updateCombatResults()
 {
     var crawlVersion = parseInt($('#version').val());
 
@@ -1472,3 +1503,112 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
+function updateSpellResults()
+{
+    $('#spells > tbody:last-child').empty();
+
+    for (let level = 1; level <= 9; level++) {
+
+        let fail_rate = calculateSpellFailRate(level);
+
+        var row = "<tr>";
+        row += "<td class='fit'>" + level.toString() + "</td>";
+
+        row += "<td class='fit'>";
+        row += fail_rate.toString();
+        row += "%</td>";
+
+        row += "</tr>";
+
+        $('#spells > tbody:last-child').append(row);
+    }
+}
+
+function getSpellDifficulty(level)
+{
+    const difficulty_by_level = [0, 3, 15, 35, 70, 100, 150, 200, 260, 340];
+    return difficulty_by_level[level];
+}
+
+function getRawSpellFailRate(level)
+{
+    let intelligence = parseFloat($('#intelligence').text());
+    let spellcasting = parseFloat($('#spellcasting').text());
+    let schools = parseFloat($('#avg_spell_schools').text());
+
+    // calculate penalties
+    let crawlVersion = parseInt($('#version').val());
+    let armourPenalty = 19 * calcArmourPenalty(crawlVersion);
+    let shieldPenalty = 19 * calcShieldPenalty(crawlVersion);
+    let penalties = Math.max(0, Math.max(0, armourPenalty) + shieldPenalty);
+
+    let fail = 60 + getSpellDifficulty(level);
+    fail -= 6 * (2*schools + 0.5*spellcasting);
+    fail -= 2 * intelligence;
+    fail += penalties;
+
+    // limit to 210
+    fail = Math.min(210, fail);
+
+    // weird polynomial smoothing
+    fail = Math.max(0, (((fail + 426) * fail + 82670) * fail + 7245398) / 262144);
+
+    // TODO: apply mutations, Vehumet, etc.
+
+    // clamp to range 0-100%
+    fail =  Math.max(0, Math.min(100, fail));
+
+    return fail;
+}
+
+function calculateSpellFailRate(level)
+{
+    let fail = getRawSpellFailRate(level);
+
+    if (fail <= 0)
+        return 0;
+    else if (fail >= 100)
+        return (fail + 100)/2;
+    else
+        return Math.max(1, Math.floor(100 * _get_true_fail_rate(fail)));
+}
+
+function _get_true_fail_rate(raw_fail)
+{
+    // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
+    // to be (strictly) less than 3*raw_fail. Fun with tetrahedral numbers!
+
+    // How many possible outcomes, considering all three dice?
+    const outcomes = 101 * 101 * 100;
+    const target = Math.floor(raw_fail) * 3;
+
+    if (target <= 100)
+    {
+        // The failures are exactly the triples of nonnegative integers
+        // that sum to < target.
+        return (_tetrahedral_number(target)) / outcomes;
+    }
+    if (target <= 200)
+    {
+        // Some of the triples that sum to < target would have numbers
+        // greater than 100, or a last number greater than 99, so aren't
+        // possible outcomes. Apply the principle of inclusion-exclusion
+        // by subtracting out these cases. The set of triples with first
+        // number > 100 is isomorphic to the set of triples that sum to
+        // 101 less; likewise for the second and third numbers (100 less
+        // in the last case). Two or more out-of-range numbers would have
+        // resulted in a sum of at least 201, so there is no overlap
+        // among the three cases we are subtracting.
+        return (_tetrahedral_number(target)
+                      - 2 * _tetrahedral_number(target - 101)
+                      - _tetrahedral_number(target - 100)) / outcomes;
+    }
+    // The random2avg distribution is symmetric, so the last interval is
+    // essentially the same as the first interval.
+    return (outcomes - _tetrahedral_number(300 - target)) / outcomes;
+}
+
+function _tetrahedral_number(n)
+{
+    return n * (n+1) * (n+2) / 6;
+}

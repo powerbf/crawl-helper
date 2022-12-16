@@ -17,7 +17,10 @@
 </head>
 
 <body>
-    <h5>DCSS Damage Calculator</h5>
+    <div class="tab">
+        <button class="tablinks" id="combat_tab">Combat</button>
+        <button class="tablinks" id="spells_tab">Spells</button>
+    </div>
     <div id="inputs" class="container">
         <div class="row">
             <div class="col col-sm-12 col-md-5 col-lg-6">
@@ -56,7 +59,7 @@
                         </td>
                     </tr>
                     <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                        title="Body armour slows launcher attacks.">
+                        title="The heavier your armour, the slower your blades and launcher attacks, and the higher your spell failure rates. Mitigated by training armour skill.">
                         <td>
                             <label class="text-nowrap">Armour:</label>
                         </td>
@@ -67,7 +70,7 @@
                         </td>
                     </tr>
                     <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                        title="The larger the shield, the slower your attacks. This is mitigated by training shields skill.">
+                        title="The heavier your shield, the more it slows your attacks and increases your spell failure chance. This is mitigated by training shields skill.">
                         <td>
                             <label class="text-nowrap">Shield:</label>
                         </td>
@@ -94,7 +97,7 @@
                             <i class="bi bi-caret-right-fill"></i>
                         <td>
                     </tr>
-                    <tr>
+                    <tr id="dex_container">
                         <td>
                             Dexterity:
                         </td>
@@ -104,11 +107,21 @@
                             <i class="bi bi-caret-right-fill"></i>
                         <td>
                     </tr>
+                    <tr id = "int_container">
+                        <td>
+                            Intelligence:
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="intelligence" min="0">10</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        <td>
+                    </tr>
                     <tr>
                         <td>&nbsp;</td>
                         <td></td>
                     </tr>
-                    <tr>
+                    <tr id="fighting_container">
                         <td>
                             Fighting:
                         </td>
@@ -144,7 +157,7 @@
                         <td>&nbsp;</td>
                         <td></td>
                     </tr>
-                    <tr>
+                    <tr id="slaying_container">
                         <td>
                             <label class="text-nowrap">Slaying:</label>
                         </td>
@@ -154,7 +167,7 @@
                             <i class="bi bi-caret-right-fill"></i>
                         </td>
                     </tr>
-                    <tr>
+                    <tr id="enemy_ac_container">
                         <td>
                             <label class="text-nowrap">Enemy AC:</label>
                         </td>
@@ -166,7 +179,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col col-md-3 text-nowrap unselectable" id="skills2">
+            <div class="col col-md-3 text-nowrap unselectable" id="combat_skills">
                 <table data-bs-toggle="tooltip" data-bs-placement="left"
                        title="Training the relevant weapon skill increases damage and attack speed.">
                     <tr>
@@ -295,6 +308,31 @@
                     </tr>
                 </table>
             </div>
+            <div class="col col-md-3 text-nowrap unselectable" id="spell_skills">
+                <table>
+                    <tr>
+                        <td>
+                            <label>Spellcasting:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="spellcasting" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="Average of relevant spell school skills.">
+                        <td>
+                            <label>Avg. Spell Schools:</label>
+                        </td>
+                        <td>
+                            <i class="bi bi-caret-left-fill"></i>
+                            <span class="number-val" id="avg_spell_schools" min="0" max="27">0</span>
+                            <i class="bi bi-caret-right-fill"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="row" id="results">
             <table class="table table-dark table-bordered table-sm" id="weapons">
@@ -317,7 +355,17 @@
               <tbody>
               </tbody>
             </table>
-        </div>
+            <table class="table table-dark table-bordered table-sm" id="spells">
+                <thead>
+                  <tr>
+                    <th scope="col">Spell Level</th>
+                    <th scope="col">Failure Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+          </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
