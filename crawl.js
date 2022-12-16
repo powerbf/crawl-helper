@@ -177,6 +177,18 @@ const armourData = {
     "gold dragon scales": { ac: 12, encumbrance: 230 },
 };
 
+const artefactArmourData = {
+    "lear's hauberk" : { base_type: "chain mail" },
+    "maxwell's patent armour" : { base_type: "plate armour" },
+    "faerie dragon scales" : { base_type: "acid dragon scales" },
+    "skin of Zhor" : { base_type: "animal skin" },
+    "salamander hide armour" : { base_type: "leather armour" },
+    "scales of the Dragon King" : { base_type: "gold dragon scales" },
+    "Kryia's mail coat" : { base_type: "scale mail" },
+    "armour of Talos" : { base_type: "plate armour" },
+    "Cigotuvi's embrace" : { base_type: "leather armour" },
+};
+
 const speciesData = {
     "barachi": { size: "medium" },
     "deep elf": { size: "medium" },
@@ -348,6 +360,7 @@ function reset()
 
     $('#version').val(MAX_VERSION);
     $('#species').val("human");
+    $('#body_armour').val("none");
     $('#shield').val("none");    
 }
 
@@ -439,6 +452,14 @@ function parseData()
     for (let arm in armourData) {
         if (header.includes(arm)) {
             $('#body_armour').val(arm);
+        }
+    }
+    if ($('#body_armour').val() == "none") {
+        for (let arm in artefactArmourData) {
+            if (header.match(new RegExp(arm,"i"))) {
+                $('#body_armour').val(artefactArmourData[arm].base_type);
+                break;
+            }
         }
     }
 
