@@ -164,6 +164,7 @@ const armourData = {
     "crystal plate armour": { ac: 14, encumbrance: 230 },
 
 
+    "troll leather armour": { ac: 4, encumbrance: 40 },
     "steam dragon scales": { ac: 5, encumbrance: 0 },
     "acid dragon scales": { ac: 6,  encumbrance: 50 },
     "quicksilver dragon scales": { ac: 9,  encumbrance: 70 },
