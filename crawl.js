@@ -284,8 +284,26 @@ function populateBodyArmourSelector()
     var selector = $('#body_armour');
     selector.empty(); // remove old options
 
-    for (var arm in armourData) {
-        var option = $("<option></option>");
+    let armours = Object.keys(armourData).sort(function(a, b) {
+        let x = armourData[a];
+        let y = armourData[b];
+        if (x.encumbrance < y.encumbrance) {
+            return -1;
+        }
+        else if (x.encumbrance > y.encumbrance) {
+            return 1;
+        }
+        else if (x.ac < y.ac) {
+            return -1;
+        }
+        else if (x.ac > y.ac) {
+            return 1;
+        }
+        return 0;
+      });
+
+    for (let arm of armours) {
+        let option = $("<option></option>");
         option.attr("value", arm);
         option.text(capitalizeWords(arm));
         selector.append(option);
