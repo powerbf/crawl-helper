@@ -43,6 +43,11 @@ option.obsolete {
     color: red;
 }
 
+.row {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;

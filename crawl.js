@@ -291,6 +291,31 @@ function populateBodyArmourSelector()
     }
 }
 
+function populateSpellSchoolSelectors()
+{
+    let spellSchools = [
+        "Conjurations", "Hexes", "Summonings",
+        "Necromancy", "Translocations", "Transmutations",
+        "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
+    ];
+    
+    for (let id of ["school1", "school2", "school3"]) {
+        let selector = $('#'+id);
+        selector.empty(); // remove old options
+
+        for (let school of spellSchools) {
+            var option = $("<option></option>");
+            option.attr("value", skillNameToElementId(school));
+            option.text(school);
+            selector.append(option);
+            }
+
+        if (id == "school1") {
+            spellSchools.unshift("None");
+        }
+    }
+}
+
 function reset()
 {
     weapons = [];
@@ -476,12 +501,6 @@ function parseData()
     handleCrossTraining();
 }
 
-const spellSchools = [
-    "Summonings", "Translocations", "Transmutations", "Charms",
-    "Conjurations", "Necromancy", "Hexes", "Poison Magic",
-    "Earth Magic", "Fire Magic", "Ice Magic", "Air Magic"
-];
-
 function skillNameToElementId(skill)
 {
     if (skill == "Maces & Flails") {
@@ -517,14 +536,6 @@ function parseSkill(line)
         }
         else {
             val = Math.max(parseFloat(nums[1]), parseFloat(nums[0]));
-        }
-
-        if (spellSchools.includes(name)) {
-            let schools = parseFloat($('#avg_spell_schools').text());
-            if (val > schools) {
-                $('#avg_spell_schools').text(val);
-            }
-            return;
         }
 
         let id = skillNameToElementId(name);
@@ -1519,11 +1530,25 @@ function getSpellDifficulty(level)
     return difficulty_by_level[level];
 }
 
+function getAverageSpellSchoolSkills(level)
+{
+    let sum = 0;
+    let count = 0;
+    for (let selectorId of ["school1", "school2", "school3"]) {
+        let school = $('#'+selectorId).val();
+        if (school != "none") {
+            sum += parseFloat($('#'+school).text());
+            count++;
+        }
+    }
+    return count == 0 ? 0 : (sum / count);
+}
+
 function getRawSpellFailRate(level)
 {
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
-    let schools = parseFloat($('#avg_spell_schools').text());
+    let schools = getAverageSpellSchoolSkills();
 
     // calculate penalties
     let crawlVersion = parseInt($('#version').val());

@@ -72,6 +72,7 @@ function showCombatTab()
     $("#spells_tab").removeClass("active");
     $("#int_container").hide();
     $("#spell_skills").hide();
+    $("#spell_schools").hide();
     $("#spells").hide();
 
     // show combat-related stuff
@@ -101,6 +102,7 @@ function showSpellsTab()
     $("#spells_tab").addClass("active");
     $("#int_container").show()
     $("#spell_skills").show();
+    $("#spell_schools").show();
     $("#spells").show();
 
     updateResults();
@@ -109,6 +111,7 @@ function showSpellsTab()
 populateVersionSelector();
 populateSpeciesSelector();
 populateBodyArmourSelector();
+populateSpellSchoolSelectors();
 
 parseData();
 showCombatTab();
