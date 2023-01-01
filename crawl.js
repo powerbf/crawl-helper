@@ -8,7 +8,7 @@ const weaponData = {
 
     "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
     "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
-    "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
+    "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 10, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
     "falchion": { category: "long_blades", damage: 8, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
@@ -59,7 +59,7 @@ const weaponData = {
     "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 15, min: 6 }, img: "ranged/shortbow" },
     "longbow": { category: "bows", damage: 12, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
 
-    "hand crossbow": { category: "crossbows", damage: 17, hit: +3, delay: { base: 18, min: 10 }, img: "ranged/hand_crossbow" },
+    "hand crossbow": { category: "crossbows", damage: 16, hit: +3, delay: { base: 19, min: 10 }, img: "ranged/hand_crossbow" },
     "arbalest": { category: "crossbows", damage: 17, hit: -2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
     "triple crossbow": { category: "crossbows", damage: 23, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
 
@@ -72,6 +72,10 @@ const weaponData = {
 
 // old weapon data - indexed by *last* version they were valid for
 const oldWeaponData = {
+    29: {
+        "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
+        "hand crossbow": { category: "crossbows", damage: 17, hit: +3, delay: { base: 18, min: 10 }, img: "ranged/hand_crossbow" },
+    },
     28: {
         "quick blade": { category: "short_blades", damage: 5, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
         "short sword": { category: "short_blades", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "short_sword" },
@@ -111,7 +115,7 @@ const oldWeaponData = {
 // (only for artefacts that don't have the base type in the name and/or modify the base type)
 // values for damage/hit/delay are modifiers relative to the base type (i.e. not absolute values)
 const artefactData = {
-    29: {
+    30: {
         "singing sword" : { base_type: "double sword" },
         "wrath of trog" : { base_type: "battleaxe" },
         "sword of power" : { base_type: "great sword" },
@@ -124,7 +128,7 @@ const artefactData = {
         "zealot's sword": { base_type: "eudemon blade" },
         "sword of the doom knight" : { base_type: "great sword" },
         "arga" : { base_type: "broad axe" },
-        "sniper" : { base_type: "triple crossbow", new_type: "heavy crossbow", base_delay: +4 },
+        "sniper" : { base_type: "triple crossbow", new_type: "heavy crossbow", base_delay: +2 },
         "wyrmbane" : { base_type: "spear", new_type: "lance", damage: +2 },
         "spriggan's knife" : { base_type: "dagger" },
         "plutonium sword" : { base_type: "triple sword" },
@@ -135,7 +139,7 @@ const artefactData = {
         "autumn katana": { base_type: "long sword", new_type: "katana", damage: +4, hit: +2, base_delay: -2 },
         "devastator": { base_type: "club", new_type: "shillelagh", damage: +3 },
         "axe of woe": { base_type: "executioner's axe" },
-        "dark maul": { base_type: "great mace", new_type: "maul", damage: +35, hit: +2, base_delay: +13 },
+        "dark maul": { base_type: "great mace", new_type: "maul", damage: +20, hit: +2, base_delay: +7 },
         "arc blade": { base_type: "rapier" },
         "majin-bo": { base_type: "quarterstaff" },
         "frostbite": { base_type: "executioner's axe" },
@@ -143,6 +147,10 @@ const artefactData = {
         "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7 },
         "throatcutter": { base_type: "long sword" },
         "staff of the meek": { base_type: "quarterstaff" },
+    },
+    29: {
+        "sniper" : { base_type: "triple crossbow", new_type: "heavy crossbow", base_delay: +4 },
+        "dark maul": { base_type: "great mace", new_type: "maul", damage: +35, hit: +2, base_delay: +13 },
     },
     28: {
         "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5 },
@@ -230,7 +238,7 @@ const speciesData = {
 };
 
 const MIN_VERSION = 26;
-const MAX_VERSION = 29;
+const MAX_VERSION = 30;
 
 // globals - yuck
 var weapons = [];
@@ -825,8 +833,12 @@ function parseBrand(s) {
         return "freeze";
 
     if (s.match('crushing|chopping|piercing|slashing|slicing|crush|chop|pierce|slash|slice|velocity|vorpal')) {
-        return "vorpal"
-    } 
+        return "vorpal";
+    }
+
+    if (s.includes("heavy")) {
+        return "heavy";
+    }
 
     return "";
 }
@@ -1073,6 +1085,9 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         }
     }
     else {
+        if (crawlVersion >= 30 && weapon["brand"] == "heavy") {
+            base_damage *= 1.8; // +80% damage
+        }
         if (crawlVersion <= 28 && refData["category"] == "slings") {
             // add missile base damage
             if (weapon["description"].match(/bullets/))
@@ -1082,7 +1097,6 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         }
         weightedDamage[base_damage] = 1;
     }
-
 
     // stat modifier
 
@@ -1300,6 +1314,9 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     if (weapon["brand"] == "speed") {
         delay = 2.0/3.0 * delay;
     }
+    else if (crawlVersion >= 30 && weapon["brand"] == "heavy") {
+        delay *= 1.5;
+    }
     else if (weapon["is_pair"]) {
         // gets two attacks
         delay /= 2;
@@ -1312,6 +1329,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
             delay += armourSpeedPenalty;
         }
     }
+
 
     weapon["delay"] = delay;
 
