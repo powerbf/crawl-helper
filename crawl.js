@@ -1315,7 +1315,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         delay = 2.0/3.0 * delay;
     }
     else if (crawlVersion >= 30 && weapon["brand"] == "heavy") {
-        delay *= 1.5;
+        delay = calcHeavyDelay(delay);
     }
     else if (weapon["is_pair"]) {
         // gets two attacks
@@ -1339,6 +1339,27 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     damage_per_turn["brand"] = damage_per_hit["brand"] / delay;
     damage_per_turn["total"] = damage_per_hit["total"] / delay;
     weapon["damage_per_turn"] = damage_per_turn;
+}
+
+// Calculate average delay for heavy brand
+// This is kind of funky due to the way operator*() for random_var works
+function calcHeavyDelay(origAvgDelay)
+{
+    // convert to auts
+    origAvgDelay *= 10;
+
+    let min = Math.floor(origAvgDelay);
+    let max = Math.ceil(origAvgDelay);
+    let minChance = origAvgDelay - min;
+    let maxChance = 1.0 - minChance;
+
+    min = Math.floor(min * 1.5);
+    max = Math.floor(max * 1.5);
+
+    let newAvgDelay = min * minChance + max * maxChance;
+
+    // convert back from auts to turns
+    return newAvgDelay / 10;
 }
 
 // calculate damage from spectral weapon
