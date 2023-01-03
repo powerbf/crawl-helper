@@ -1350,8 +1350,8 @@ function calcHeavyDelay(origAvgDelay)
 
     let min = Math.floor(origAvgDelay);
     let max = Math.ceil(origAvgDelay);
-    let minChance = origAvgDelay - min;
-    let maxChance = 1.0 - minChance;
+    let maxChance = origAvgDelay - min;
+    let minChance = 1.0 - maxChance;
 
     min = Math.floor(min * 1.5);
     max = Math.floor(max * 1.5);
