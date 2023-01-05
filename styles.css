@@ -77,3 +77,12 @@ option.obsolete {
 .tab button.active {
     background-color: lightblue;
 }
+
+.tab h3 {
+    padding-left: 35%;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    color: slateblue;
+}
+
