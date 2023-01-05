@@ -21,480 +21,489 @@
         <button class="tablinks" id="combat_tab">Combat</button>
         <button class="tablinks" id="spells_tab">Spells</button>
     </div>
-    <div id="inputs" class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col col-sm-12 col-md-5 col-lg-6">
+            <div class="col col-xs-12 col-lg-8 col-xl-7">
                 <textarea id="data" class="form-control" rows="11" cols="80" placeholder="Paste text from morgue or character file"></textarea>
+
+                <table class="table table-dark table-bordered table-sm" id="weapons">
+                  <thead>
+                    <tr>
+                      <th scope="col" rowspan="2">Weapon</th>
+                      <th scope="col" rowspan="2">Avg Delay</th>
+                      <th scope="colgroup" colspan="3">Avg Damage Per Hit</th>
+                      <th scope="colgroup" colspan="3">Avg Damage Per Turn (at 100% hit rate)</th>
+                    </tr>
+                    <tr>
+                      <th scope="col">Base</th>
+                      <th scope="col">Brand</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Base</th>
+                      <th scope="col">Brand</th>
+                      <th scope="col">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+                <table id="spell_schools" class="container-fluid">
+                    <tr>
+                        <td>
+                            <label class="text-nowrap">School 1:</label>
+                        </td>
+                        <td>
+                            <!-- full  list will be populated by javascript -->
+                            <select id="school1" class="form-select form-select-sm">
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                        <td>
+                            <label class="text-nowrap">School 2:</label>
+                        </td>
+                        <td>
+                            <!-- full  list will be populated by javascript -->
+                            <select id="school2" class="form-select form-select-sm">
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                        <td>
+                            <label class="text-nowrap">School 3:</label>
+                        </td>
+                        <td>
+                            <!-- full  list will be populated by javascript -->
+                            <select id="school3" class="form-select form-select-sm">
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-dark table-bordered table-sm" id="spells">
+                    <thead>
+                      <tr>
+                        <th scope="col">Spell Level</th>
+                        <th scope="col">Failure Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Force next columns to break to new line below md -->
-            <div class="w-100 d-block d-md-none"></div>
+            <!-- Force next columns to break to new line below lg -->
+            <div class="w-100 d-block d-lg-none"></div>
 
-            <div class="col col-md-4 col-lg-3 text-nowrap unselectable" id="skills1">
-                <table>
-                    <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
-                        title="Weapon stats and the way damage is calculated vary from version to version.">
-                        <td>
-                            <label class="text-nowrap">Version:</label>
-                        </td>
-                        <td>
-                            <!-- full version list will be populated by javascript -->
-                            <select id="version" class="form-select form-select-sm">
-                            </select>
-                        </td>
-                    </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
-                        title="Large species and formicids need less shields skill than normal to offset shield penalties. Small species need more. Little species need a lot more.">
-                        <td>
-                            <label class="text-nowrap">Species:</label>
-                        </td>
-                        <td>
-                            <!-- full species list will be populated by javascript -->
-                            <select id="species" class="form-select form-select-sm">
-                              <option value="human">Human</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                        title="The heavier your armour, the slower your blades and launcher attacks, and the higher your spell failure rates. Mitigated by training armour skill.">
-                        <td>
-                            <label class="text-nowrap">Armour:</label>
-                        </td>
-                        <td>
-                            <select id="body_armour" class="form-select form-select-sm">
-                              <option value="none">None</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                        title="The heavier your shield, the more it slows your attacks and increases your spell failure chance. This is mitigated by training shields skill.">
-                        <td>
-                            <label class="text-nowrap">Shield:</label>
-                        </td>
-                        <td>
-                            <select id="shield" class="form-select form-select-sm">
-                              <option value="none">None</option>
-                              <option value="buckler">Buckler</option>
-                              <option value="kite_shield">Kite Shield</option>
-                              <option value="tower_shield">Tower Shield</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Strength:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="strength" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr id="dex_container">
-                        <td>
-                            Dexterity:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="dexterity" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr id = "int_container">
-                        <td>
-                            Intelligence:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="intelligence" min="0">10</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        <td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                    </tr>
-                    <tr id="fighting_container">
-                        <td>
-                            Fighting:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="fighting" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
-                        title="">
-                        <td>
-                            Armour:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="armour" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr data-bs-toggle="tooltip" data-bs-placement="left"
-                        title="Shields skill reduces the attack speed penalty (and EV penalty) from wearing a shield.">
-                        <td>
-                            Shields:
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="shields" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                    </tr>
-                    <tr id="slaying_container">
-                        <td>
-                            <label class="text-nowrap">Slaying:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="slaying">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr id="enemy_ac_container">
-                        <td>
-                            <label class="text-nowrap">Enemy AC:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="enemy_ac" min="0" max="20">1</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                </table>
+            <div class="col col-xs-12 col-lg-4 col-xl-5 text-nowrap unselectable" id="skills">
+                <div class="row">
+
+                    <div class="col col-xs-6 col-lg-12 col-xl-6 text-nowrap unselectable" id="skills1">
+                        <table>
+                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
+                                title="Weapon stats and the way damage is calculated vary from version to version.">
+                                <td>
+                                    <label class="text-nowrap">Version:</label>
+                                </td>
+                                <td>
+                                    <!-- full version list will be populated by javascript -->
+                                    <select id="version" class="form-select form-select-sm">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
+                                title="Large species and formicids need less shields skill than normal to offset shield penalties. Small species need more. Little species need a lot more.">
+                                <td>
+                                    <label class="text-nowrap">Species:</label>
+                                </td>
+                                <td>
+                                    <!-- full species list will be populated by javascript -->
+                                    <select id="species" class="form-select form-select-sm">
+                                      <option value="human">Human</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
+                                title="The heavier your armour, the slower your blades and launcher attacks, and the higher your spell failure rates. Mitigated by training armour skill.">
+                                <td>
+                                    <label class="text-nowrap">Armour:</label>
+                                </td>
+                                <td>
+                                    <select id="body_armour" class="form-select form-select-sm">
+                                      <option value="none">None</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
+                                title="The heavier your shield, the more it slows your attacks and increases your spell failure chance. This is mitigated by training shields skill.">
+                                <td>
+                                    <label class="text-nowrap">Shield:</label>
+                                </td>
+                                <td>
+                                    <select id="shield" class="form-select form-select-sm">
+                                      <option value="none">None</option>
+                                      <option value="buckler">Buckler</option>
+                                      <option value="kite_shield">Kite Shield</option>
+                                      <option value="tower_shield">Tower Shield</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Strength:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="strength" min="0">10</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                <td>
+                            </tr>
+                            <tr id="dex_container">
+                                <td>
+                                    Dexterity:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="dexterity" min="0">10</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                <td>
+                            </tr>
+                            <tr id = "int_container">
+                                <td>
+                                    Intelligence:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="intelligence" min="0">10</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                <td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                            <tr id="fighting_container">
+                                <td>
+                                    Fighting:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="fighting" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="left"
+                                title="">
+                                <td>
+                                    Armour:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="armour" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="left"
+                                title="Shields skill reduces the attack speed penalty (and EV penalty) from wearing a shield.">
+                                <td>
+                                    Shields:
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="shields" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                            <tr id="slaying_container">
+                                <td>
+                                    <label class="text-nowrap">Slaying:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="slaying">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr id="enemy_ac_container">
+                                <td>
+                                    <label class="text-nowrap">Enemy AC:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="enemy_ac" min="0" max="20">1</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col col-xs-6 col-lg-12 col-xl-6 text-nowrap unselectable" id="skills2">
+                        <table data-bs-toggle="tooltip" data-bs-placement="left"
+                               title="Training the relevant weapon skill increases damage and attack speed.">
+                            <tr>
+                                <td>
+                                    <label>Short Blades:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="short_blades" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Long Blades:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="long_blades" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Axes:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="axes" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Maces & Flails:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="maces" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Polearms:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="polearms" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Staves:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="staves" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Unarmed:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="unarmed" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                            <tr id ="ranged_container">
+                                <td>
+                                    <label>Ranged:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="ranged" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr id ="slings_container">
+                                <td>
+                                    <label>Slings:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="slings" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr id ="bows_container">
+                                <td>
+                                    <label>Bows:</label>
+                                </td>
+                                <td class="col">
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="bows" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr id ="crossbows_container">
+                                <td>
+                                    <label>Crossbows:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="crossbows" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Throwing:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="throwing" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Spellcasting:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="spellcasting" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Conjurations:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="conjurations" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Hexes:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="hexes" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Summonings:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="summonings" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Necromancy:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="necromancy" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Translocations:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="translocations" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Transmutations:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="transmutations" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Fire Magic:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="fire_magic" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Ice Magic:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="ice_magic" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Air Magic:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="air_magic" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Earth Magic:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="earth_magic" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Poison Magic:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="poison_magic" min="0" max="27">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
             </div>
-            <div class="col col-md-3 text-nowrap unselectable" id="combat_skills">
-                <table data-bs-toggle="tooltip" data-bs-placement="left"
-                       title="Training the relevant weapon skill increases damage and attack speed.">
-                    <tr>
-                        <td>
-                            <label>Short Blades:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="short_blades" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Long Blades:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="long_blades" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Axes:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="axes" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Maces & Flails:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="maces" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Polearms:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="polearms" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Staves:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="staves" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Unarmed:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="unarmed" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td></td>
-                    </tr>
-                    <tr id ="ranged_container">
-                        <td>
-                            <label>Ranged:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="ranged" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr id ="slings_container">
-                        <td>
-                            <label>Slings:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="slings" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr id ="bows_container">
-                        <td>
-                            <label>Bows:</label>
-                        </td>
-                        <td class="col">
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="bows" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr id ="crossbows_container">
-                        <td>
-                            <label>Crossbows:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="crossbows" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Throwing:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="throwing" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col col-md-3 text-nowrap unselectable" id="spell_skills">
-                <table>
-                    <tr>
-                        <td>
-                            <label>Spellcasting:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="spellcasting" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Conjurations:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="conjurations" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Hexes:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="hexes" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Summonings:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="summonings" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Necromancy:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="necromancy" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Translocations:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="translocations" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Transmutations:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="transmutations" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Fire Magic:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="fire_magic" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Ice Magic:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="ice_magic" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Air Magic:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="air_magic" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Earth Magic:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="earth_magic" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Poison Magic:</label>
-                        </td>
-                        <td>
-                            <i class="bi bi-caret-left-fill"></i>
-                            <span class="number-val" id="poison_magic" min="0" max="27">0</span>
-                            <i class="bi bi-caret-right-fill"></i>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+
         </div>
-        <div class="row unselectable" id="spell_schools">
-            <table>
-                <tr>
-                    <td>
-                        <label class="text-nowrap">School 1:</label>
-                    </td>
-                    <td>
-                        <!-- full  list will be populated by javascript -->
-                        <select id="school1" class="form-select form-select-sm">
-                            <option value="none">None</option>
-                        </select>
-                    </td>
-                    <td>
-                        <label class="text-nowrap">School 2:</label>
-                    </td>
-                    <td>
-                        <!-- full  list will be populated by javascript -->
-                        <select id="school2" class="form-select form-select-sm">
-                            <option value="none">None</option>
-                        </select>
-                    </td>
-                    <td>
-                        <label class="text-nowrap">School 3:</label>
-                    </td>
-                    <td>
-                        <!-- full  list will be populated by javascript -->
-                        <select id="school3" class="form-select form-select-sm">
-                            <option value="none">None</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="row" id="results">
-            <table class="table table-dark table-bordered table-sm" id="weapons">
-              <thead>
-                <tr>
-                  <th scope="col" rowspan="2">Weapon</th>
-                  <th scope="col" rowspan="2">Avg Delay</th>
-                  <th scope="colgroup" colspan="3">Avg Damage Per Hit</th>
-                  <th scope="colgroup" colspan="3">Avg Damage Per Turn (at 100% hit rate)</th>
-                </tr>
-                <tr>
-                  <th scope="col">Base</th>
-                  <th scope="col">Brand</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Base</th>
-                  <th scope="col">Brand</th>
-                  <th scope="col">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-            <table class="table table-dark table-bordered table-sm" id="spells">
-                <thead>
-                  <tr>
-                    <th scope="col">Spell Level</th>
-                    <th scope="col">Failure Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-          </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

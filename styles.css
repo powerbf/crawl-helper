@@ -24,8 +24,10 @@
     color: violet;
 }
 
-#results {
-    margin-top: 5px;
+#weapons, 
+#spell_schools,
+#spells {
+    margin-top: 10px;
 }
 
 tr {

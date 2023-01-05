@@ -70,18 +70,11 @@ function showCombatTab()
 {
     // hide spell-related stuff
     $("#spells_tab").removeClass("active");
-    $("#int_container").hide();
-    $("#spell_skills").hide();
     $("#spell_schools").hide();
     $("#spells").hide();
 
     // show combat-related stuff
     $("#combat_tab").addClass("active");
-    $("#dex_container").show();
-    $("#fighting_container").show()
-    $("#slaying_container").show()
-    $("#enemy_ac_container").show()
-    $("#combat_skills").show();
     $("#weapons").show();
 
     updateResults();
@@ -91,17 +84,10 @@ function showSpellsTab()
 {
     // hide combat-related stuff
     $("#combat_tab").removeClass("active");
-    $("#dex_container").hide()
-    $("#fighting_container").hide()
-    $("#slaying_container").hide()
-    $("#enemy_ac_container").hide()
-    $("#combat_skills").hide();
     $("#weapons").hide();
 
     // show spell-related stuff
     $("#spells_tab").addClass("active");
-    $("#int_container").show()
-    $("#spell_skills").show();
     $("#spell_schools").show();
     $("#spells").show();
 
