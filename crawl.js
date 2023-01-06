@@ -419,8 +419,8 @@ function extractDataSections(data)
     sectionPos["mutations"] = data.indexOf("Innate Abilities");
     sectionPos["messages"] = data.indexOf("Message History");
     sectionPos["kills"] = data.indexOf("Vanquished Creatures");
-    sectionPos["notes"] = data.search("^Notes");
-    sectionPos["screenshots"] = data.indexOf("Illustrated Notes");
+    sectionPos["notes"] = data.search(/^Notes/m);
+    sectionPos["screenshots"] = data.indexOf("Illustrated notes");
     sectionPos["vaults"] = data.indexOf("Levels and vault maps discovered");
     sectionPos["skill_gains"] = data.search("Skill +XL:");
     sectionPos["action_counts"] = data.search("Action *\\|");
