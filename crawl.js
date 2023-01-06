@@ -412,7 +412,14 @@ function parseData()
 
     var data = $('textarea#data').val();
 
-    // line breaks could be removed by copy-paste (e.g. android), so we can't rely on them being there
+    // line breaks could be messed up by copy-paste due to difference between Windows and non-Windows
+    // add carriage return for display
+    data = data.replaceAll("\n", "\r\n");
+    data = data.replaceAll("\r\r", "\r");
+    $('textarea#data').val(data);
+
+    // remove carriage return for processing (messes up regex)
+    data = data.replaceAll("\r", "");
 
     // remove junk at the end
     var sections = data.split('Dungeon Overview');
