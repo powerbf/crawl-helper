@@ -198,6 +198,7 @@ const artefactArmourData = {
 };
 
 const speciesData = {
+    "armataur": { size: "large" },
     "barachi": { size: "medium" },
     "deep elf": { size: "medium" },
     "demigod": { size: "medium" },
@@ -219,7 +220,6 @@ const speciesData = {
     "naga": { size: "large" },
     "octopode": { size: "medium" },
     "ogre": { size: "large" },
-    "palentonga": { size: "large" },
     "spriggan": { size: "little" },
     "tengu": { size: "medium" },
     "troll": { size: "large" },
@@ -230,6 +230,7 @@ const speciesData = {
     "centaur": { size: "large", obsolete: true },
     "deep dwarf": { size: "medium", obsolete: true },
     "halfling": { size: "small", obsolete: true },
+    "palentonga": { size: "large", obsolete: true },
 
     // really obsolete
     "sludge elf": { size: "medium", obsolete: true },
