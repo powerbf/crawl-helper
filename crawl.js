@@ -376,16 +376,23 @@ function reset()
 // add default unarmed type for species 
 function defaultUnarmed()
 {
+    var idx = weapons.length;
+    for (i = 0; i < weapons.length; i++) {
+        let weapType = weapons[i]["type"];
+        if (weapType.includes("unarmed") || weapType.includes("claws"))
+            idx = i;
+    }
+
     var species = $('#species').val();
     if (species == "felid" || species == "ghoul") {
-        weapons[0] = parseWeapon("claws 1");
+        weapons[idx] = parseWeapon("claws 1");
     }
     else if (species == "troll") {
-        weapons[0] = parseWeapon("claws 3");
+        weapons[idx] = parseWeapon("claws 3");
     }
     else {
         // standard unarmed (fists, tentacles, etc.)
-        weapons[0] = parseWeapon("unarmed");
+        weapons[idx] = parseWeapon("unarmed");
     }
 }
 

@@ -40,7 +40,7 @@ $("#data").on("input", function() {
 });
 
 $("#species").on("change", function() {
-    // if species changes then unarmed attack could change
+    // if species changes then shield penalty and unarmed attack could change
     defaultUnarmed();
     return true;
 });
