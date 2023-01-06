@@ -33,7 +33,7 @@ $(document).on('click', '.bi-caret-right-fill', function () {
     }
 });
 
-$("#data").on("change paste keyup", function() {
+$("#data").on("input", function() {
     parseData();
     updateResults();
     return true;
