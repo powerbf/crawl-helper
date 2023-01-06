@@ -405,6 +405,67 @@ function addWeapon(weapon)
     }
 }
 
+// extract sections from data
+// order of sections is not fixed (can be changed by dump_order option)
+function extractDataSections(data)
+{
+    var sectionPos = {};
+    sectionPos["header"] = data.indexOf("Dungeon Crawl Stone Soup version");
+    sectionPos["stats"] = data.search(".* Turns:");
+    sectionPos["inventory"] = data.search(" *Inventory:");
+    sectionPos["skills"] = data.search(" *Skills:");
+    sectionPos["spells"] = data.search(".*(spell levels? left|memorise any spells)");
+    sectionPos["overview"] = data.indexOf("Dungeon Overview");
+    sectionPos["mutations"] = data.indexOf("Innate Abilities");
+    sectionPos["messages"] = data.indexOf("Message History");
+    sectionPos["kills"] = data.indexOf("Vanquished Creatures");
+    sectionPos["notes"] = data.search("^Notes");
+    sectionPos["screenshots"] = data.indexOf("Illustrated Notes");
+    sectionPos["vaults"] = data.indexOf("Levels and vault maps discovered");
+    sectionPos["skill_gains"] = data.search("Skill +XL:");
+    sectionPos["action_counts"] = data.search("Action *\\|");
+    sectionPos["turns_by_place"] = data.indexOf("Table legend: (Time is in decaauts)");
+
+    // sort sections by pos
+    var posSection = {};
+    for (const [section, pos] of Object.entries(sectionPos)) {
+        if (pos >= 0)
+            posSection[pos] = section;
+    }
+
+    var positions = [];
+    for (var key in posSection) {
+        positions.push(key);
+    }
+    positions.sort(function(a, b) {
+        return a - b;
+    });
+
+    // now extract the relevant ones
+    var sections = {
+        "header" : "",
+        "stats" : "",
+        "inventory" : "",
+        "skills" : "",
+    };
+    for (let i = 0; i < positions.length; i++) {
+        let pos = positions[i];
+        let section = posSection[pos];
+        if (section in sections) {
+            if (i < positions.length - 1) {
+                // extract up to start of next section
+                sections[section] = data.substring(pos, positions[i+1]);
+            }
+            else {
+                // extract to end
+                sections[section] = data.substring(pos);
+            }
+        }
+    }
+
+    return sections;
+}
+
 function parseData()
 {
     reset();
@@ -421,38 +482,27 @@ function parseData()
     // remove carriage return for processing (messes up regex)
     data = data.replaceAll("\r", "");
 
-    // remove junk at the end
-    var sections = data.split('Dungeon Overview');
-    data = sections[0];
-
-    // now split into sections
-
-    sections = data.split('Inventory:');
-    var header = sections[0];
-    data = (sections.length < 2 ? '' : sections[1]);
-
-    sections = data.split('Skills:');
-    var inventory = sections[0];
-    data = (sections.length < 2 ? '' : sections[1]);
-
-    sections = data.split('You');
-    var skills = sections[0];
-    data = (sections.length < 2 ? '' : sections[1]);
+    var sections = extractDataSections(data);
 
     //
     // process header
     //
 
     // get crawl version
-    var version = header.match(/version\s+0\.(\d+)/);
+    var version = sections["header"].match(/version\s+0\.(\d+)/);
     if (version != null) {
         let crawlVersion = parseInt(version[1]);
         crawlVersion = clampValue(crawlVersion, MIN_VERSION, MAX_VERSION);
         $('#version').val(crawlVersion);
     }
 
+    //
+    // process stats section
+    //
+
     // get player species
-    var character_combo = header.match(/\(([A-Za-z ]+)\)\s+Turns:/);
+    var statsSection = sections["stats"];
+    var character_combo = statsSection.match(/\(([A-Za-z ]+)\)\s+Turns:/);
     if (character_combo != null && character_combo.length >= 2) {
         let combo = character_combo[1].toLowerCase();
         for (var sp in speciesData) {
@@ -466,13 +516,13 @@ function parseData()
 
     // get current armour
     for (let arm in armourData) {
-        if (header.includes(arm)) {
+        if (statsSection.includes(arm)) {
             $('#body_armour').val(arm);
         }
     }
     if ($('#body_armour').val() == "none") {
         for (let arm in artefactArmourData) {
-            if (header.match(new RegExp(arm,"i"))) {
+            if (statsSection.match(new RegExp(arm,"i"))) {
                 $('#body_armour').val(artefactArmourData[arm].base_type);
                 break;
             }
@@ -480,43 +530,43 @@ function parseData()
     }
 
     // get current shield
-    if (header.match(/buckler|small shield/i)) {
+    if (statsSection.match(/buckler|small shield/i)) {
         $('#shield').val("buckler");
     }
-    else if (header.match(/(kite|medium) shield/i)) {
+    else if (statsSection.match(/(kite|medium) shield/i)) {
         $('#shield').val("kite_shield");
     }
-    else if (header.match(/(tower|large) shield/i)) {
+    else if (statsSection.match(/(tower|large) shield/i)) {
         $('#shield').val("tower_shield");
     }
 
     // get strength
-    var str = /Str:\s*(\d+)/.exec(header);
+    var str = /Str:\s*(\d+)/.exec(statsSection);
     if (str && str.length >= 2) {
         $('#strength').text(parseInt(str[1]));
     }
 
     // get dex
-    var dex = /Dex:\s*(\d+)/.exec(header);
+    var dex = /Dex:\s*(\d+)/.exec(statsSection);
     if (dex && dex.length >= 2) {
         $('#dexterity').text(parseInt(dex[1]));
     }
 
     // get int
-    var int = /Int:\s*(\d+)/.exec(header);
+    var int = /Int:\s*(\d+)/.exec(statsSection);
     if (int && int.length >= 2) {
         $('#intelligence').text(parseInt(int[1]));
     }
 
     // replace unarmed with current claws rank
-    var claws = header.match(/claws [1-3]/);
+    var claws = statsSection.match(/claws [1-3]/);
     if (claws != null) {
         weapons[0] = parseWeapon(claws[0]);
     }
 
     // process slaying
     const slayRe = /Slay([+-]\d+)/g;
-    const slayMatches = [...header.matchAll(slayRe)];
+    const slayMatches = [...statsSection.matchAll(slayRe)];
     let slaying = 0;
     for (const sm of slayMatches) {
         slaying += parseInt(sm[1])
@@ -527,8 +577,7 @@ function parseData()
     // process inventory
     //
 
-    // make sure there is a line break before each item
-    inventory = inventory.replaceAll(/( [a-zA-Z] - )/g, '\n$1')
+    var inventory = sections["inventory"];
 
     var lines = inventory.split('\n');
     for (const line of lines) {
@@ -546,8 +595,7 @@ function parseData()
     // process skills
     //
 
-    // make sure there is a line break before each item
-    skills = skills.replaceAll(/( . Level)/g, '\n$1')
+    var skills = sections["skills"];
 
     var lines = skills.split('\n');
     for (const line of lines) {
