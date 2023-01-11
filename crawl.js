@@ -1709,13 +1709,41 @@ function getRawSpellFailRate(level)
     // weird polynomial smoothing
     fail = Math.max(0, (((fail + 426) * fail + 82670) * fail + 7245398) / 262144);
 
-    // TODO: apply mutations, Vehumet, etc.
+    // TODO: apply mutations
+
+    // apply wizardry
+    fail = apply_spellcasting_success_boosts(fail);
 
     // clamp to range 0-100%
     fail =  Math.max(0, Math.min(100, fail));
 
     return fail;
 }
+
+function apply_spellcasting_success_boosts(chance)
+{
+    let fail_reduce = 100;
+
+    // TODO: Vehumet
+    /*if (have_passive(passive_t::spells_success) && vehumet_supports_spell(spell))
+    {
+        // [dshaligram] Fail rate multiplier used to be .5, scaled
+        // back to 67%.
+        fail_reduce = fail_reduce * 2 / 3;
+    }*/
+
+    let wizardry = parseInt($('#wizardry').text());
+
+    if (wizardry > 0)
+      fail_reduce = Math.floor(fail_reduce * 6 / (7 + wizardry));
+
+    // Hard cap on fail rate reduction.
+    if (fail_reduce < 50)
+        fail_reduce = 50;
+
+    return Math.floor(chance * fail_reduce / 100);
+}
+
 
 function calculateSpellFailRate(level)
 {
