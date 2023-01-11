@@ -371,6 +371,9 @@ function reset()
     $('#species').val("human");
     $('#body_armour').val("none");
     $('#shield').val("none");    
+
+    $('#wizardry').val("0");
+    $('#vehumet_piety').val("0");
 }
 
 // add default unarmed type for species 
@@ -579,6 +582,12 @@ function parseData()
         slaying += parseInt(sm[1])
     }
     $('#slaying').text(slaying);
+
+    // get Vehumet piety
+    var vehumetPiety = /Vehumet\s*\[(\**)/.exec(statsSection);
+    if (vehumetPiety && vehumetPiety.length >= 2) {
+        $('#vehumet_piety').text(vehumetPiety[1].length);
+    }
 
     //
     // process inventory
@@ -1720,17 +1729,33 @@ function getRawSpellFailRate(level)
     return fail;
 }
 
+// Vehumet supports "destructive" spells, which includes all conjurations and most pure elemental spells
+function vehumetSupportsSpell()
+{
+    for (let id of ["school1", "school2", "school3"]) {
+        let school = $('#'+id).val();
+        if (school == "none")
+            continue;
+        else if (school == "conjurations")
+            return true;
+        else if (!["air_magic", "earth_magic", "ice_magic", "fire_magic"].includes(school))
+            return false;
+    }
+
+    // not conjuration, but pure elemental -> probably a destructive spell
+    // TODO: Handle exceptions
+    return true;
+}
+
 function apply_spellcasting_success_boosts(chance)
 {
     let fail_reduce = 100;
 
-    // TODO: Vehumet
-    /*if (have_passive(passive_t::spells_success) && vehumet_supports_spell(spell))
+    let vehumetPiety = parseInt($('#vehumet_piety').text());
+    if (vehumetPiety >= 3 && vehumetSupportsSpell())
     {
-        // [dshaligram] Fail rate multiplier used to be .5, scaled
-        // back to 67%.
-        fail_reduce = fail_reduce * 2 / 3;
-    }*/
+        fail_reduce = 66;
+    }
 
     let wizardry = parseInt($('#wizardry').text());
 
