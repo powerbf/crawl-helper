@@ -602,7 +602,7 @@ function parseData()
         if (w != null) {
             addWeapon(w);
         }
-        if (line.match(/(Armour|Magical Staves|Jewellery|Wands|Scrolls|Potions|Miscellaneous)/)) {
+        if (line.match(/(Jewellery|Wands|Scrolls|Potions|Miscellaneous)/)) {
             break;
         }
     }
@@ -864,7 +864,10 @@ function parseWeapon(s) {
         }
     } catch(err) {}
     
-    weapon["brand"] = parseBrand(s);
+    if (weapon["type"] == "staff")
+        weapon["brand"] = parseStaffBrand(s);
+    else
+        weapon["brand"] = parseBrand(s);
 
     // get artefact name
     var m = s.match('"[A-Za-z "]+"');
@@ -914,6 +917,34 @@ function parseBrand(s) {
 
     return "";
 }
+
+function parseStaffBrand(s) {
+    if (s.includes("staff of earth")) {
+        return "earth";
+    }
+    else if (s.includes("staff of fire")) {
+        return "fire";
+    }
+    else if (s.includes("staff of cold")) {
+        return "cold";
+    }
+    else if (s.includes("staff of air")) {
+        return "air";
+    }
+    else if (s.includes("staff of death")) {
+        return "death";
+    }
+    else if (s.includes("staff of conjuration")) {
+        return "conjuration";
+    }
+    else if (s.includes("staff of poison")) {
+        return "poison";
+    }
+    else {
+        return "";
+    }
+}
+
 
 function updateResults()
 {
@@ -1113,6 +1144,55 @@ function distroToString(distro)
     return result;
 }
 
+// reduce damage based on defender AC
+function applyACReduction(weightedDamage)
+{
+    let enemy_ac = parseInt($('#enemy_ac').text());
+    if (enemy_ac > 0) {
+        let prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
+
+       for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+           var dam = parseInt(damage);
+           for (var saved = 0; saved <= enemy_ac; saved++) {
+                // damage can't go below zero
+                var newDam = Math.max(0, dam - saved);
+                addToEntry(weightedDamage, newDam, weight);
+            }
+        }
+    }
+
+    return weightedDamage;
+}
+
+// reduce damage based on defender AC
+function applyTripleACReduction(weightedDamage)
+{
+    let enemy_ac = parseInt($('#enemy_ac').text());
+    if (enemy_ac <= 0) {
+        return weightedDamage;
+    }
+
+    let prevWeightedDamage = weightedDamage;
+    weightedDamage = {};
+
+   for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+       var dam = parseInt(damage);
+       for (var i = 0; i <= enemy_ac; i++) {
+           for (var j = 0; j <= enemy_ac; j++) {
+                   for (var k = 0; k <= enemy_ac; k++) {
+                        let saved = i + j + k;
+                        // damage can't go below zero
+                        var newDam = Math.max(0, dam - saved);
+                        addToEntry(weightedDamage, newDam, weight);
+                    }
+            }
+        }
+    }
+
+    return weightedDamage;
+}
+
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
 function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion)
@@ -1135,7 +1215,6 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     var dex = parseFloat($('#dexterity').text());
     var fighting = parseFloat($('#fighting').text());
     var weaponSkill = parseFloat($('#'+skillName).text());
-    var enemy_ac = parseInt($('#enemy_ac').text());
     var slaying = parseInt($('#slaying').text());
 
     // all possible damage values, weighted by probability
@@ -1281,20 +1360,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     }
 
     // apply ac reduction
-
-    if (enemy_ac > 0) {
-        prevWeightedDamage = weightedDamage;
-        weightedDamage = {};
-
-       for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
-           var dam = parseInt(damage);
-           for (var saved = 0; saved <= enemy_ac; saved++) {
-                // damage can't go below zero
-                var newDam = Math.max(0, dam - saved);
-                addToEntry(weightedDamage, newDam, weight);
-            }
-        }
-    }
+    weightedDamage = applyACReduction(weightedDamage);
 
     // work out the weighted average
     var avg_damage = getWeightedAverage(weightedDamage);
@@ -1313,58 +1379,63 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     damage_per_hit["base_distro"] = weightedDamage;
 
     damage_per_hit["brand"] = 0.0;
-    if (weapon["brand"] == "vorpal") {
-        // 0-33% on melee weapons -> avg = 16.7%
-        // TODO: handle ranged (apparently 20%)
-        damage_per_hit["brand"] = 0.167 * damage_per_hit["base"];
+    if (weapon["type"] == "staff") {
+        damage_per_hit["brand"] = calcStaffBrandDamage(weapon, crawlVersion);
     }
-    else if (weapon["brand"] == "flame" || weapon["brand"] == "freeze") {
-        // 0-50% -> avg = 25%
-        damage_per_hit["brand"] = 0.25 * damage_per_hit["base"];
-    }
-    else if (weapon["brand"] == "flame+freeze") {
-        damage_per_hit["brand"] = 0.5 * damage_per_hit["base"];
-    }
-    else if (weapon["brand"] == "holy") {
-        // 0-150% -> avg = 75%
-        damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
-    }
-    else if (weapon["brand"] == "drain") {
-        // 0-50% + 1+1d3 -> avg = 25% + 2
-        damage_per_hit["brand"] = (0.25 * damage_per_hit["base"]) + 2.0;
-    }
-    else if (weapon["brand"] == "elec") {
-        // chance to trigger is 1/4 (1/3 prior to 0.28)
-        trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
-        // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
-        damage_per_hit["brand"] = 14 * trigger_chance;
-    }
-    else if (weapon["brand"] == "disrupt") {
-        // only found on the unrand artefact "Undeadhunter"
-        // has 1/3 chance to inflict random2avg((1 + (dam * 3)), 3);
-        // random2avg(x, 3) returns (random2(x) + random2(x+1) + random2(x+1))/3
-        // so avg when it triggers is (3*dam + 3*dam+1 + 3*dam+1)/2/3
-        // = (9*dam+2)/6
-        // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
-        damage_per_hit["brand"] = (9.0 * damage_per_hit["base"] + 2.0) / 18.0;
-    }
-    else if (weapon["brand"] == "silver") {
-        // flat 75% on chaotic monsters
-        damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
-        //TODO: (1 + random2(damage_done) / 3) on others
-    }
-    else if (weapon["brand"] == "slay drac") {
-        // bonus_dam = 1 + random2(3 * dam / 2);
-        // avg = 1 + 75% * dam
-        damage_per_hit["brand"] = 1 + 0.75 * damage_per_hit["base"];
-    }
-    else if (weapon["brand"] == "spect") {
-        damage_per_hit["brand"] = calcSpectralDamage(weapon);
-    }
-    else if (weapon["brand"] == "discharge") {
-        // 1 in 3 chance of casting discharge with an average power of 150
-        // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
-        damage_per_hit["brand"] = (3 + (20 + 15/2) / 2) / 3;
+    else {
+        if (weapon["brand"] == "vorpal") {
+            // 0-33% on melee weapons -> avg = 16.7%
+            // TODO: handle ranged (apparently 20%)
+            damage_per_hit["brand"] = 0.167 * damage_per_hit["base"];
+        }
+        else if (weapon["brand"] == "flame" || weapon["brand"] == "freeze") {
+            // 0-50% -> avg = 25%
+            damage_per_hit["brand"] = 0.25 * damage_per_hit["base"];
+        }
+        else if (weapon["brand"] == "flame+freeze") {
+            damage_per_hit["brand"] = 0.5 * damage_per_hit["base"];
+        }
+        else if (weapon["brand"] == "holy") {
+            // 0-150% -> avg = 75%
+            damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
+        }
+        else if (weapon["brand"] == "drain") {
+            // 0-50% + 1+1d3 -> avg = 25% + 2
+            damage_per_hit["brand"] = (0.25 * damage_per_hit["base"]) + 2.0;
+        }
+        else if (weapon["brand"] == "elec") {
+            // chance to trigger is 1/4 (1/3 prior to 0.28)
+            trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
+            // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
+            damage_per_hit["brand"] = 14 * trigger_chance;
+        }
+        else if (weapon["brand"] == "disrupt") {
+            // only found on the unrand artefact "Undeadhunter"
+            // has 1/3 chance to inflict random2avg((1 + (dam * 3)), 3);
+            // random2avg(x, 3) returns (random2(x) + random2(x+1) + random2(x+1))/3
+            // so avg when it triggers is (3*dam + 3*dam+1 + 3*dam+1)/2/3
+            // = (9*dam+2)/6
+            // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
+            damage_per_hit["brand"] = (9.0 * damage_per_hit["base"] + 2.0) / 18.0;
+        }
+        else if (weapon["brand"] == "silver") {
+            // flat 75% on chaotic monsters
+            damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
+            //TODO: (1 + random2(damage_done) / 3) on others
+        }
+        else if (weapon["brand"] == "slay drac") {
+            // bonus_dam = 1 + random2(3 * dam / 2);
+            // avg = 1 + 75% * dam
+            damage_per_hit["brand"] = 1 + 0.75 * damage_per_hit["base"];
+        }
+        else if (weapon["brand"] == "spect") {
+            damage_per_hit["brand"] = calcSpectralDamage(weapon);
+        }
+        else if (weapon["brand"] == "discharge") {
+            // 1 in 3 chance of casting discharge with an average power of 150
+            // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
+            damage_per_hit["brand"] = (3 + (20 + 15/2) / 2) / 3;
+        }
     }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
@@ -1411,6 +1482,60 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     damage_per_turn["brand"] = damage_per_hit["brand"] / delay;
     damage_per_turn["total"] = damage_per_hit["total"] / delay;
     weapon["damage_per_turn"] = damage_per_turn;
+}
+
+function calcStaffBrandDamage(weapon, crawlVersion)
+{
+    let brand = weapon["brand"];
+    let school = null;
+    if (brand == "earth")
+        school = "earth_magic";
+    else if (brand == "air")
+        school = "air_magic";
+    else if (brand == "fire")
+        school = "fire_magic";
+    else if (brand == "cold")
+        school = "ice_magic";
+    else if (brand == "poison")
+        school = "poison_magic";
+    else if (brand == "conjuration")
+        school = "conjurations";
+    else if (brand == "death")
+        school = "necromancy";
+
+    if (school == null)
+        return 0.0;
+
+    let evocations = parseFloat($('#evocations').text());
+    var schoolSkill = parseFloat($('#'+school).text());
+
+    let maxDamage = Math.floor((schoolSkill*100 + evocations*50)/80) - 1;
+    if (maxDamage <= 0)
+        return 0;
+
+    let triggerChance = Math.floor(evocations*200 + schoolSkill*100)/3000;
+
+    if (brand != "earth" && brand != "conjurations") {
+        // not affected by AC
+        return triggerChance * maxDamage / 2;
+    }
+
+    let weightedDamage = {};
+    if (brand == "earth") {
+        for (let i = 0; i <= maxDamage; i++) {
+            let dam = Math.floor(i * 4 / 3);
+            weightedDamage[dam] = 1;
+        }
+        weightedDamage = applyTripleACReduction(weightedDamage)
+    }
+    else {
+        for (let i = 0; i <= maxDamage; i++) {
+            weightedDamage[i] = 1;
+        }
+        weightedDamage = applyACReduction(weightedDamage)
+    }
+
+    return getWeightedAverage(weightedDamage);
 }
 
 // Calculate average delay for heavy brand
