@@ -1513,29 +1513,34 @@ function calcStaffBrandDamage(weapon, crawlVersion)
     if (maxDamage <= 0)
         return 0;
 
-    let triggerChance = Math.floor(evocations*200 + schoolSkill*100)/3000;
-
-    if (brand != "earth" && brand != "conjurations") {
-        // not affected by AC
-        return triggerChance * maxDamage / 2;
-    }
-
-    let weightedDamage = {};
+    let avgDamage;
     if (brand == "earth") {
+        let weightedDamage = {};
         for (let i = 0; i <= maxDamage; i++) {
             let dam = Math.floor(i * 4 / 3);
             weightedDamage[dam] = 1;
         }
-        weightedDamage = applyTripleACReduction(weightedDamage)
+        weightedDamage = applyTripleACReduction(weightedDamage);
+        avgDamage = getWeightedAverage(weightedDamage);
     }
-    else {
+    else if (brand == "conjurations") {
+        let weightedDamage = {};
         for (let i = 0; i <= maxDamage; i++) {
             weightedDamage[i] = 1;
         }
         weightedDamage = applyACReduction(weightedDamage)
+        avgDamage = getWeightedAverage(weightedDamage);
+    }
+    else {
+        // randomized, but not affected by AC
+        avgDamage = maxDamage / 2;
     }
 
-    return getWeightedAverage(weightedDamage);
+    let triggerChance = Math.floor(evocations*200 + schoolSkill*100)/3000;
+    if (triggerChance > 1)
+        triggerChance = 1;
+
+    return avgDamage * triggerChance;
 }
 
 // Calculate average delay for heavy brand
