@@ -33,7 +33,7 @@
                       <th scope="col" rowspan="2">Weapon</th>
                       <th scope="col" rowspan="2">Avg Delay</th>
                       <th scope="colgroup" colspan="3">Avg Damage Per Hit</th>
-                      <th scope="colgroup" colspan="3">Avg Damage Per Turn (at 100% hit rate)</th>
+                      <th scope="colgroup" colspan="3">Avg Damage Per Turn</th>
                     </tr>
                     <tr>
                       <th scope="col">Base</th>
@@ -110,7 +110,7 @@
 
                     <div class="col col-xs-6 col-lg-12 col-xl-6 text-nowrap unselectable" id="skills1">
                         <table>
-                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
+                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" data-bs-trigger="hover"
                                 title="Weapon stats and the way damage is calculated vary from version to version.">
                                 <td>
                                     <label class="text-nowrap">Version:</label>
@@ -121,7 +121,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" data-bs-trigger="hover"
+                            <tr data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" data-bs-trigger="hover"
                                 title="Large species and formicids need less shields skill than normal to offset shield penalties. Small species need more. Little species need a lot more.">
                                 <td>
                                     <label class="text-nowrap">Species:</label>
@@ -133,8 +133,8 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                                title="The heavier your armour, the slower your blades and launcher attacks, and the higher your spell failure rates. Mitigated by training armour skill.">
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right" data-bs-trigger="hover"
+                                title="The heavier your armour, the slower your launcher and short/long blades attacks, and the higher your spell failure rates. Partially mitigated by training armour skill.">
                                 <td>
                                     <label class="text-nowrap">Armour:</label>
                                 </td>
@@ -144,8 +144,8 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover"
-                                title="The heavier your shield, the more it slows your attacks and increases your spell failure chance. This is mitigated by training shields skill.">
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right" data-bs-trigger="hover"
+                                title="The heavier your shield, the more it slows your attacks and increases your spell failure rates. Mitigated by training shields skill.">
                                 <td>
                                     <label class="text-nowrap">Shield:</label>
                                 </td>
@@ -218,7 +218,7 @@
                                 </td>
                             </tr>
                             <tr data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="Shields skill reduces the attack speed penalty (and EV penalty) from wearing a shield.">
+                                title="Shields skill reduces the penalties from wearing a shield.">
                                 <td>
                                     Shields:
                                 </td>
@@ -229,7 +229,7 @@
                                 </td>
                             </tr>
                             <tr data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="Evocations together with the relevant spell school determines the trigger chance and amount of magical staves' brand damage.">
+                                title="Evocations together with the relevant spell school determines the trigger chance and amount of brand damage from magical staves.">
                                 <td>
                                     Evocations:
                                 </td>
@@ -254,7 +254,7 @@
                                 </td>
                             </tr>
                             <tr data-bs-toggle="tooltip" data-bs-placement="right"
-                                title="If you worhip Vehumet and have at least *** piety, he reduces the failure rate of conjurations and most pure elemental spells.">
+                                title="If you worhip Vehumet and have at least *** piety, he reduces the failure rate of destructive spells (any spell that uses conjurations and most pure elemental spells).">
                                 <td>
                                     <label class="text-nowrap">Veh Piety:</label>
                                 </td>
@@ -423,7 +423,8 @@
                                 <td></td>
                             </tr>
                         </table>
-                        <table>
+                        <table data-bs-toggle="tooltip" data-bs-placement="left"
+                               title="Spell failure rates are reduced by training the relevant spell school(s) and spellcasting. Brand damage from magical staves and the chance of it triggering is increased by training the relevant spell school and evocations.">
                             <tr>
                                 <td>
                                     <label>Spellcasting:</label>
