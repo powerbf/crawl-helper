@@ -1524,7 +1524,7 @@ function calcStaffBrandDamage(weapon, crawlVersion)
         weightedDamage = applyTripleACReduction(weightedDamage);
         avgDamage = getWeightedAverage(weightedDamage);
     }
-    else if (brand == "conjurations") {
+    else if (brand == "conjuration") {
         let weightedDamage = {};
         for (let i = 0; i <= maxDamage; i++) {
             weightedDamage[i] = 1;
