@@ -1785,25 +1785,61 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
+function appendSpellResultRow(description, failText)
+{
+    var row = "<tr>";
+
+    row += "<td class='fit'>" + description + "</td>";
+    row += "<td class='fit'>" + failText + "</td>";
+    row += "</tr>";
+
+    $('#spells > tbody:last-child').append(row);
+}
+
 function updateSpellResults()
 {
+    let schools = [];
+    for (let id of ["school1", "school2", "school3"]) {
+        let school = $('#'+id).val();
+        if (school != "none")
+            schools.push(school);
+    }
+
     $('#spells > tbody:last-child').empty();
 
+    let vehumetDoingSomething = false;
     for (let level = 1; level <= 9; level++) {
 
-        let fail_rate = calculateSpellFailRate(level);
+        let vehumetSupporting = isVehumetSupporting(schools, level);
+        let failRate = calculateSpellFailRate(level, vehumetSupporting);
 
-        var row = "<tr>";
-        row += "<td class='fit'>" + level.toString() + "</td>";
+        let do_ozos = false;
+        let description = level.toString();
+        if (vehumetSupporting && level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
+            // There are two level 3 pure ice spells
+            // Frozen Ramparts is supported by Vehumet, but Ozocubu's Armour is not
+            description += " (Frozen Ramparts)";
+            do_ozos = true;
+        }
 
-        row += "<td class='fit'>";
-        row += fail_rate.toString();
-        row += "%</td>";
+        let failText = failRate.toString() + "%";
+        if (vehumetSupporting) {
+            failText += "*";
+            vehumetDoingSomething = true;
+        }
 
-        row += "</tr>";
+        appendSpellResultRow(description, failText);
 
-        $('#spells > tbody:last-child').append(row);
+        if (do_ozos) {
+            failRate = calculateSpellFailRate(level, false);
+            appendSpellResultRow("3 (Ozocubu's Armour)", failRate.toString() + "%");
+        }
     }
+
+    let heading = "Failure Rate";
+    if (vehumetDoingSomething)
+        heading += " (*=Vehumet supporting)";
+    $("#spell_failure_heading").text(heading);
 }
 
 function getSpellDifficulty(level)
@@ -1826,11 +1862,11 @@ function getAverageSpellSchoolSkills(level)
     return count == 0 ? 0 : (sum / count);
 }
 
-function getRawSpellFailRate(level)
+function getRawSpellFailRate(level, vehumetSupporting)
 {
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
-    let schools = getAverageSpellSchoolSkills();
+    let avgSchools = getAverageSpellSchoolSkills();
 
     // calculate penalties
     let crawlVersion = parseInt($('#version').val());
@@ -1839,7 +1875,7 @@ function getRawSpellFailRate(level)
     let penalties = Math.max(0, Math.max(0, armourPenalty) + shieldPenalty);
 
     let fail = 60 + getSpellDifficulty(level);
-    fail -= 6 * (2*schools + 0.5*spellcasting);
+    fail -= 6 * (2*avgSchools + 0.5*spellcasting);
     fail -= 2 * intelligence;
     fail += penalties;
 
@@ -1851,8 +1887,8 @@ function getRawSpellFailRate(level)
 
     // TODO: apply mutations
 
-    // apply wizardry
-    fail = apply_spellcasting_success_boosts(fail);
+    // apply wizardry, Vehumet
+    fail = apply_spellcasting_success_boosts(fail, vehumetSupporting);
 
     // clamp to range 0-100%
     fail =  Math.max(0, Math.min(100, fail));
@@ -1860,30 +1896,64 @@ function getRawSpellFailRate(level)
     return fail;
 }
 
-// Vehumet supports "destructive" spells, which includes all conjurations and most pure elemental spells
-function vehumetSupportsSpell()
+// From *** piety, Vehumet reduces the failure rates for "destructive" spells
+function isVehumetSupporting(schools, level)
 {
-    for (let id of ["school1", "school2", "school3"]) {
-        let school = $('#'+id).val();
-        if (school == "none")
-            continue;
-        else if (school == "conjurations")
+    let vehumetPiety = parseInt($('#vehumet_piety').text());
+    if (vehumetPiety < 3)
+        return false;
+
+    if (schools.includes("conjurations") || schools.includes("fire_magic")) {
+        // all spells involving conjurations or fire are supported
+        return true;
+    }
+    else if (schools.length == 1) {
+        // single school
+        let school = schools[0];
+        if (school == "earth_magic") {
+            // all pure earth spells are supported
             return true;
-        else if (!["air_magic", "earth_magic", "ice_magic", "fire_magic"].includes(school))
+        }
+        else if (school == "air_magic") {
+            // all pure air spells are supported, except Swiftness (level 3)
+            return (level != 3);
+        }
+        else if (school == "ice_magic") {
+            // all pure ice spells are supported, except Ozocubu's Armour (level 3)
+            // Unfortunately, the other level 3 ice spell, Frozen Ramparts, is supported
+            // TODO: Handle Ozo's Armour/Ramparts
+            return true;
+        }
+        else if (school == "poison_magic") {
+            // Olgreb's Toxic Radiance (level 4) is the only pure poison spell supported
+            return (level == 4);
+        }
+        else {
             return false;
+        }
     }
 
-    // not conjuration, but pure elemental -> probably a destructive spell
-    // TODO: Handle exceptions
-    return true;
+    // A few other specific spells are supported:
+    // Poisonous Vapours - level 2 Air/Poison
+    // Yara's Violent Unravelling - level 5 Hexes/Transmutations
+    // Eringya's Noxious Bog - level 6 Poison/Transmutations
+    if (schools.length == 2) {
+        if (level == 2 && schools.includes("air_magic") && schools.includes("poison_magic"))
+            return true;
+        else if (level == 5 && schools.includes("transmutations") && schools.includes("hexes"))
+            return true;
+        else if (level == 6 && schools.includes("transmutations") && schools.includes("poison_magic"))
+            return true;
+    }
+
+    return false;
 }
 
-function apply_spellcasting_success_boosts(chance)
+function apply_spellcasting_success_boosts(chance, vehumetSupporting)
 {
     let fail_reduce = 100;
 
-    let vehumetPiety = parseInt($('#vehumet_piety').text());
-    if (vehumetPiety >= 3 && vehumetSupportsSpell())
+    if (vehumetSupporting)
     {
         fail_reduce = 66;
     }
@@ -1901,9 +1971,9 @@ function apply_spellcasting_success_boosts(chance)
 }
 
 
-function calculateSpellFailRate(level)
+function calculateSpellFailRate(level, vehumetSupporting)
 {
-    let fail = getRawSpellFailRate(level);
+    let fail = getRawSpellFailRate(level, vehumetSupporting);
 
     if (fail <= 0)
         return 0;
