@@ -24,9 +24,22 @@
     color: violet;
 }
 
-#weapons, 
-#spell_schools,
+#spell_schools {
+    margin: 5px auto 0px auto;
+}
+
+#spell_schools div {
+    margin: 0px;
+    display : flex;
+    align-items : center;
+}
+
+
 #spells {
+    margin-top: 5px;
+}
+
+#weapons {
     margin-top: 10px;
 }
 
