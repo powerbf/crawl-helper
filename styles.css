@@ -79,10 +79,10 @@ option.obsolete {
 }
 
 .tab h3 {
-    padding-left: 35%;
-    margin-top: 5px;
-    margin-bottom: 0px;
+    width: 40%;
+    margin: 5px auto 0px auto;
     vertical-align: middle;
+    text-align: center;
     color: slateblue;
 }
 
