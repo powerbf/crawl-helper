@@ -1410,6 +1410,10 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
             // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
             damage_per_hit["brand"] = 14 * trigger_chance;
         }
+        else if (weapon["brand"] == "distort") {
+            // 35% chance to do 1-7 damage, 25% chance to do 3-26 damage
+            damage_per_hit["brand"] = (0.35 * 4) + (0.25 * 14.5);
+        }
         else if (weapon["brand"] == "disrupt") {
             // only found on the unrand artefact "Undeadhunter"
             // has 1/3 chance to inflict random2avg((1 + (dam * 3)), 3);
