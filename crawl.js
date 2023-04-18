@@ -822,6 +822,12 @@ function getWeaponRefData(weapon, crawlVersion) {
 }
 
 function parseWeapon(s) {
+    s = s.trim();
+    if (s.slice(0, 1) == "[") {
+        // this is the base type of an artefact, and would give a false match
+        return null;
+    }
+
     if (s.match("tremorstone")) {
         // this is not a weapon, but it would match on "stone"
         return null;
@@ -861,7 +867,7 @@ function parseWeapon(s) {
 
     try {
         if (refData["category"] != "throwing") {
-            weapon["enchantment"] = parseInt(/([\+\-][0-9]+)\s/.exec(s)[1]);
+            weapon["enchantment"] = parseInt(/(^| )([\+\-][0-9]+)\s/.exec(s)[2]);
         }
     } catch(err) {}
     
