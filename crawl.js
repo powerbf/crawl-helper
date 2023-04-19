@@ -827,6 +827,7 @@ function parseWeapon(s) {
         // this is the base type of an artefact, and would give a false match
         return null;
     }
+    s = s.toLowerCase();
 
     if (s.match("tremorstone")) {
         // this is not a weapon, but it would match on "stone"
@@ -848,10 +849,9 @@ function parseWeapon(s) {
         }   
     }
 
-    var lower = s.toLowerCase();
     if (weapon["type"] == null) {
         for (let art in artefactData[MAX_VERSION]) {
-            if (lower.includes(art)) {
+            if (s.includes(art)) {
                 weapon["art_type"] = art;
                 break;
             }
@@ -946,6 +946,9 @@ function parseStaffBrand(s) {
     }
     else if (s.includes("staff of poison")) {
         return "poison";
+    }
+    else if (s.includes("elemental staff")) {
+        return "elemental";
     }
     else {
         return "";
@@ -1498,6 +1501,18 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
 function calcStaffBrandDamage(weapon, crawlVersion)
 {
     let brand = weapon["brand"];
+    let evocations = parseFloat($('#evocations').text());
+
+    if (brand == "elemental") {
+        // 10 + 1d14 (avg 17.5)
+        // The game does two rolls with an Evocations/27 chance to succeed each time you successfully hit an opponent
+        // if either test succeeds, the effect triggers.
+        // Therefore, chance to fail = (1 - evo/27)^2
+        let fail_chance = 1.0 - evocations/27.0;
+        fail_chance *= fail_chance;
+        return (1.0 - fail_chance) * 17.5;
+    }
+
     let school = null;
     if (brand == "earth")
         school = "earth_magic";
@@ -1517,7 +1532,6 @@ function calcStaffBrandDamage(weapon, crawlVersion)
     if (school == null)
         return 0.0;
 
-    let evocations = parseFloat($('#evocations').text());
     var schoolSkill = parseFloat($('#'+school).text());
 
     let maxDamage = Math.floor((schoolSkill*100 + evocations*50)/80) - 1;
