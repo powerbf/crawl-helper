@@ -135,7 +135,7 @@ const artefactData = {
         "plutonium sword" : { base_type: "triple sword" },
         "knife of accuracy" : { base_type: "dagger" },
         "captain's cutlass" : { base_type: "rapier" },
-        "storm bow" : { base_type: "long bow" },
+        "storm bow" : { base_type: "longbow" },
         "obsidian axe": { base_type: "broad axe" },
         "autumn katana": { base_type: "long sword", new_type: "katana", damage: +4, hit: +2, base_delay: -2 },
         "devastator": { base_type: "club", new_type: "shillelagh", damage: +3 },
