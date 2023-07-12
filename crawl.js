@@ -1722,7 +1722,14 @@ function calcShieldPenalty(crawlVersion)
 
         penalty = 2 * penalty * penalty;
         penalty *= (270 - shieldsSkill * 10);
-        penalty /= (5 * (20 - 3 * racialFactor));
+        if (crawlVersion >= 30) {
+            // no more racial/size factor
+            var strength = parseFloat($("#strength").text());
+            penalty /= (25 + 5 * strength);
+        }
+        else {
+            penalty /= (5 * (20 - 3 * racialFactor));
+        }
         penalty /= 270;
     }
     else {
