@@ -1403,69 +1403,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         damage_per_hit["brand"] = calcStaffBrandDamage(weapon, crawlVersion);
     }
     else {
-        if (weapon["brand"] == "vorpal") {
-            // 0-33% on melee weapons -> avg = 16.7%
-            // TODO: handle ranged (apparently 20%)
-            damage_per_hit["brand"] = 0.167 * damage_per_hit["base"];
-        }
-        else if (weapon["brand"] == "flame" || weapon["brand"] == "freeze") {
-            // 0-50% -> avg = 25%
-            damage_per_hit["brand"] = 0.25 * damage_per_hit["base"];
-        }
-        else if (weapon["brand"] == "flame+freeze") {
-            damage_per_hit["brand"] = 0.5 * damage_per_hit["base"];
-        }
-        else if (weapon["brand"] == "holy") {
-            // 0-150% -> avg = 75%
-            damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
-        }
-        else if (weapon["brand"] == "drain") {
-            // 0-50% + 1+1d3 -> avg = 25% + 2
-            damage_per_hit["brand"] = (0.25 * damage_per_hit["base"]) + 2.0;
-        }
-        else if (weapon["brand"] == "pain") {
-            // Chance to trigger is necro/(necro+1)
-            // Damage if triggered is random2(necro+1) (NOT 1d(necro) as wiki says)
-            var necro = parseFloat($('#necromancy').text());
-            damage_per_hit["brand"] = necro/(necro+1.0) * necro/2.0;
-        }
-        else if (weapon["brand"] == "elec") {
-            // chance to trigger is 1/4 (1/3 prior to 0.28)
-            trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
-            // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
-            damage_per_hit["brand"] = 14 * trigger_chance;
-        }
-        else if (weapon["brand"] == "distort") {
-            // 35% chance to do 1-7 damage, 25% chance to do 3-26 damage
-            damage_per_hit["brand"] = (0.35 * 4) + (0.25 * 14.5);
-        }
-        else if (weapon["brand"] == "disrupt") {
-            // only found on the unrand artefact "Undeadhunter"
-            // has 1/3 chance to inflict random2avg((1 + (dam * 3)), 3);
-            // random2avg(x, 3) returns (random2(x) + random2(x+1) + random2(x+1))/3
-            // so avg when it triggers is (3*dam + 3*dam+1 + 3*dam+1)/2/3
-            // = (9*dam+2)/6
-            // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
-            damage_per_hit["brand"] = (9.0 * damage_per_hit["base"] + 2.0) / 18.0;
-        }
-        else if (weapon["brand"] == "silver") {
-            // flat 75% on chaotic monsters
-            damage_per_hit["brand"] = 0.75 * damage_per_hit["base"];
-            //TODO: (1 + random2(damage_done) / 3) on others
-        }
-        else if (weapon["brand"] == "slay drac") {
-            // bonus_dam = 1 + random2(3 * dam / 2);
-            // avg = 1 + 75% * dam
-            damage_per_hit["brand"] = 1 + 0.75 * damage_per_hit["base"];
-        }
-        else if (weapon["brand"] == "spect") {
-            damage_per_hit["brand"] = calcSpectralDamage(weapon);
-        }
-        else if (weapon["brand"] == "discharge") {
-            // 1 in 3 chance of casting discharge with an average power of 150
-            // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
-            damage_per_hit["brand"] = (3 + (20 + 15/2) / 2) / 3;
-        }
+        damage_per_hit["brand"] = calcNonStaffBrandDamage(weapon, avg_damage, crawlVersion);
     }
 
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
@@ -1582,6 +1520,76 @@ function calcStaffBrandDamage(weapon, crawlVersion)
         triggerChance = 1;
 
     return avgDamage * triggerChance;
+}
+
+function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
+{
+    let brand = weapon["brand"];
+    if (brand == "vorpal") {
+        // 0-33% on melee weapons -> avg = 16.7%
+        // TODO: handle ranged (apparently 20%)
+        return 0.167 * avg_base_damage;
+    }
+    else if (brand == "flame" || brand == "freeze") {
+        // 0-50% -> avg = 25%
+        return 0.25 * avg_base_damage;
+    }
+    else if (brand == "flame+freeze") {
+        return 0.5 * avg_base_damage;
+    }
+    else if (brand == "holy") {
+        // 0-150% -> avg = 75%
+        return 0.75 * avg_base_damage;
+    }
+    else if (brand == "drain") {
+        // 0-50% + 1+1d3 -> avg = 25% + 2
+        return (0.25 * avg_base_damage) + 2.0;
+    }
+    else if (brand == "pain") {
+        // chance to trigger is necro/(necro+1)
+        // damage if triggered is random2(necro+1) (NOT 1d(necro) as wiki says)
+        let necro = parseFloat($('#necromancy').text());
+        return necro/(necro+1) * necro/2;
+    }
+    else if (brand == "elec") {
+        // chance to trigger is 1/4 (1/3 prior to 0.28)
+        trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
+        // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
+        return 14 * trigger_chance;
+    }
+    else if (brand == "distort") {
+        // 35% chance to do 1-7 damage, 25% chance to do 3-26 damage
+        return (0.35 * 4) + (0.25 * 14.5);
+    }
+    else if (brand == "disrupt") {
+        // only found on the unrand artefact "Undeadhunter"
+        // has 1/3 chance to inflict random2avg((1 + (dam * 3)), 3);
+        // random2avg(x, 3) returns (random2(x) + random2(x+1) + random2(x+1))/3
+        // so avg when it triggers is (3*dam + 3*dam+1 + 3*dam+1)/2/3
+        // = (9*dam+2)/6
+        // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
+        return (9.0 * avg_base_damage + 2.0) / 18.0;
+    }
+    else if (brand == "silver") {
+        // flat 75% on chaotic monsters
+        return 0.75 * avg_base_damage;
+        //TODO: (1 + random2(damage_done) / 3) on others
+    }
+    else if (brand == "slay drac") {
+        // bonus_dam = 1 + random2(3 * dam / 2);
+        // avg = 1 + 75% * dam
+        return 1 + 0.75 * avg_base_damage;
+    }
+    else if (brand == "spect") {
+        return calcSpectralDamage(weapon);
+    }
+    else if (brand == "discharge") {
+        // 1 in 3 chance of casting discharge with an average power of 150
+        // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
+        return (3 + (20 + 15/2) / 2) / 3;
+    }
+
+   return 0;
 }
 
 // Calculate average delay for heavy brand
