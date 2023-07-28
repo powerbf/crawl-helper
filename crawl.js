@@ -1423,6 +1423,12 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
             // 0-50% + 1+1d3 -> avg = 25% + 2
             damage_per_hit["brand"] = (0.25 * damage_per_hit["base"]) + 2.0;
         }
+        else if (weapon["brand"] == "pain") {
+            // Chance to trigger is necro/(necro+1)
+            // Damage if triggered is random2(necro+1) (NOT 1d(necro) as wiki says)
+            var necro = parseFloat($('#necromancy').text());
+            damage_per_hit["brand"] = necro/(necro+1.0) * necro/2.0;
+        }
         else if (weapon["brand"] == "elec") {
             // chance to trigger is 1/4 (1/3 prior to 0.28)
             trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
