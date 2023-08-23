@@ -914,7 +914,7 @@ function parseBrand(s) {
         return "discharge";
     }
 
-    var m = /(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
+    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
     if (m != null) {
         return m[1];
     }
