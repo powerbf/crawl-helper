@@ -7,7 +7,7 @@ const weaponData = {
     "claws 3": { category: "unarmed", damage: 9, hit: +6, delay: { base: 10, min: 5 }, },
 
     "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
-    "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
+    "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 6, min: 2.5 }, img: "quickblade" },
     "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 10, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
@@ -61,7 +61,7 @@ const weaponData = {
     "orcbow": { category: "bows", damage: 11, hit: -3, delay: { base: 15, min: 7 }, img: "ranged/shortbow" },
     "longbow": { category: "bows", damage: 14, hit: 0, delay: { base: 17, min: 7 }, img: "ranged/longbow" },
 
-    "hand crossbow": { category: "crossbows", damage: 16, hit: +3, delay: { base: 19, min: 10 }, img: "ranged/hand_crossbow" },
+    "hand cannon": { category: "crossbows", damage: 16, hit: +3, delay: { base: 19, min: 10 }, img: "ranged/hand_crossbow" },
     "arbalest": { category: "crossbows", damage: 16, hit: -2, delay: { base: 19, min: 10 }, img: "ranged/arbalest" },
     "triple crossbow": { category: "crossbows", damage: 23, hit: -2, delay: { base: 23, min: 10 }, img: "ranged/triple_crossbow" },
 
@@ -75,6 +75,8 @@ const weaponData = {
 // old weapon data - indexed by *last* version they were valid for
 const oldWeaponData = {
     30: {
+        "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
+
         "shortbow": { category: "bows", damage: 9, hit: +2, delay: { base: 15, min: 7 }, img: "ranged/shortbow" },
         "longbow": { category: "bows", damage: 13, hit: 0, delay: { base: 16, min: 7 }, img: "ranged/longbow" },
         "hand crossbow": { category: "crossbows", damage: 15, hit: +3, delay: { base: 19, min: 10 }, img: "ranged/hand_crossbow" },
