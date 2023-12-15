@@ -156,7 +156,7 @@ const artefactData = {
         "majin-bo": { base_type: "quarterstaff" },
         "frostbite": { base_type: "executioner's axe" },
         "thermic engine" : { base_type: "double sword" },
-        "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7 },
+        "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7, min_delay: +3 },
         "throatcutter": { base_type: "long sword" },
         "staff of the meek": { base_type: "quarterstaff" },
     },
@@ -166,7 +166,7 @@ const artefactData = {
         "dark maul": { base_type: "great mace", new_type: "maul", damage: +35, hit: +2, base_delay: +13 },
     },
     28: {
-        "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5 },
+        "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5, min_delay: +3 },
     }
 };
 
@@ -809,6 +809,9 @@ function getArtefactRefData(weapon, crawlVersion) {
                 }
                 if ("base_delay" in artData) {
                     newWeapType["delay"]["base"] += artData["base_delay"];
+                }
+                if ("min_delay" in artData) {
+                    newWeapType["delay"]["min"] += artData["min_delay"];
                 }
                 newWeapType["type"] = artData["new_type"];
                 return newWeapType;
