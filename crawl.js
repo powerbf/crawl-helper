@@ -281,6 +281,14 @@ function populateVersionSelector()
     }
 }
 
+function getCrawlVersion()
+{
+    let crawlVersion = parseInt($('#version').val());
+    if (crawlVersion == NaN)
+        crawlVersion = MAX_VERSION;
+    return crawlVersion;
+}
+
 function populateSpeciesSelector()
 {
     var selector = $('#species');
@@ -351,12 +359,23 @@ function populateSpellSchoolSelectors()
         "Necromancy", "Translocations", "Transmutations", "Alchemy",
         "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
     ];
-    
+
+    let crawlVersion = getCrawlVersion();
+
     for (let id of ["school1", "school2", "school3"]) {
         let selector = $('#'+id);
         selector.empty(); // remove old options
 
         for (let school of spellSchools) {
+
+            if (crawlVersion >= 31) {
+                if (["Transmutations", "Poison Magic"].includes(school))
+                    continue;
+            }
+            else {
+                if (school == "Alchemy")
+                    continue;
+            }
             var option = $("<option></option>");
             option.attr("value", skillNameToElementId(school));
             option.text(school);
@@ -402,6 +421,7 @@ function updateAvailableSkills()
         $('#poison_magic_container').show();
     }
 
+    populateSpellSchoolSelectors();
 }
 
 function reset()
