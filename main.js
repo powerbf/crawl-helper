@@ -39,6 +39,11 @@ $("#data").on("input", function() {
     return true;
 });
 
+$("#version").on("change", function() {
+    updateAvailableSkills();
+    return true;
+});
+
 $("#species").on("change", function() {
     // if species changes then shield penalty and unarmed attack could change
     defaultUnarmed();

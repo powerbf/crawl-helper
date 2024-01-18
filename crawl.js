@@ -348,7 +348,7 @@ function populateSpellSchoolSelectors()
 {
     let spellSchools = [
         "Conjurations", "Hexes", "Summonings",
-        "Necromancy", "Translocations", "Transmutations",
+        "Necromancy", "Translocations", "Transmutations", "Alchemy",
         "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
     ];
     
@@ -367,6 +367,41 @@ function populateSpellSchoolSelectors()
             spellSchools.unshift("None");
         }
     }
+}
+
+function updateAvailableSkills()
+{
+    var crawlVersion = parseInt($('#version').val());
+
+    if (crawlVersion >= 29) {
+        // slings/bows/crossbows use a single skill "ranged"
+        $('#ranged_container').show();
+        $('#slings_container').hide();
+        $('#bows_container').hide();
+        $('#crossbows_container').hide();
+    }
+    else {
+        // slings/bows/crossbows use separate skills
+        $('#ranged_container').hide();
+        $('#slings_container').show();
+        $('#bows_container').show();
+        $('#crossbows_container').show();
+    }
+
+    if (crawlVersion >= 31) {
+        // transmutations and poison magic reworked into shapeshifting and alchemy
+        $('#shapeshifting_container').show();
+        $('#alchemy_container').show();
+        $('#transmutations_container').hide();
+        $('#poison_magic_container').hide();
+    }
+    else {
+        $('#shapeshifting_container').hide();
+        $('#alchemy_container').hide();
+        $('#transmutations_container').show();
+        $('#poison_magic_container').show();
+    }
+
 }
 
 function reset()
@@ -632,6 +667,8 @@ function parseData()
     }
 
     handleCrossTraining();
+
+    updateAvailableSkills();
 }
 
 function skillNameToElementId(skill)
@@ -982,21 +1019,6 @@ function updateResults()
 function updateCombatResults()
 {
     var crawlVersion = parseInt($('#version').val());
-
-    if (crawlVersion >= 29) {
-        // slings/bows/crossbows use a single skill "ranged"
-        $('#ranged_container').show();
-        $('#slings_container').hide();
-        $('#bows_container').hide();
-        $('#crossbows_container').hide();
-    }
-    else {
-        // slings/bows/crossbows use separate skills
-        $('#ranged_container').hide();
-        $('#slings_container').show();
-        $('#bows_container').show();
-        $('#crossbows_container').show();
-    }
 
     var shieldSpeedPenalty = calcShieldSpeedPenalty(crawlVersion);
     var armourSpeedPenalty = calcArmourSpeedPenalty(crawlVersion);
@@ -1984,8 +2006,8 @@ function isVehumetSupporting(schools, level)
             // TODO: Handle Ozo's Armour/Ramparts
             return true;
         }
-        else if (school == "poison_magic") {
-            // Olgreb's Toxic Radiance (level 4) is the only pure poison spell supported
+        else if (school == "poison_magic" || school == "alchemy") {
+            // Olgreb's Toxic Radiance (level 4) is the only pure poison/alchemy spell supported
             return (level == 4);
         }
         else {
