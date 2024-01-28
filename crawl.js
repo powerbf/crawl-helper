@@ -998,29 +998,32 @@ function parseBrand(s) {
 }
 
 function parseStaffBrand(s) {
-    if (s.includes("staff of earth")) {
+    if (s.includes("elemental staff")) {
+        return "elemental";
+    }
+    else if (s.match(/\bearth\b/i)) {
         return "earth";
     }
-    else if (s.includes("staff of fire")) {
+    else if (s.match(/\bfire\b/i)) {
         return "fire";
     }
-    else if (s.includes("staff of cold")) {
+    else if (s.match(/\bcold\b/i)) {
         return "cold";
     }
-    else if (s.includes("staff of air")) {
+    else if (s.match(/\bair\b/i)) {
         return "air";
     }
-    else if (s.includes("staff of death")) {
+    else if (s.match(/\bdeath\b/i)) {
         return "death";
     }
-    else if (s.includes("staff of conjuration")) {
+    else if (s.includes("conj")) {
         return "conjuration";
     }
-    else if (s.includes("staff of poison")) {
+    else if (s.match(/\bpoison\b/i)) {
         return "poison";
     }
-    else if (s.includes("elemental staff")) {
-        return "elemental";
+    else if (s.match(/\balchemy\b/i)) {
+        return "alchemy";
     }
     else {
         return "";
@@ -1525,6 +1528,8 @@ function calcStaffBrandDamage(weapon, crawlVersion)
         school = "ice_magic";
     else if (brand == "poison")
         school = "poison_magic";
+    else if (brand == "alchemy")
+        school = "alchemy";
     else if (brand == "conjuration")
         school = "conjurations";
     else if (brand == "death")
