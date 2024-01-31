@@ -368,20 +368,11 @@ function populateSpellSchoolSelectors()
         selector.empty(); // remove old options
 
         for (let school of spellSchools) {
-
-            if (crawlVersion >= 31) {
-                if (["Transmutations", "Poison Magic"].includes(school))
-                    continue;
-            }
-            else {
-                if (school == "Alchemy")
-                    continue;
-            }
             var option = $("<option></option>");
             option.attr("value", skillNameToElementId(school));
             option.text(school);
             selector.append(option);
-            }
+        }
 
         if (id == "school1") {
             spellSchools.unshift("None");
@@ -421,8 +412,6 @@ function updateAvailableSkills()
         $('#transmutations_container').show();
         $('#poison_magic_container').show();
     }
-
-    populateSpellSchoolSelectors();
 }
 
 function reset()
