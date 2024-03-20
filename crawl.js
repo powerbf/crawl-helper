@@ -1047,7 +1047,7 @@ function updateCombatResults()
         }
     }
 
-    var weaps = weapons;
+    var weaps = [...weapons];
     if (crawlVersion <= 28) {
         // handle sling with both stones and bullets as ammo
         weaps = [];
@@ -1071,6 +1071,13 @@ function updateCombatResults()
         calcDamage(weap, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion);
     }
     weaps.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
+
+    // dual-wielding
+    if ($("#species").val() == "coglin") {
+        calcWeaponComboDamage(weaps);
+        weaps.sort((a, b) => (a["damage_per_turn"]["total"] < b["damage_per_turn"]["total"]) ? 1 : -1)
+    }
+
 
     $('#stats').empty();
     $('#weapons > tbody:last-child').empty();
@@ -1110,6 +1117,54 @@ function updateCombatResults()
 
         $('#weapons > tbody:last-child').append(row);
     }
+
+}
+
+function calcWeaponComboDamage(weaps)
+{
+    var combos = [];
+    const RangedCats = ["slings", "bows", "crossbows"];
+
+    for (let i = 0; i < weaps.length; i++) {
+        const weap1 = weaps[i];
+        let weap1Cat = getWeaponRefData(weap1)["category"];
+        let isWeap1Ranged = (RangedCats.includes(weap1Cat));
+        let isWeap1Melee = (!isWeap1Ranged && weap1Cat != "throwing" && weap1Cat != "unarmed");
+        if (!isWeap1Ranged && !isWeap1Melee)
+            continue;
+
+        for (let j = i + 1; j < weaps.length; j++) {
+            const weap2 = weaps[j];
+            //if (weap2 == weap1)
+            //    continue;
+            let weap2Cat = getWeaponRefData(weap2)["category"];
+            let isWeap2Ranged = (RangedCats.includes(weap2Cat));
+            let isWeap2Melee = (!isWeap2Ranged && weap2Cat != "throwing" && weap2Cat != "unarmed");
+            if (isWeap2Ranged != isWeap1Ranged || isWeap2Melee != isWeap1Melee)
+                continue;
+
+            let delay = (weap1["delay"] + weap2["delay"]) / 2;
+            let combo = {};
+            combo["description"] = weap1["description"] + " AND " + weap2["description"];
+            combo["delay"] = delay;
+
+            var damage_per_hit = {}
+            damage_per_hit["base"] = weap1["damage_per_hit"]["base"] + weap2["damage_per_hit"]["base"];
+            damage_per_hit["brand"] = weap1["damage_per_hit"]["brand"] + weap2["damage_per_hit"]["brand"];
+            damage_per_hit["total"] = weap1["damage_per_hit"]["total"] + weap2["damage_per_hit"]["total"];
+            combo["damage_per_hit"] = damage_per_hit;
+
+            var damage_per_turn = {}
+            damage_per_turn["base"] = damage_per_hit["base"] / delay;
+            damage_per_turn["brand"] = damage_per_hit["brand"] / delay;
+            damage_per_turn["total"] = damage_per_hit["total"] / delay;
+            combo["damage_per_turn"] = damage_per_turn;
+
+            combos.push(combo);
+        }
+    }
+
+    weaps.push(...combos);
 }
 
 function weaponToString(w) {
@@ -1172,6 +1227,9 @@ function addToEntry(dict, key, value)
 function distroToString(distro)
 {
     var result = "";
+    if (distro == null)
+        return result;
+
     if (Object.entries(distro).length <= 20) {
         // display all values
         for (const [key, pcnt] of Object.entries(distro)) {
