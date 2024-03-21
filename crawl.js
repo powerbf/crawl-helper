@@ -1507,9 +1507,20 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         damage_per_hit["brand"] = calcNonStaffBrandDamage(weapon, avg_damage, crawlVersion);
     }
 
+    if (crawlVersion >= 31 && weapon["type"] == "quick blade") {
+        // swings twice per attack
+        damage_per_hit["base"] *= 2;
+        damage_per_hit["brand"] *= 2;
+    }
+
+    if (weapon["is_pair"]) {
+        // two weapons = two attacks
+        damage_per_hit["base"] *= 2;
+        damage_per_hit["brand"] *= 2;
+    }
+
     damage_per_hit["total"] = damage_per_hit["base"] + damage_per_hit["brand"];
     weapon["damage_per_hit"] = damage_per_hit;
-
 
     // calculate delay
     var base_delay = refData["delay"]["base"] / 10.0;
@@ -1531,16 +1542,6 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     }
 
     delay += shieldSpeedPenalty;
-
-    if (crawlVersion >= 31 && weapon["type"] == "quick blade") {
-        // gets two attacks per swing
-        delay /= 2;
-    }
-
-    if (weapon["is_pair"]) {
-        // gets two attacks
-        delay /= 2;
-    }
 
     if (crawlVersion >= 29) {
         if (refData["category"] == "bows" || refData["category"] == "crossbows" || refData["category"] == "slings") {
