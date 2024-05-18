@@ -1634,6 +1634,18 @@ function calcStaffBrandDamage(weapon, crawlVersion)
 
 function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
 {
+    if (weapon["description"] && weapon["description"].match(/singing sword/i)) {
+        // sonic wave
+        // damage changes with tension - use second lowest:
+        // 2d16 with 3/8 chance to trigger
+        let brand_dmg = 17 * 3 / 8;
+        // TODO: Reduce by enemy AC
+        if (crawlVersion < 30) {
+            // also vorpal
+            brand_dmg += 0.167 * avg_base_damage;
+        }
+        return brand_dmg;
+    }
     let brand = weapon["brand"];
     if (brand == "vorpal") {
         // 0-33% on melee weapons -> avg = 16.7%
