@@ -1915,6 +1915,8 @@ function calcShieldPenalty(crawlVersion)
         penalty -= shieldsSkill / (5 + racialFactor);
     }
 
+    penalty = Math.floor(penalty * 100) / 100;
+
     return Math.max(0, penalty);
 }
 
@@ -1974,6 +1976,8 @@ function calcArmourPenalty(crawlVersion)
     var penalty =  2 / 5 * base_ev_penalty * base_ev_penalty / (str + 3)
 
     penalty *= (450 - armourSkill*10) / 450;
+
+    penalty = Math.floor(penalty * 100) / 100;
 
     return penalty;
 }
@@ -2071,12 +2075,18 @@ function getRawSpellFailRate(level, vehumetSupporting)
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
     let avgSchools = getAverageSpellSchoolSkills();
+    let species = $('#species').val();
 
     // calculate penalties
     let crawlVersion = parseInt($('#version').val());
     let armourPenalty = 19 * calcArmourPenalty(crawlVersion);
+    if (species == "mountain dwarf") {
+        armourPenalty /= 4; // runic magic
+        armourPenalty = Math.floor(100 * armourPenalty) / 100;
+    }
     let shieldPenalty = 19 * calcShieldPenalty(crawlVersion);
     let penalties = Math.max(0, Math.max(0, armourPenalty) + shieldPenalty);
+    penalties = Math.floor(penalties);
 
     let fail = 60 + getSpellDifficulty(level);
     fail -= 6 * (2*avgSchools + 0.5*spellcasting);
