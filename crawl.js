@@ -483,6 +483,7 @@ function extractDataSections(data)
     var sectionPos = {};
     sectionPos["header"] = data.indexOf("Dungeon Crawl Stone Soup version");
     sectionPos["stats"] = data.search(".* Turns:");
+    sectionPos["apostles"] = data.search("Apostles:"); // Beogh
     sectionPos["inventory"] = data.search(" *Inventory:");
     sectionPos["skills"] = data.search(" *Skills:");
     sectionPos["spells"] = data.search(".*(spell levels? left|memorise any spells)");
