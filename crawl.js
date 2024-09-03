@@ -196,7 +196,7 @@ const armourData = {
     "pearl dragon scales": { ac: 10, encumbrance: 110 },
     "storm dragon scales": { ac: 10, encumbrance: 150 },
     "shadow dragon scales": { ac: 11, encumbrance: 150 },
-    "gold dragon scales": { ac: 12, encumbrance: 230 },
+    "golden dragon scales": { ac: 12, encumbrance: 230 },
 };
 
 const artefactArmourData = {
@@ -205,7 +205,7 @@ const artefactArmourData = {
     "faerie dragon scales" : { base_type: "acid dragon scales" },
     "skin of Zhor" : { base_type: "animal skin" },
     "salamander hide armour" : { base_type: "leather armour" },
-    "scales of the Dragon King" : { base_type: "gold dragon scales" },
+    "scales of the Dragon King" : { base_type: "golden dragon scales" },
     "Kryia's mail coat" : { base_type: "scale mail" },
     "armour of Talos" : { base_type: "plate armour" },
     "Cigotuvi's embrace" : { base_type: "leather armour" },
