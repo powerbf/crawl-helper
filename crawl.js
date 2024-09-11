@@ -605,7 +605,8 @@ function parseData()
     if (statsSection.match(/buckler|small shield/i)) {
         $('#shield').val("buckler");
     }
-    else if (statsSection.match(/((kite|medium|storm queen's) shield|shield of resistance)/i)) {
+    else if (statsSection.match(/(kite|medium|storm queen's) shield/i)
+             || statsSection.match(/shield of (resistance|the gong)/i)) {
         $('#shield').val("kite_shield");
     }
     else if (statsSection.match(/(tower|large) shield/i)) {
