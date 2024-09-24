@@ -2153,7 +2153,7 @@ function updateSpellResults()
 
     let heading = "Failure Rate";
     if (vehumetDoingSomething)
-        heading += " (*=Vehumet support)";
+        heading += " (*=Vehumet assist)";
     $("#spell_failure_heading").text(heading);
 }
 
