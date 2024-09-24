@@ -2077,8 +2077,10 @@ const SpecialCaseSpells = [
     // Non-conforming level 3 spells (power cap not 100)
     {name: "Volatile Blastmotes", level: 3, schools: ["fire_magic", "translocations"], powerCap: 50},
     {name: "Stone Arrow", level: 3, schools: ["earth_magic", "conjurations"], powerCap: 50},
-    {name: "Dazzling Flash", level: 3, schools: ["fire_magic", "hexes"], powerCap: 50, minVersion: 32},
+    {name: "Dazzling Flash", level: 3, schools: ["fire_magic", "hexes"], powerCap: 50, showName: true, vehumetSupport: false, minVersion: 32},
     {name: "Dazzling Flash", level: 3, schools: ["conjuration", "hexes"], powerCap: 50, maxVersion: 31},
+    // Inner Flame is conformant, but needs to be distinguished from Dazzling Flash
+    {name: "Inner Flame", level: 3, schools: ["fire_magic", "hexes"], powerCap: 100, showName: true, minVersion: 32},
     {name: "Frozen Ramparts", level: 3, schools: ["ice_magic"], powerCap: 50, showName: true},
     // Ozocubu's Armour has the standard power cap, but needs to be distinguished from Frozen Ramparts.
     // Also, it's not supported by Vehumet.
@@ -2222,16 +2224,26 @@ function isVehumetSupporting(schools, level)
     if (vehumetPiety < 3)
         return false;
 
-    if (schools.includes("conjurations") || schools.includes("fire_magic")) {
-        // all spells involving conjurations or fire are supported
+    if (schools.includes("conjurations")) {
+        // all spells involving conjurations are supported
+        return true;
+    }
+    else if (schools.includes("fire_magic")) {
+        // Summon Blazeheart Golem not supported
+        if (level == 4 && match(schools, ["summonings", "fire"]))
+            return false;
+
+        // Everything else, apart from Dazzling Flash supported.
+        // Unfortunately, it's a level 3 fire/hexes spell, same as Inner Flame.
+        // We will handle as special case.
         return true;
     }
     else if (schools.length == 1) {
         // single school
         let school = schools[0];
         if (school == "earth_magic") {
-            // all pure earth spells are supported
-            return true;
+            // all pure earth spells are supported, except Passwall (level 3)
+            return (level != 3);
         }
         else if (school == "air_magic") {
             // all pure air spells are supported, except Swiftness (level 3)
@@ -2240,11 +2252,12 @@ function isVehumetSupporting(schools, level)
         else if (school == "ice_magic") {
             // all pure ice spells are supported, except Ozocubu's Armour (level 3)
             // Unfortunately, the other level 3 ice spell, Frozen Ramparts, is supported
+            // We will handle this as a special case
             return true;
         }
         else if (school == "poison_magic" || school == "alchemy") {
-            // Olgreb's Toxic Radiance (level 4) is the only pure poison/alchemy spell supported
-            return (level == 4);
+            // only Olgreb's Toxic Radiance (level 4) and Eringya's Noxious Bog (level 6) are supported
+            return (level == 4 || level == 6);
         }
         else {
             return false;
@@ -2252,15 +2265,25 @@ function isVehumetSupporting(schools, level)
     }
 
     // A few other specific spells are supported:
-    // Poisonous Vapours - level 2 Air/Poison
-    // Yara's Violent Unravelling - level 5 Hexes/Transmutations
-    // Eringya's Noxious Bog - level 6 Poison/Transmutations
+    // Mercury Vapours - level 2 Alchemy/Air (formerly Poisonous Vapours - level 2 Air/Poison)
+    // Yara's Violent Unravelling - level 5 Hexes/Alchemy (formerly Hexes/Transmutations)
+    // Eringya's Noxious Bog - (formerly level 6 Poison/Transmutations)
+    // Permafrost Eruption - level 6 Ice/Earth
+    // Rimeblight - level 7 Necromancy/Ice
     if (schools.length == 2) {
-        if (level == 2 && schools.includes("air_magic") && schools.includes("poison_magic"))
+        if (level == 2 && match(schools, ["air_magic", "alchemy"]))
             return true;
-        else if (level == 5 && schools.includes("transmutations") && schools.includes("hexes"))
+        else if (level == 2 && match(schools, ["air_magic", "poison_magic"]))
             return true;
-        else if (level == 6 && schools.includes("transmutations") && schools.includes("poison_magic"))
+        else if (level == 5 && match(schools, ["hexes", "alchemy"]))
+            return true;
+        else if (level == 5 && match(schools, ["hexes", "transmutations"]))
+            return true;
+        else if (level == 6 && match(schools, ["transmutations", "poison_magic"]))
+            return true;
+        else if (level == 6 && match(schools, ["ice_magic", "earth_magic"]))
+            return true;
+        else if (level == 7 && match(schools, ["ice_magic", "necromancy"]))
             return true;
     }
 
