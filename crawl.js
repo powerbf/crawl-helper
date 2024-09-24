@@ -271,6 +271,25 @@ function clampValue(val, min, max) {
     return val < min ? min : (val > max ? max : val);
 }
 
+// check if two arrays contain the same elements
+// (not necessarily in the same order)
+function match(a, b)
+{
+    if (a == null || b == null)
+        return (a === b);
+    else if (a.length != b.length)
+        return false;
+    else {
+        let aa = a.slice().sort();
+        let bb = b.slice().sort();
+        for (let i = 0; i < aa.length; i++) {
+            if (aa[i] != bb[i])
+                return false;
+        }
+        return true;
+    }
+}
+
 function populateVersionSelector()
 {
     var selector = $('#version');
@@ -1995,16 +2014,19 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
-function appendSpellResultRow(level, schools, vehumetSupporting, description, specialCase)
+function appendSpellResultRow(level, schools, vehumetSupporting, description, powerCapOverride)
 {
 
     let failRate = calculateSpellFailRate(level, vehumetSupporting);
+    let powerCap = powerCapOverride != null ? powerCapOverride : getSpellPowerCap(level);
     let power = calculateSpellPower(schools);
-    let powerCap = getSpellPowerCap(level, schools, specialCase);
-    let powerPercent = Math.floor(100 * power / powerCap);
-    if (power > powerCap) {
-        power = powerCap;
+    let powerPercent = null;
+    if (power >= powerCap) {
         powerPercent = 100;
+        power = powerCap;
+    }
+    else {
+        powerPercent = Math.floor(100 * power / powerCap);
     }
 
     let levelText = level.toString();
@@ -2025,6 +2047,62 @@ function appendSpellResultRow(level, schools, vehumetSupporting, description, sp
     row += "</tr>";
     $('#spells > tbody:last-child').append(row);
 }
+
+function getSpellPowerCap(level)
+{
+    if (level >= 5)
+        return 200;
+    else if (level >= 3)
+        return 100;
+    else if (level >= 2)
+        return 50;
+    else
+        return 25;
+}
+
+const SpecialCaseSpells = [
+    // Non-conforming level 1 spells (power cap not 25)
+    {name: "Apportation", level: 1, schools: ["translocations"], powerCap: 50},
+    {name: "Sandblast", level: 1, schools: ["earth_magic"], powerCap: 50},
+
+    // Non-conforming level 2 spells (power cap not 50)
+    // Grave Claw is conforming, but we need to distinguish from Sublimation of Blood
+    {name: "Grave Claw", level: 2, schools: ["necromancy"], powerCap: 50, showName: true, minVersion: 32},
+    {name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100, showName: true, minVersion: 32},
+    // no need to show name of Sublimation of Blood when Grave Claw not present
+    {name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100, showName: false, maxVersion: 31},
+    // From version 0.31 onwards, Passwall is conformant (and a level 3 pure Earth spell)
+    {name: "Passwall", level: 2, schools: ["transmutations", "earth_magic"], powerCap: 120, maxVersion: 30},
+
+    // Non-conforming level 3 spells (power cap not 100)
+    {name: "Volatile Blastmotes", level: 3, schools: ["fire_magic", "translocations"], powerCap: 50},
+    {name: "Stone Arrow", level: 3, schools: ["earth_magic", "conjurations"], powerCap: 50},
+    {name: "Dazzling Flash", level: 3, schools: ["fire_magic", "hexes"], powerCap: 50, minVersion: 32},
+    {name: "Dazzling Flash", level: 3, schools: ["conjuration", "hexes"], powerCap: 50, maxVersion: 31},
+    {name: "Frozen Ramparts", level: 3, schools: ["ice_magic"], powerCap: 50, showName: true},
+    // Ozocubu's Armour has the standard power cap, but needs to be distinguished from Frozen Ramparts.
+    // Also, it's not supported by Vehumet.
+    {name: "Ozocubu's Armour", level: 3, schools: ["ice_magic"], powerCap: 100, showName: true, vehumetSupport: false},
+
+    // Non-conforming level 4 spells (power cap not 100)
+    {name: "Vhi's Electric Charge", level: 4, schools: ["air_magic", "translocations"], powerCap: 50},
+    {name: "Animate Armour", level: 4, schools: ["earth_magic", "summonings"], powerCap: 50},
+    {name: "Cause Fear", level: 4, schools: ["hexes"], powerCap: 200},
+    {name: "Petrify", level: 4, schools: ["alchemy", "earth_magic"], powerCap: 200},
+    {name: "Airstrike", level: 4, schools: ["air_magic"], powerCap: 200},
+    {name: "Fulminant Prism", level: 4, schools: ["conjurations", "alchemy"], powerCap: 200},
+    {name: "Leda's Liquefaction", level: 4, schools: ["earth_magic", "alchemy"], powerCap: 200},
+    {name: "Anguish", level: 4, schools: ["hexes", "necromancy"], powerCap: 200},
+    {name: "Dimensional Bullseye", level: 4, schools: ["translocations", "hexes"], powerCap: 200, minVersion: 32},
+
+    // Non-conforming level 5 spells (power cap not 200)
+    {name: "Curse of Agony", level: 5, schools: ["necromancy"], powerCap: 100, minVersion: 31},
+    {name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100},
+    {name: "Summon Mana Viper", level: 5, schools: ["summonings", "hexes"], powerCap: 100},
+    {name: "Alistair's Intoxication", level: 5, schools: ["alchemy"], powerCap: 150},
+    // Prior to v0.31, spell schools were different for Alistair's Intoxication
+    {name: "Alistair's Intoxication", level: 5, schools: ["poison_magic", "transmutations"], powerCap: 150},
+];
 
 function updateSpellResults()
 {
@@ -2047,21 +2125,27 @@ function updateSpellResults()
             vehumetDoingSomething = true;
 
         // handle special cases
-        if (level == 2 && schools.length == 1 && schools[0] == "necromancy") {
-            let desc = null;
-            if (crawlVersion >= 32) {
-                appendSpellResultRow(level, schools, vehumetSupporting, "Grave Claw", false);
-                desc = "Sublimation of Blood";
+        let done = false;
+        for (let spell of SpecialCaseSpells) {
+            if ("minVersion" in spell && crawlVersion < spell.minVersion)
+                continue;
+            if ("maxVersion" in spell && crawlVersion > spell.maxVersion)
+                continue;
+            if (spell.level == level && match(schools, spell.schools)) {
+                let vehSupport = vehumetSupporting;
+                if (vehumetSupporting && "vehumetSupport" in spell)
+                    vehSupport = spell.vehumetSupport;
+                let spellName = null;
+                if ("name" in spell && "showName" in spell && spell.showName)
+                    spellName = spell.name;
+                appendSpellResultRow(level, schools, vehSupport, spellName, spell.powerCap);
+                done = true;
             }
-            appendSpellResultRow(level, schools, vehumetSupporting, desc, true);
         }
-        else if (level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
-            appendSpellResultRow(level, schools, vehumetSupporting, "Frozen Ramparts", true);
-            appendSpellResultRow(level, schools, false, "Ozocubu's Armour", false);
-        }
-        else {
+
+        if (!done) {
             // standard case
-            appendSpellResultRow(level, schools, vehumetSupporting, null, false);
+            appendSpellResultRow(level, schools, vehumetSupporting, null, null);
         }
     }
 
@@ -2274,75 +2358,3 @@ function calculateSpellPower(schools)
     return Math.floor(power);
 }
 
-function getSpellPowerCap(level, schools, special)
-{
-    if (level >= 6) {
-        return 200;
-    }
-    else if (level == 1) {
-        if (schools.length == 1 && ["translocations", "earth_magic"].includes(schools[0]))
-            return 50;
-        else
-            return 25;
-    }
-    else if (level == 2) {
-        // Level 2 Necromancy: Sublimation of Blood has cap of 100, but Grave Claw has cap of 50
-        if (special && schools.length == 1 && schools[0] == "necromancy")
-            return 100;
-        else
-            return 50;
-    }
-    else if (level == 3) {
-        // Level 3 Ice: Ozocubu's Armour has cap of 100, but Frozen Ramparts 50
-        if (special && schools.length == 1 && schools[0] == "ice_magic")
-            return 50;
-        else if (schools.length == 2)
-        {
-            if (schools.includes("fire_magic") && schools.includes("translocations"))
-                return 50;
-            if (schools.includes("fire_magic") && schools.includes("hexes"))
-                return 50;
-            if (schools.includes("earth_magic") && schools.includes("conjurations"))
-                return 50;
-        }
-        return 100;
-    }
-    else if (level == 4) {
-        if (schools.length == 1)
-        {
-            if (["hexes", "earth_magic", "air_magic"].includes(schools[0]))
-                return 200;
-        }
-        else if (schools.length == 2)
-        {
-            if (schools.includes("air_magic") && schools.includes("translocations"))
-                return 50;
-            if (schools.includes("earth_magic") && schools.includes("summonings"))
-                return 50;
-            if (schools.includes("earth_magic") && schools.includes("alchemy"))
-                return 200;
-            if (schools.includes("conjurations") && schools.includes("alchemy"))
-                return 200;
-            if (schools.includes("hexes") && schools.includes("necromancy"))
-                return 200;
-            if (schools.includes("hexes") && schools.includes("translocations"))
-                return 200;
-        }
-        return 100;
-    }
-    else if (level == 5) {
-        if (schools.length == 1)
-        {
-            if (["necromancy", "conjurations"].includes(schools[0]))
-                return 100;
-            else if (schools[0] == "alchemy")
-                return 150;
-        }
-        else if (schools.length == 2)
-        {
-            if (schools.includes("hexes") && schools.includes("summonings"))
-                return 100;
-        }
-    }
-    return 200;
-}
