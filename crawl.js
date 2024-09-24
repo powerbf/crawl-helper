@@ -2298,11 +2298,11 @@ function getSpellPowerCap(level, schools, special)
             return 50;
         else if (schools.length == 2)
         {
-            if (schools.contains("fire_magic") && schools.contains("translocations"))
+            if (schools.includes("fire_magic") && schools.includes("translocations"))
                 return 50;
-            if (schools.contains("fire_magic") && schools.contains("hexes"))
+            if (schools.includes("fire_magic") && schools.includes("hexes"))
                 return 50;
-            if (schools.contains("earth_magic") && schools.contains("conjurations"))
+            if (schools.includes("earth_magic") && schools.includes("conjurations"))
                 return 50;
         }
         return 100;
@@ -2315,17 +2315,17 @@ function getSpellPowerCap(level, schools, special)
         }
         else if (schools.length == 2)
         {
-            if (schools.contains("air_magic") && schools.contains("translocations"))
+            if (schools.includes("air_magic") && schools.includes("translocations"))
                 return 50;
-            if (schools.contains("earth_magic") && schools.contains("summonings"))
+            if (schools.includes("earth_magic") && schools.includes("summonings"))
                 return 50;
-            if (schools.contains("earth_magic") && schools.contains("alchemy"))
+            if (schools.includes("earth_magic") && schools.includes("alchemy"))
                 return 200;
-            if (schools.contains("conjurations") && schools.contains("alchemy"))
+            if (schools.includes("conjurations") && schools.includes("alchemy"))
                 return 200;
-            if (schools.contains("hexes") && schools.contains("necromancy"))
+            if (schools.includes("hexes") && schools.includes("necromancy"))
                 return 200;
-            if (schools.contains("hexes") && schools.contains("translocations"))
+            if (schools.includes("hexes") && schools.includes("translocations"))
                 return 200;
         }
         return 100;
@@ -2340,7 +2340,7 @@ function getSpellPowerCap(level, schools, special)
         }
         else if (schools.length == 2)
         {
-            if (schools.contains("hexes") && schools.contains("summonings"))
+            if (schools.includes("hexes") && schools.includes("summonings"))
                 return 100;
         }
     }
