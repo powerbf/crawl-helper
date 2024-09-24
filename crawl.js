@@ -256,7 +256,7 @@ const speciesData = {
 };
 
 const MIN_VERSION = 26;
-const MAX_VERSION = 31;
+const MAX_VERSION = 32;
 
 // globals - yuck
 var weapons = [];
@@ -1995,20 +1995,39 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
-function appendSpellResultRow(description, failText, powerText)
+function appendSpellResultRow(level, schools, vehumetSupporting, description, specialCase)
 {
-    var row = "<tr>";
 
-    row += "<td class='fit'>" + description + "</td>";
+    let failRate = calculateSpellFailRate(level, vehumetSupporting);
+    let power = calculateSpellPower(schools);
+    let powerCap = getSpellPowerCap(level, schools, specialCase);
+    let powerPercent = Math.floor(100 * power / powerCap);
+    if (powerPercent > 100)
+        powerPercent = 100;
+
+    let levelText = level.toString();
+    if (description)
+        levelText += " (" + description + ")";
+
+    let failText = failRate.toString() + "%";
+    if (vehumetSupporting)
+        failText += "*";
+
+    let powerText = powerPercent.toString() + "%";
+    powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
+
+    var row = "<tr>";
+    row += "<td class='fit'>" + levelText + "</td>";
     row += "<td class='fit'>" + failText + "</td>";
     row += "<td class='fit'>" + powerText + "</td>";
     row += "</tr>";
-
     $('#spells > tbody:last-child').append(row);
 }
 
 function updateSpellResults()
 {
+    let crawlVersion = parseInt($('#version').val());
+
     let schools = [];
     for (let id of ["school1", "school2", "school3"]) {
         let school = $('#'+id).val();
@@ -2022,49 +2041,31 @@ function updateSpellResults()
     for (let level = 1; level <= 9; level++) {
 
         let vehumetSupporting = isVehumetSupporting(schools, level);
-        let failRate = calculateSpellFailRate(level, vehumetSupporting);
-        let power = calculateSpellPower(schools);
-        let powerCap = getSpellPowerCap(level, schools);
-        let powerPercent = 100 * power / powerCap;
-        if (powerPercent > 100)
-            powerPercent = 100;
-
-        let do_ozos = false;
-        let description = level.toString();
-        if (level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
-            // There are two level 3 pure ice spells
-            // Frozen Ramparts is supported by Vehumet, but Ozocubu's Armour is not
-            // Also, they have different power caps
-            description += " (Frozen Ramparts)";
-            powerCap = 50;
-            do_ozos = true;
-        }
-
-        let failText = failRate.toString() + "%";
-        if (vehumetSupporting) {
-            failText += "*";
+        if (vehumetSupporting)
             vehumetDoingSomething = true;
+
+        // handle special cases
+        if (level == 2 && schools.length == 1 && schools[0] == "necromancy") {
+            let desc = null;
+            if (crawlVersion >= 32) {
+                appendSpellResultRow(level, schools, vehumetSupporting, "Grave Claw", false);
+                desc = "Sublimation of Blood";
+            }
+            appendSpellResultRow(level, schools, vehumetSupporting, desc, true);
         }
-
-        let powerText = powerPercent.toString() + "%";
-        powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
-
-        appendSpellResultRow(description, failText, powerText);
-
-        if (do_ozos) {
-            failRate = calculateSpellFailRate(level, false);
-            powerCap = getSpellPowerCap(level, schools);
-            powerPercent = 100 * power / powerCap;
-            let failText = failRate.toString() + "%";
-            let powerText = powerPercent.toString() + "%";
-            powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
-            appendSpellResultRow("3 (Ozocubu's Armour)", failText, powerText);
+        else if (level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
+            appendSpellResultRow(level, schools, vehumetSupporting, "Frozen Ramparts", true);
+            appendSpellResultRow(level, schools, false, "Ozocubu's Armour", false);
+        }
+        else {
+            // standard case
+            appendSpellResultRow(level, schools, vehumetSupporting, null, false);
         }
     }
 
     let heading = "Failure Rate";
     if (vehumetDoingSomething)
-        heading += " (*=Vehumet supporting)";
+        heading += " (*=Vehumet support)";
     $("#spell_failure_heading").text(heading);
 }
 
@@ -2153,7 +2154,6 @@ function isVehumetSupporting(schools, level)
         else if (school == "ice_magic") {
             // all pure ice spells are supported, except Ozocubu's Armour (level 3)
             // Unfortunately, the other level 3 ice spell, Frozen Ramparts, is supported
-            // TODO: Handle Ozo's Armour/Ramparts
             return true;
         }
         else if (school == "poison_magic" || school == "alchemy") {
