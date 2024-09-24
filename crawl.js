@@ -2369,8 +2369,15 @@ function calculateSpellPower(schools)
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
     let avgSchools = getAverageSpellSchoolSkills();
+    let enhancers = parseInt($('#enhancers').text());
 
     let rawPower = ((spellcasting / 2) + (2 * avgSchools)) * (intelligence / 10);
+
+    if (enhancers > 0)
+        rawPower *= Math.pow(1.5, enhancers);
+    else if (enhancers < 0)
+        rawPower *= Math.pow(0.5, -enhancers);
+
     let power = rawPower;
     if (rawPower > 50) {
         // stepdown
