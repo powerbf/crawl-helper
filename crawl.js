@@ -2002,8 +2002,10 @@ function appendSpellResultRow(level, schools, vehumetSupporting, description, sp
     let power = calculateSpellPower(schools);
     let powerCap = getSpellPowerCap(level, schools, specialCase);
     let powerPercent = Math.floor(100 * power / powerCap);
-    if (powerPercent > 100)
+    if (power > powerCap) {
+        power = powerCap;
         powerPercent = 100;
+    }
 
     let levelText = level.toString();
     if (description)
