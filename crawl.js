@@ -1995,12 +1995,13 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
-function appendSpellResultRow(description, failText)
+function appendSpellResultRow(description, failText, powerText)
 {
     var row = "<tr>";
 
     row += "<td class='fit'>" + description + "</td>";
     row += "<td class='fit'>" + failText + "</td>";
+    row += "<td class='fit'>" + powerText + "</td>";
     row += "</tr>";
 
     $('#spells > tbody:last-child').append(row);
@@ -2022,13 +2023,20 @@ function updateSpellResults()
 
         let vehumetSupporting = isVehumetSupporting(schools, level);
         let failRate = calculateSpellFailRate(level, vehumetSupporting);
+        let power = calculateSpellPower(schools);
+        let powerCap = getSpellPowerCap(level, schools);
+        let powerPercent = 100 * power / powerCap;
+        if (powerPercent > 100)
+            powerPercent = 100;
 
         let do_ozos = false;
         let description = level.toString();
-        if (vehumetSupporting && level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
+        if (level == 3 && schools.length == 1 && schools[0] == "ice_magic") {
             // There are two level 3 pure ice spells
             // Frozen Ramparts is supported by Vehumet, but Ozocubu's Armour is not
+            // Also, they have different power caps
             description += " (Frozen Ramparts)";
+            powerCap = 50;
             do_ozos = true;
         }
 
@@ -2038,11 +2046,19 @@ function updateSpellResults()
             vehumetDoingSomething = true;
         }
 
-        appendSpellResultRow(description, failText);
+        let powerText = powerPercent.toString() + "%";
+        powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
+
+        appendSpellResultRow(description, failText, powerText);
 
         if (do_ozos) {
             failRate = calculateSpellFailRate(level, false);
-            appendSpellResultRow("3 (Ozocubu's Armour)", failRate.toString() + "%");
+            powerCap = getSpellPowerCap(level, schools);
+            powerPercent = 100 * power / powerCap;
+            let failText = failRate.toString() + "%";
+            let powerText = powerPercent.toString() + "%";
+            powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
+            appendSpellResultRow("3 (Ozocubu's Armour)", failText, powerText);
         }
     }
 
@@ -2237,4 +2253,94 @@ function _get_true_fail_rate(raw_fail)
 function _tetrahedral_number(n)
 {
     return n * (n+1) * (n+2) / 6;
+}
+
+function calculateSpellPower(schools)
+{
+    let intelligence = parseFloat($('#intelligence').text());
+    let spellcasting = parseFloat($('#spellcasting').text());
+    let avgSchools = getAverageSpellSchoolSkills();
+
+    let rawPower = ((spellcasting / 2) + (2 * avgSchools)) * (intelligence / 10);
+    let power = rawPower;
+    if (rawPower > 50) {
+        // stepdown
+        power = 50 * Math.log2(1 + rawPower/50);
+    }
+    if (power > 200)
+        power = 200;
+    return Math.floor(power);
+}
+
+function getSpellPowerCap(level, schools, special)
+{
+    if (level >= 6) {
+        return 200;
+    }
+    else if (level == 1) {
+        if (schools.length == 1 && ["translocations", "earth_magic"].includes(schools[0]))
+            return 50;
+        else
+            return 25;
+    }
+    else if (level == 2) {
+        // Level 2 Necromancy: Sublimation of Blood has cap of 100, but Grave Claw has cap of 50
+        if (special && schools.length == 1 && schools[0] == "necromancy")
+            return 100;
+        else
+            return 50;
+    }
+    else if (level == 3) {
+        // Level 3 Ice: Ozocubu's Armour has cap of 100, but Frozen Ramparts 50
+        if (special && schools.length == 1 && schools[0] == "ice_magic")
+            return 50;
+        else if (schools.length == 2)
+        {
+            if (schools.contains("fire_magic") && schools.contains("translocations"))
+                return 50;
+            if (schools.contains("fire_magic") && schools.contains("hexes"))
+                return 50;
+            if (schools.contains("earth_magic") && schools.contains("conjurations"))
+                return 50;
+        }
+        return 100;
+    }
+    else if (level == 4) {
+        if (schools.length == 1)
+        {
+            if (["hexes", "earth_magic", "air_magic"].includes(schools[0]))
+                return 200;
+        }
+        else if (schools.length == 2)
+        {
+            if (schools.contains("air_magic") && schools.contains("translocations"))
+                return 50;
+            if (schools.contains("earth_magic") && schools.contains("summonings"))
+                return 50;
+            if (schools.contains("earth_magic") && schools.contains("alchemy"))
+                return 200;
+            if (schools.contains("conjurations") && schools.contains("alchemy"))
+                return 200;
+            if (schools.contains("hexes") && schools.contains("necromancy"))
+                return 200;
+            if (schools.contains("hexes") && schools.contains("translocations"))
+                return 200;
+        }
+        return 100;
+    }
+    else if (level == 5) {
+        if (schools.length == 1)
+        {
+            if (["necromancy", "conjurations"].includes(schools[0]))
+                return 100;
+            else if (schools[0] == "alchemy")
+                return 150;
+        }
+        else if (schools.length == 2)
+        {
+            if (schools.contains("hexes") && schools.contains("summonings"))
+                return 100;
+        }
+    }
+    return 200;
 }
