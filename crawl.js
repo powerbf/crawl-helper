@@ -387,7 +387,6 @@ const spellData = [
     { name: "Fireball", level: 5, schools: ["conjurations", "fire_magic"], powerCap: 200 },
     { name: "Freezing Cloud", level: 5, schools: ["conjurations", "ice_magic", "air_magic"], powerCap: 200, minVersion: 27 },
     { name: "Hoarfrost Cannonade", level: 5, schools: ["alchemy", "ice_magic"], powerCap: 200, minVersion: 32 },
-    { name: "Iceblast", level: 5, schools: ["conjurations", "ice_magic"], powerCap: 200 },
     { name: "Irradiate", level: 5, schools: ["conjurations", "alchemy"], powerCap: 200, minVersion: 31 },
     { name: "Irradiate", level: 5, schools: ["conjurations", "transmutations"], powerCap: 200, maxVersion: 30 },
     { name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100 },
