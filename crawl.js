@@ -255,6 +255,143 @@ const speciesData = {
     "lava orc": { size: "medium", obsolete: true },
 };
 
+const spellData = [
+    {name: "Foxfire", level: 1, schools: ["conjurations", "fire_magic"], powerCap: 25},
+    {name: "Freeze", level: 1, schools: ["ice_magic"], powerCap: 25, destructive: true },
+    {name: "Kiss of Death", level: 1, schools: ["conjurations", "necromancy"], powerCap: 25},
+    {name: "Magic Dart", level: 1, schools: ["conjurations"], powerCap: 25},
+    {name: "Shock", level: 1, schools: ["conjurations", "air_magic"], powerCap: 25},
+    {name: "Slow", level: 1, schools: ["hexes"], powerCap: 25},
+    {name: "Soul Splinter", level: 1, schools: ["necromancy"], powerCap: 25},
+    {name: "Sting", level: 1, schools: ["conjurations", "alchemy"], powerCap: 25},
+    {name: "Summon Small Mammal", level: 1, schools: ["summonings"], powerCap: 25},
+    {name: "Apportation", level: 1, schools: ["translocations"], powerCap: 50},
+    {name: "Sandblast", level: 1, schools: ["earth_magic"], powerCap: 50, destructive: true },
+
+    {name: "Blink", level: 2, schools: ["translocations"], powerCap: 50},
+    {name: "Call Imp", level: 2, schools: ["summonings"], powerCap: 50},
+    {name: "Ensorcelled Hibernation", level: 2, schools: ["hexes", "ice_magic"], powerCap: 50},
+    {name: "Grave Claw", level: 2, schools: ["necromancy"], powerCap: 50},
+    {name: "Jinxbite", level: 2, schools: ["hexes"], powerCap: 50},
+    {name: "Lesser Beckoning", level: 2, schools: ["translocations"], powerCap: 50},
+    {name: "Mercury Vapours", level: 2, schools: ["alchemy", "air_magic"], powerCap: 50, destructive: true },
+    {name: "Momentum Strike", level: 2, schools: ["conjurations", "translocations"], powerCap: 50},
+    {name: "Scorch", level: 2, schools: ["fire_magic"], powerCap: 50, destructive: true },
+    {name: "Searing Ray", level: 2, schools: ["conjurations"], powerCap: 50},
+    {name: "Static Discharge", level: 2, schools: ["conjurations", "air_magic"], powerCap: 50},
+    {name: "Throw Flame", level: 2, schools: ["conjurations", "fire_magic"], powerCap: 50},
+    {name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100},
+
+    {name: "Unleash Destruction", level: 3, schools: ["conjurations"], powerCap: 0},
+    {name: "Dazzling Flash", level: 3, schools: ["hexes", "fire_magic"], powerCap: 50},
+    {name: "Frozen Ramparts", level: 3, schools: ["ice_magic"], powerCap: 50, destructive: true },
+    {name: "Stone Arrow", level: 3, schools: ["conjurations", "earth_magic"], powerCap: 50},
+    {name: "Volatile Blastmotes", level: 3, schools: ["fire_magic", "translocations"], powerCap: 50, destructive: true },
+    {name: "Call Canine Familiar", level: 3, schools: ["summonings"], powerCap: 100},
+    {name: "Confusing Touch", level: 3, schools: ["hexes"], powerCap: 100},
+    {name: "Fugue of the Fallen", level: 3, schools: ["necromancy"], powerCap: 100},
+    {name: "Gell's Gravitas", level: 3, schools: ["translocations"], powerCap: 100},
+    {name: "Hailstorm", level: 3, schools: ["conjurations", "ice_magic"], powerCap: 100},
+    {name: "Inner Flame", level: 3, schools: ["hexes", "fire_magic"], powerCap: 100, destructive: true },
+    {name: "Maxwell's Portable Piledriver", level: 3, schools: ["translocations"], powerCap: 100},
+    {name: "Mephitic Cloud", level: 3, schools: ["conjurations", "alchemy", "air_magic"], powerCap: 100},
+    {name: "Ozocubu's Armour", level: 3, schools: ["ice_magic"], powerCap: 100},
+    {name: "Passwall", level: 3, schools: ["earth_magic"], powerCap: 100},
+    {name: "Sigil of Binding", level: 3, schools: ["hexes"], powerCap: 100},
+    {name: "Summon Ice Beast", level: 3, schools: ["ice_magic", "summonings"], powerCap: 100},
+    {name: "Swiftness", level: 3, schools: ["air_magic"], powerCap: 100},
+    {name: "Teleport Other", level: 3, schools: ["translocations"], powerCap: 100},
+    {name: "Tukima's Dance", level: 3, schools: ["hexes"], powerCap: 100},
+    {name: "Vampiric Draining", level: 3, schools: ["necromancy"], powerCap: 100},
+
+    {name: "Animate Armour", level: 4, schools: ["summonings", "earth_magic"], powerCap: 50},
+    {name: "Vhi's Electric Charge", level: 4, schools: ["air_magic", "translocations"], powerCap: 50},
+    {name: "Animate Dead", level: 4, schools: ["necromancy"], powerCap: 100},
+    {name: "Brom's Barrelling Boulder", level: 4, schools: ["earth_magic", "conjurations"], powerCap: 100},
+    {name: "Cigotuvi's Putrefaction", level: 4, schools: ["necromancy", "air_magic"], powerCap: 100},
+    {name: "Dispel Undead", level: 4, schools: ["necromancy"], powerCap: 100},
+    {name: "Flame Wave", level: 4, schools: ["conjurations", "fire_magic"], powerCap: 100},
+    {name: "Ignite Poison", level: 4, schools: ["fire_magic", "alchemy"], powerCap: 100, destructive: true },
+    {name: "Iskenderun's Mystic Blast", level: 4, schools: ["conjurations", "translocations"], powerCap: 100},
+    {name: "Martyr's Knell", level: 4, schools: ["summonings", "necromancy"], powerCap: 100},
+    {name: "Olgreb's Toxic Radiance", level: 4, schools: ["alchemy"], powerCap: 100, destructive: true },
+    {name: "Passage of Golubria", level: 4, schools: ["translocations"], powerCap: 100},
+    {name: "Sticky Flame", level: 4, schools: ["alchemy", "fire_magic"], powerCap: 100, destructive: true },
+    {name: "Summon Blazeheart Golem", level: 4, schools: ["summonings", "fire_magic"], powerCap: 100},
+    {name: "Summon Lightning Spire", level: 4, schools: ["summonings", "air_magic"], powerCap: 100},
+    {name: "Airstrike", level: 4, schools: ["air_magic"], powerCap: 200, destructive: true },
+    {name: "Anguish", level: 4, schools: ["hexes", "necromancy"], powerCap: 200},
+    {name: "Cause Fear", level: 4, schools: ["hexes"], powerCap: 200},
+    {name: "Charm", level: 4, schools: ["hexes"], powerCap: 200},
+    {name: "Dimensional Bullseye", level: 4, schools: ["translocations", "hexes"], powerCap: 200},
+    {name: "Fulminant Prism", level: 4, schools: ["conjurations", "alchemy"], powerCap: 200},
+    {name: "Leda's Liquefaction", level: 4, schools: ["earth_magic", "alchemy"], powerCap: 200},
+    {name: "Paralyse", level: 4, schools: ["hexes"], powerCap: 200},
+    {name: "Petrify", level: 4, schools: ["alchemy", "earth_magic"], powerCap: 200},
+
+    {name: "Curse of Agony", level: 5, schools: ["necromancy"], powerCap: 100},
+    {name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100},
+    {name: "Summon Mana Viper", level: 5, schools: ["summonings", "hexes"], powerCap: 100},
+    {name: "Alistair's Intoxication", level: 5, schools: ["alchemy"], powerCap: 150},
+    {name: "Arcjolt", level: 5, schools: ["conjurations", "air_magic"], powerCap: 200},
+    {name: "Borgnjor's Vile Clutch", level: 5, schools: ["necromancy", "earth_magic"], powerCap: 200},
+    {name: "Fastroot", level: 5, schools: ["hexes", "earth_magic"], powerCap: 200},
+    {name: "Fireball", level: 5, schools: ["conjurations", "fire_magic"], powerCap: 200},
+    {name: "Freezing Cloud", level: 5, schools: ["conjurations", "ice_magic", "air_magic"], powerCap: 200},
+    {name: "Hoarfrost Cannonade", level: 5, schools: ["alchemy", "ice_magic"], powerCap: 200},
+    {name: "Iceblast", level: 5, schools: ["conjurations", "ice_magic"], powerCap: 200},
+    {name: "Irradiate", level: 5, schools: ["conjurations", "alchemy"], powerCap: 200},
+    {name: "Lee's Rapid Deconstruction", level: 5, schools: ["earth_magic"], powerCap: 200, destructive: true },
+    {name: "Metabolic Englaciation", level: 5, schools: ["hexes", "ice_magic"], powerCap: 200},
+    {name: "Silence", level: 5, schools: ["hexes", "air_magic"], powerCap: 200},
+    {name: "Summon Forest", level: 5, schools: ["summonings", "translocations"], powerCap: 200},
+    {name: "Warp Space", level: 5, schools: ["translocations"], powerCap: 200},
+    {name: "Yara's Violent Unravelling", level: 5, schools: ["hexes", "alchemy"], powerCap: 200, destructive: true },
+
+    {name: "Bombard", level: 6, schools: ["conjurations", "earth_magic"], powerCap: 200},
+    {name: "Conjure Ball Lightning", level: 6, schools: ["air_magic", "conjurations"], powerCap: 200},
+    {name: "Death Channel", level: 6, schools: ["necromancy"], powerCap: 200},
+    {name: "Dispersal", level: 6, schools: ["translocations"], powerCap: 200},
+    {name: "Eringya's Noxious Bog", level: 6, schools: ["alchemy"], powerCap: 200, destructive: true },
+    {name: "Gell's Gavotte", level: 6, schools: ["translocations"], powerCap: 200},
+    {name: "Mindburst", level: 6, schools: ["conjurations"], powerCap: 200},
+    {name: "Permafrost Eruption", level: 6, schools: ["ice_magic", "earth_magic"], powerCap: 200, destructive: true },
+    {name: "Plasma Beam", level: 6, schools: ["fire_magic", "air_magic"], powerCap: 200, destructive: true },
+    {name: "Sculpt Simulacrum", level: 6, schools: ["ice_magic", "alchemy"], powerCap: 200},
+    {name: "Starburst", level: 6, schools: ["conjurations", "fire_magic"], powerCap: 200},
+    {name: "Summon Cactus Giant", level: 6, schools: ["summonings"], powerCap: 200},
+
+    {name: "Enfeeble", level: 7, schools: ["hexes"], powerCap: 200},
+    {name: "Haunt", level: 7, schools: ["summonings", "necromancy"], powerCap: 200},
+    {name: "Hellfire Mortar", level: 7, schools: ["earth_magic", "fire_magic"], powerCap: 200, destructive: true },
+    {name: "Magnavolt", level: 7, schools: ["air_magic", "earth_magic"], powerCap: 200, destructive: true },
+    {name: "Malign Gateway", level: 7, schools: ["summonings", "translocations"], powerCap: 200},
+    {name: "Manifold Assault", level: 7, schools: ["translocations"], powerCap: 200},
+    {name: "Monstrous Menagerie", level: 7, schools: ["summonings"], powerCap: 200},
+    {name: "Orb of Destruction", level: 7, schools: ["conjurations"], powerCap: 200},
+    {name: "Ozocubu's Refrigeration", level: 7, schools: ["ice_magic"], powerCap: 200, destructive: true },
+    {name: "Rimeblight", level: 7, schools: ["necromancy", "ice_magic"], powerCap: 200, destructive: true },
+    {name: "Spellforged Servitor", level: 7, schools: ["conjurations", "summonings"], powerCap: 200},
+    {name: "Summon Hydra", level: 7, schools: ["summonings"], powerCap: 200},
+
+    {name: "Borgnjor's Revivification", level: 8, schools: ["necromancy"], powerCap: 200},
+    {name: "Discord", level: 8, schools: ["hexes"], powerCap: 200},
+    {name: "Disjunction", level: 8, schools: ["translocations"], powerCap: 200},
+    {name: "Fulsome Fusillade", level: 8, schools: ["alchemy", "conjurations"], powerCap: 200, destructive: true },
+    {name: "Ignition", level: 8, schools: ["fire_magic"], powerCap: 200, destructive: true },
+    {name: "Infestation", level: 8, schools: ["necromancy"], powerCap: 200},
+    {name: "Lehudib's Crystal Spear", level: 8, schools: ["conjurations", "earth_magic"], powerCap: 200},
+    {name: "Maxwell's Capacitive Coupling", level: 8, schools: ["air_magic"], powerCap: 200, destructive: true },
+    {name: "Summon Horrible Things", level: 8, schools: ["summonings"], powerCap: 200},
+
+    {name: "Chain Lightning", level: 9, schools: ["air_magic", "conjurations"], powerCap: 200},
+    {name: "Death's Door", level: 9, schools: ["necromancy"], powerCap: 200},
+    {name: "Dragon's Call", level: 9, schools: ["summonings"], powerCap: 200},
+    {name: "Fire Storm", level: 9, schools: ["conjurations", "fire_magic"], powerCap: 200},
+    {name: "Polar Vortex", level: 9, schools: ["ice_magic"], powerCap: 200, destructive: true },
+    {name: "Shatter", level: 9, schools: ["earth_magic"], powerCap: 200, destructive: true },
+];
+
 const MIN_VERSION = 26;
 const MAX_VERSION = 32;
 
@@ -378,7 +515,7 @@ function populateBodyArmourSelector()
 function populateSpellSchoolSelectors()
 {
     let spellSchools = [
-        "Conjurations", "Hexes", "Summonings",
+        "Any", "Conjurations", "Hexes", "Summonings",
         "Necromancy", "Translocations", "Transmutations", "Alchemy",
         "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
     ];
@@ -394,10 +531,6 @@ function populateSpellSchoolSelectors()
             option.attr("value", skillNameToElementId(school));
             option.text(school);
             selector.append(option);
-        }
-
-        if (id == "school1") {
-            spellSchools.unshift("None");
         }
     }
 }
@@ -720,6 +853,11 @@ function skillNameToElementId(skill)
         let id = skill.toLowerCase().replaceAll(' ', '_');
         return id;
     }
+}
+
+function toDisplayName(s)
+{
+    return capitalizeWords(s.replaceAll('_', ' ').replaceAll(',', ', '));
 }
 
 function parseSkill(line)
@@ -2014,12 +2152,13 @@ function calcArmourSpeedPenalty(crawlVersion) {
     return penalty / 10;
 }
 
-function appendSpellResultRow(level, schools, vehumetSupporting, description, powerCapOverride)
+function appendSpellResultRow(spell, vehumetSupporting)
 {
+    let vehSupportingThisSpell = vehumetSupporting && isDestructiveSpell(spell);
 
-    let failRate = calculateSpellFailRate(level, vehumetSupporting);
-    let powerCap = powerCapOverride != null ? powerCapOverride : getSpellPowerCap(level);
-    let power = calculateSpellPower(schools);
+    let failRate = calculateSpellFailRate(spell.level, spell.schools, vehSupportingThisSpell);
+    let powerCap = spell.powerCap;
+    let power = calculateSpellPower(spell.schools);
     let powerPercent = null;
     if (power >= powerCap) {
         powerPercent = 100;
@@ -2029,130 +2168,55 @@ function appendSpellResultRow(level, schools, vehumetSupporting, description, po
         powerPercent = Math.floor(100 * power / powerCap);
     }
 
-    let levelText = level.toString();
-    if (description)
-        levelText += " (" + description + ")";
+    let levelText = spell.level.toString();
 
     let failText = failRate.toString() + "%";
-    if (vehumetSupporting)
+    if (vehSupportingThisSpell)
         failText += "*";
 
     let powerText = powerPercent.toString() + "%";
     powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
 
     var row = "<tr>";
+    row += "<td class='fit'>" + spell.name + "</td>";
     row += "<td class='fit'>" + levelText + "</td>";
+    row += "<td class='fit'>" + toDisplayName(spell.schools.toString()) + "</td>";
     row += "<td class='fit'>" + failText + "</td>";
     row += "<td class='fit'>" + powerText + "</td>";
     row += "</tr>";
     $('#spells > tbody:last-child').append(row);
 }
 
-function getSpellPowerCap(level)
-{
-    if (level >= 5)
-        return 200;
-    else if (level >= 3)
-        return 100;
-    else if (level >= 2)
-        return 50;
-    else
-        return 25;
-}
-
-const SpecialCaseSpells = [
-    // Non-conforming level 1 spells (power cap not 25)
-    {name: "Apportation", level: 1, schools: ["translocations"], powerCap: 50},
-    {name: "Sandblast", level: 1, schools: ["earth_magic"], powerCap: 50},
-
-    // Non-conforming level 2 spells (power cap not 50)
-    // Grave Claw is conforming, but we need to distinguish from Sublimation of Blood
-    {name: "Grave Claw", level: 2, schools: ["necromancy"], powerCap: 50, showName: true, minVersion: 32},
-    {name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100, showName: true, minVersion: 32},
-    // no need to show name of Sublimation of Blood when Grave Claw not present
-    {name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100, showName: false, maxVersion: 31},
-    // From version 0.31 onwards, Passwall is conformant (and a level 3 pure Earth spell)
-    {name: "Passwall", level: 2, schools: ["transmutations", "earth_magic"], powerCap: 120, maxVersion: 30},
-
-    // Non-conforming level 3 spells (power cap not 100)
-    {name: "Volatile Blastmotes", level: 3, schools: ["fire_magic", "translocations"], powerCap: 50},
-    {name: "Stone Arrow", level: 3, schools: ["earth_magic", "conjurations"], powerCap: 50},
-    {name: "Dazzling Flash", level: 3, schools: ["fire_magic", "hexes"], powerCap: 50, showName: true, vehumetSupport: false, minVersion: 32},
-    {name: "Dazzling Flash", level: 3, schools: ["conjuration", "hexes"], powerCap: 50, maxVersion: 31},
-    // Inner Flame is conformant, but needs to be distinguished from Dazzling Flash
-    {name: "Inner Flame", level: 3, schools: ["fire_magic", "hexes"], powerCap: 100, showName: true, minVersion: 32},
-    {name: "Frozen Ramparts", level: 3, schools: ["ice_magic"], powerCap: 50, showName: true},
-    // Ozocubu's Armour has the standard power cap, but needs to be distinguished from Frozen Ramparts.
-    // Also, it's not supported by Vehumet.
-    {name: "Ozocubu's Armour", level: 3, schools: ["ice_magic"], powerCap: 100, showName: true, vehumetSupport: false},
-
-    // Non-conforming level 4 spells (power cap not 100)
-    {name: "Vhi's Electric Charge", level: 4, schools: ["air_magic", "translocations"], powerCap: 50},
-    {name: "Animate Armour", level: 4, schools: ["earth_magic", "summonings"], powerCap: 50},
-    {name: "Cause Fear", level: 4, schools: ["hexes"], powerCap: 200},
-    {name: "Petrify", level: 4, schools: ["alchemy", "earth_magic"], powerCap: 200},
-    {name: "Airstrike", level: 4, schools: ["air_magic"], powerCap: 200},
-    {name: "Fulminant Prism", level: 4, schools: ["conjurations", "alchemy"], powerCap: 200},
-    {name: "Leda's Liquefaction", level: 4, schools: ["earth_magic", "alchemy"], powerCap: 200},
-    {name: "Anguish", level: 4, schools: ["hexes", "necromancy"], powerCap: 200},
-    {name: "Dimensional Bullseye", level: 4, schools: ["translocations", "hexes"], powerCap: 200, minVersion: 32},
-
-    // Non-conforming level 5 spells (power cap not 200)
-    {name: "Curse of Agony", level: 5, schools: ["necromancy"], powerCap: 100, minVersion: 31},
-    {name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100},
-    {name: "Summon Mana Viper", level: 5, schools: ["summonings", "hexes"], powerCap: 100},
-    {name: "Alistair's Intoxication", level: 5, schools: ["alchemy"], powerCap: 150},
-    // Prior to v0.31, spell schools were different for Alistair's Intoxication
-    {name: "Alistair's Intoxication", level: 5, schools: ["poison_magic", "transmutations"], powerCap: 150},
-];
-
 function updateSpellResults()
 {
     let crawlVersion = parseInt($('#version').val());
 
-    let schools = [];
-    for (let id of ["school1", "school2", "school3"]) {
-        let school = $('#'+id).val();
-        if (school != "none")
-            schools.push(school);
-    }
-
     $('#spells > tbody:last-child').empty();
 
-    let vehumetDoingSomething = false;
-    for (let level = 1; level <= 9; level++) {
+    let vehumetSupporting = isVehumetSupporting();
+    for (let spell of spellData) {
+        if ("minVersion" in spell && crawlVersion < spell.minVersion)
+            continue;
+        if ("maxVersion" in spell && crawlVersion > spell.maxVersion)
+            continue;
 
-        let vehumetSupporting = isVehumetSupporting(schools, level);
-        if (vehumetSupporting)
-            vehumetDoingSomething = true;
-
-        // handle special cases
-        let done = false;
-        for (let spell of SpecialCaseSpells) {
-            if ("minVersion" in spell && crawlVersion < spell.minVersion)
-                continue;
-            if ("maxVersion" in spell && crawlVersion > spell.maxVersion)
-                continue;
-            if (spell.level == level && match(schools, spell.schools)) {
-                let vehSupport = vehumetSupporting;
-                if (vehumetSupporting && "vehumetSupport" in spell)
-                    vehSupport = spell.vehumetSupport;
-                let spellName = null;
-                if ("name" in spell && "showName" in spell && spell.showName)
-                    spellName = spell.name;
-                appendSpellResultRow(level, schools, vehSupport, spellName, spell.powerCap);
-                done = true;
+        let skip = false;
+        for (let selectorId of ["school1", "school2", "school3"]) {
+            let school = $('#'+selectorId).val();
+            if (school != "any" && !spell.schools.includes(school)) {
+                skip = true;
+                break;
             }
         }
 
-        if (!done) {
-            // standard case
-            appendSpellResultRow(level, schools, vehumetSupporting, null, null);
-        }
+        if (skip)
+            continue;
+
+        appendSpellResultRow(spell, vehumetSupporting)
     }
 
     let heading = "Failure Rate";
-    if (vehumetDoingSomething)
+    if (vehumetSupporting)
         heading += " (*=Vehumet assist)";
     $("#spell_failure_heading").text(heading);
 }
@@ -2163,25 +2227,22 @@ function getSpellDifficulty(level)
     return difficulty_by_level[level];
 }
 
-function getAverageSpellSchoolSkills(level)
+function getAverageSpellSchoolSkills(schools)
 {
     let sum = 0;
     let count = 0;
-    for (let selectorId of ["school1", "school2", "school3"]) {
-        let school = $('#'+selectorId).val();
-        if (school != "none") {
-            sum += parseFloat($('#'+school).text());
-            count++;
-        }
+    for (let school of schools) {
+        sum += parseFloat($('#'+school).text());
+        count++;
     }
     return count == 0 ? 0 : (sum / count);
 }
 
-function getRawSpellFailRate(level, vehumetSupporting)
+function getRawSpellFailRate(level, schools, vehumetSupporting)
 {
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
-    let avgSchools = getAverageSpellSchoolSkills();
+    let avgSchools = getAverageSpellSchoolSkills(schools);
     let species = $('#species').val();
 
     // calculate penalties
@@ -2217,77 +2278,19 @@ function getRawSpellFailRate(level, vehumetSupporting)
     return fail;
 }
 
+function isDestructiveSpell(spell)
+{
+    if ("destructive" in spell)
+        return spell.destructive;
+    else
+        return spell.schools.includes("conjurations");
+}
+
 // From *** piety, Vehumet reduces the failure rates for "destructive" spells
-function isVehumetSupporting(schools, level)
+function isVehumetSupporting()
 {
     let vehumetPiety = parseInt($('#vehumet_piety').text());
-    if (vehumetPiety < 3)
-        return false;
-
-    if (schools.includes("conjurations")) {
-        // all spells involving conjurations are supported
-        return true;
-    }
-    else if (schools.includes("fire_magic")) {
-        // Summon Blazeheart Golem not supported
-        if (level == 4 && match(schools, ["summonings", "fire"]))
-            return false;
-
-        // Everything else, apart from Dazzling Flash supported.
-        // Unfortunately, it's a level 3 fire/hexes spell, same as Inner Flame.
-        // We will handle as special case.
-        return true;
-    }
-    else if (schools.length == 1) {
-        // single school
-        let school = schools[0];
-        if (school == "earth_magic") {
-            // all pure earth spells are supported, except Passwall (level 3)
-            return (level != 3);
-        }
-        else if (school == "air_magic") {
-            // all pure air spells are supported, except Swiftness (level 3)
-            return (level != 3);
-        }
-        else if (school == "ice_magic") {
-            // all pure ice spells are supported, except Ozocubu's Armour (level 3)
-            // Unfortunately, the other level 3 ice spell, Frozen Ramparts, is supported
-            // We will handle this as a special case
-            return true;
-        }
-        else if (school == "poison_magic" || school == "alchemy") {
-            // only Olgreb's Toxic Radiance (level 4) and Eringya's Noxious Bog (level 6) are supported
-            return (level == 4 || level == 6);
-        }
-        else {
-            return false;
-        }
-    }
-
-    // A few other specific spells are supported:
-    // Mercury Vapours - level 2 Alchemy/Air (formerly Poisonous Vapours - level 2 Air/Poison)
-    // Yara's Violent Unravelling - level 5 Hexes/Alchemy (formerly Hexes/Transmutations)
-    // Eringya's Noxious Bog - (formerly level 6 Poison/Transmutations)
-    // Permafrost Eruption - level 6 Ice/Earth
-    // Rimeblight - level 7 Necromancy/Ice
-    if (schools.length == 2) {
-        if (level == 2 && match(schools, ["air_magic", "alchemy"]))
-            return true;
-        else if (level == 2 && match(schools, ["air_magic", "poison_magic"]))
-            return true;
-        else if (level == 5 && match(schools, ["hexes", "alchemy"]))
-            return true;
-        else if (level == 5 && match(schools, ["hexes", "transmutations"]))
-            return true;
-        else if (level == 6 && match(schools, ["transmutations", "poison_magic"]))
-            return true;
-        else if (level == 6 && match(schools, ["ice_magic", "earth_magic"]))
-            return true;
-        else if (level == 7 && match(schools, ["ice_magic", "necromancy"]))
-            return true;
-    }
-
-    return false;
+    return (vehumetPiety >= 3);
 }
 
 function apply_spellcasting_success_boosts(chance, vehumetSupporting)
@@ -2312,9 +2315,9 @@ function apply_spellcasting_success_boosts(chance, vehumetSupporting)
 }
 
 
-function calculateSpellFailRate(level, vehumetSupporting)
+function calculateSpellFailRate(level, schools, vehumetSupporting)
 {
-    let fail = getRawSpellFailRate(level, vehumetSupporting);
+    let fail = getRawSpellFailRate(level, schools, vehumetSupporting);
 
     if (fail <= 0)
         return 0;
@@ -2368,7 +2371,7 @@ function calculateSpellPower(schools)
 {
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
-    let avgSchools = getAverageSpellSchoolSkills();
+    let avgSchools = getAverageSpellSchoolSkills(schools);
     let enhancers = parseInt($('#enhancers').text());
 
     let rawPower = ((spellcasting / 2) + (2 * avgSchools)) * (intelligence / 10);
