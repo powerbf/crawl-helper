@@ -102,6 +102,7 @@ function showSpellsTab()
 populateVersionSelector();
 populateSpeciesSelector();
 populateBodyArmourSelector();
+populateSpellLevelSelector();
 populateSpellSchoolSelectors();
 
 parseData();

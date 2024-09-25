@@ -581,6 +581,23 @@ function populateBodyArmourSelector()
     }
 }
 
+function populateSpellLevelSelector()
+{
+    let spellLevels = [
+        "Any", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+    ];
+
+    let selector = $('#spell_level');
+    selector.empty(); // remove old options
+
+    for (let level of spellLevels) {
+        var option = $("<option></option>");
+        option.attr("value", skillNameToElementId(level));
+        option.text(level);
+        selector.append(option);
+    }
+}
+
 function populateSpellSchoolSelectors()
 {
     let spellSchools = [
@@ -2268,6 +2285,11 @@ function updateSpellResults()
             continue;
         if ("maxVersion" in spell && crawlVersion > spell.maxVersion)
             continue;
+
+        let level = $('#spell_level').val();
+        if (level != "any")
+            if (spell.level != parseInt(level))
+                continue
 
         let skip = false;
         for (let selectorId of ["school1", "school2", "school3"]) {
