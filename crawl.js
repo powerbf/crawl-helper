@@ -380,7 +380,6 @@ const spellData = [
     { name: "Eringya's Noxious Bog", level: 6, schools: ["poison_magic", "transmutations"], powerCap: 200, destructive: true, maxVersion: 30 },
     { name: "Gell's Gavotte", level: 6, schools: ["translocations"], powerCap: 200, minVersion: 32 },
     { name: "Iron Shot", level: 6, schools: ["conjurations", "earth_magic"], powerCap: 200, maxVersion: 30 },
-    { name: "Mindburst", level: 6, schools: ["conjurations"], powerCap: 200 },
     { name: "Permafrost Eruption", level: 6, schools: ["ice_magic", "earth_magic"], powerCap: 200, destructive: true, minVersion: 32 },
     { name: "Plasma Beam", level: 6, schools: ["fire_magic", "air_magic"], powerCap: 200, destructive: true },
     { name: "Sculpt Simulacrum", level: 6, schools: ["ice_magic", "alchemy"], powerCap: 200, minVersion: 31 },
