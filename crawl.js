@@ -299,7 +299,6 @@ const spellData = [
     { name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 100, minVersion: 28 },
     { name: "Sublimation of Blood", level: 2, schools: ["necromancy"], powerCap: 200, maxVersion: 27 },
     { name: "Swiftness", level: 2, schools: ["air_magic"], powerCap: 100, maxVersion: 26 },
-    { name: "Throw Flame", level: 2, schools: ["conjurations", "fire_magic"], powerCap: 50 },
     { name: "Wereblood", level: 2, schools: ["transmutations"], powerCap: 100, maxVersion: 30 },
 
     { name: "Call Canine Familiar", level: 3, schools: ["summonings"], powerCap: 100 },
