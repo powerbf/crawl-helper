@@ -673,6 +673,7 @@ function reset()
     $('#wizardry').val("0");
     $('#vehumet_assist').prop("checked", false);
     $('#enemy_rholy').prop("checked", false);
+    $('#enemy_rsilver').prop("checked", false);
 }
 
 // add default unarmed type for species 
@@ -1887,6 +1888,12 @@ function calcBrandResistMultiplier(brand)
         resist = parseInt($('#enemy_rneg').text());
     else if (brand == "holy")
         resist = $("#enemy_rholy").is(':checked') ? 3 : 0;
+    else if (brand == "silver") {
+        if ($("#enemy_rsilver").is(':checked')) {
+            // silver does flat 3/4 to vulnerable monsters, up to 1/3 to others (avg 1/6)
+            return (1/6) / (3/4); // about 0.22
+        }
+    }
 
     if (resist < 0)
         return 1.5; // vulnerable
@@ -2058,9 +2065,8 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
         damage = (9.0 * avg_base_damage + 2.0) / 18.0;
     }
     else if (brand == "silver") {
-        // flat 75% on chaotic monsters
+        // flat 75% on vulnerable monsters
         damage = 0.75 * avg_base_damage;
-        //TODO: (1 + random2(damage_done) / 3) on others
     }
     else if (brand == "slay drac") {
         // bonus_dam = 1 + random2(3 * dam / 2);
