@@ -244,6 +244,16 @@
                                     <i class="bi bi-caret-right-fill"></i>
                                 </td>
                             </tr>
+                            <tr id="slaying_container">
+                                <td>
+                                    <label class="text-nowrap">Slaying:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="slaying">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td></td>
@@ -284,14 +294,66 @@
                                 <td>&nbsp;</td>
                                 <td></td>
                             </tr>
-                            <tr id="slaying_container">
+                            <tr>
                                 <td>
-                                    <label class="text-nowrap">Slaying:</label>
+                                    <label class="text-nowrap">Enemy Resists:</label>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Fire resistance is more effective for monsters than the player. 1 pip gives a 50% reduction, 2 pips 80%, and 3 pips 100%.">
+                                <td>
+                                    <label class="text-nowrap">rFire:</label>
                                 </td>
                                 <td>
                                     <i class="bi bi-caret-left-fill"></i>
-                                    <span class="number-val" id="slaying">0</span>
+                                    <span class="number-val" id="enemy_rfire" min="-1" max="3">0</span>
                                     <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Cold resistance is more effective for monsters than the player. 1 pip gives a 50% reduction, 2 pips 80%, and 3 pips 100%.">
+                                <td>
+                                    <label class="text-nowrap">rCold:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="enemy_rcold" min="-1" max="3">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Electricity resistance is more effective for monsters than the player. 1 pip gives a 67% reduction, 2 pips 83%, and 3 pips 100%.">
+                                <td>
+                                    <label class="text-nowrap">rElec:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="enemy_relec" min="-1" max="3">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Negative energy resistance is more effective for monsters than the player. 1 pip gives a 50% reduction, 2 pips 80%, and 3 pips 100%.">
+                                <td>
+                                    <label class="text-nowrap">rNeg:</label>
+                                </td>
+                                <td>
+                                    <i class="bi bi-caret-left-fill"></i>
+                                    <span class="number-val" id="enemy_rneg" min="-1" max="3">0</span>
+                                    <i class="bi bi-caret-right-fill"></i>
+                                </td>
+                            </tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Only undead and demonic monsters (including demonspawn) are harmed by the holy wrath brand. All other monsters are immune.">
+                                <td>
+                                    <label class="text-nowrap">rHolyWrath:</label>
+                                </td>
+                                <td class="form-check">
+                                    <span class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="enemy_rholy">
+                                    </span>
                                 </td>
                             </tr>
                             <tr id="enemy_ac_container">
@@ -606,7 +668,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
-    <script src="crawl.js?version=53"></script>
+    <script src="crawl.js?version=54"></script>
     <script src="main.js?version=7"></script>
 
 </body>

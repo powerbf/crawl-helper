@@ -1868,6 +1868,36 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     weapon["damage_per_turn"] = damage_per_turn;
 }
 
+// Factor to multiply brand damage by due to enemy resist
+function calcBrandResistMultiplier(brand)
+{
+    let resist = 0;
+    if (brand == "elec" || brand == "air")
+        resist = parseInt($('#enemy_relec').text());
+    else if (brand == "fire" || brand == "flame")
+        resist = parseInt($('#enemy_rfire').text());
+    else if (brand == "cold" || brand == "freeze")
+        resist = parseInt($('#enemy_rcold').text());
+    else if (brand == "drain" || brand == "pain" || brand == "death")
+        resist = parseInt($('#enemy_rneg').text());
+    else if (brand == "holy")
+        resist = $("#enemy_rholy").is(':checked') ? 3 : 0;
+
+    if (resist < 0)
+        return 1.5; // vulnerable
+    else if (resist == 0)
+        return 1; // no resistance
+    else if (resist >= 3)
+        return 0; // immune
+    else {
+        // resistant
+        let divisor = 1 + (resist * resist);
+        if (brand == "elec" || brand == "air")
+            divisor += 1;
+        return 1 / divisor;
+    }
+}
+
 function calcStaffBrandDamage(weapon, crawlVersion)
 {
     let brand = weapon["brand"];
@@ -1923,6 +1953,8 @@ function calcStaffBrandDamage(weapon, crawlVersion)
         else if (crawlVersion < 31)
             dmgMult = 4 / 3;
     }
+    dmgMult *= calcBrandResistMultiplier(brand);
+
     let weightedDamage = getWeightedDamage(maxDamage, dmgMult);
 
     let ac_rule = "normal";
@@ -1969,42 +2001,47 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
         }
         return avgDamage;
     }
+
     let brand = weapon["brand"];
+    if (brand == "flame+freeze") {
+        let fireDmg = 0.25 * avg_base_damage * calcBrandResistMultiplier("flame");
+        let coldDmg = 0.25 * avg_base_damage * calcBrandResistMultiplier("freeze");
+        return fireDmg + coldDmg;
+    }
+
+    let damage = 0;
     if (brand == "vorpal") {
         // 0-33% on melee weapons -> avg = 16.7%
         // TODO: handle ranged (apparently 20%)
-        return 0.167 * avg_base_damage;
+        damage = 0.167 * avg_base_damage;
     }
     else if (brand == "flame" || brand == "freeze") {
         // 0-50% -> avg = 25%
-        return 0.25 * avg_base_damage;
-    }
-    else if (brand == "flame+freeze") {
-        return 0.5 * avg_base_damage;
+        damage = 0.25 * avg_base_damage;
     }
     else if (brand == "holy") {
         // 0-150% -> avg = 75%
-        return 0.75 * avg_base_damage;
+        damage = 0.75 * avg_base_damage;
     }
     else if (brand == "drain") {
         // 0-50% + 1+1d3 -> avg = 25% + 2
-        return (0.25 * avg_base_damage) + 2.0;
+        damage = (0.25 * avg_base_damage) + 2.0;
     }
     else if (brand == "pain") {
         // chance to trigger is necro/(necro+1)
         // damage if triggered is random2(necro+1) (NOT 1d(necro) as wiki says)
         let necro = parseFloat($('#necromancy').text());
-        return necro/(necro+1) * necro/2;
+        damage = necro/(necro+1) * necro/2;
     }
     else if (brand == "elec") {
         // chance to trigger is 1/4 (1/3 prior to 0.28)
         trigger_chance = crawlVersion < 28 ? 1/3 : 1/4;
         // if triggered, it does 8 + rand2(13) dmg -> 8 + [0 to 12] -> avg = 14
-        return 14 * trigger_chance;
+        damage = 14 * trigger_chance;
     }
     else if (brand == "distort") {
         // 35% chance to do 1-7 damage, 25% chance to do 3-26 damage
-        return (0.35 * 4) + (0.25 * 14.5);
+        damage = (0.35 * 4) + (0.25 * 14.5);
     }
     else if (brand == "disrupt") {
         // only found on the unrand artefact "Undeadhunter"
@@ -2013,28 +2050,30 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
         // so avg when it triggers is (3*dam + 3*dam+1 + 3*dam+1)/2/3
         // = (9*dam+2)/6
         // divide by 3 because it only triggers 1/3 of the time: avg = (9*dam+2)/18
-        return (9.0 * avg_base_damage + 2.0) / 18.0;
+        damage = (9.0 * avg_base_damage + 2.0) / 18.0;
     }
     else if (brand == "silver") {
         // flat 75% on chaotic monsters
-        return 0.75 * avg_base_damage;
+        damage = 0.75 * avg_base_damage;
         //TODO: (1 + random2(damage_done) / 3) on others
     }
     else if (brand == "slay drac") {
         // bonus_dam = 1 + random2(3 * dam / 2);
         // avg = 1 + 75% * dam
-        return 1 + 0.75 * avg_base_damage;
+        damage = 1 + 0.75 * avg_base_damage;
     }
     else if (brand == "spect") {
-        return calcSpectralDamage(weapon);
+        damage = calcSpectralDamage(weapon);
     }
     else if (brand == "discharge") {
         // 1 in 3 chance of casting discharge with an average power of 150
         // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
-        return (3 + (20 + 15/2) / 2) / 3;
+        damage = (3 + (20 + 15/2) / 2) / 3;
     }
 
-   return 0;
+    damage *= calcBrandResistMultiplier(brand);
+
+    return damage;
 }
 
 // Calculate average delay for heavy brand
