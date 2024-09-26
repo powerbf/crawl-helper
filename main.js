@@ -56,9 +56,15 @@ $("select").on("change", function() {
     return true;
 });
 
+$("input").on("change", function() {
+    updateResults();
+    $(this).blur();
+    return true;
+});
+
 // enable tooltips
 $(function () {
-  $('[data-bs-toggle="tooltip"]').tooltip()
+  $('[data-bs-toggle="tooltip"]').tooltip({trigger : 'hover'})
 })
 
 $("#combat_tab").on("click", function() {

@@ -24,6 +24,10 @@
     color: violet;
 }
 
+.form-check-input {
+    box-shadow: none !important;
+}
+
 #spell_schools {
     margin: 5px auto 0px auto;
 }

@@ -672,7 +672,7 @@ function reset()
     $('#shield').val("none");    
 
     $('#wizardry').val("0");
-    $('#vehumet_piety').val("0");
+    $('#vehumet_assist').prop("checked", false);
 }
 
 // add default unarmed type for species 
@@ -885,10 +885,13 @@ function parseData()
     $('#slaying').text(slaying);
 
     // get Vehumet piety
-    var vehumetPiety = /Vehumet\s*\[(\**)/.exec(statsSection);
-    if (vehumetPiety && vehumetPiety.length >= 2) {
-        $('#vehumet_piety').text(vehumetPiety[1].length);
+    let vehumetPiety = "";
+    let vehumetPietyMatch = /Vehumet\s*\[(\**)/.exec(statsSection);
+    if (vehumetPietyMatch && vehumetPietyMatch.length > 1) {
+        vehumetPiety = vehumetPietyMatch[1];
     }
+    let vehumetAssist = (vehumetPiety.length >= 3);
+    $('#vehumet_assist').prop('checked', vehumetAssist);
 
     //
     // process inventory
@@ -2380,8 +2383,7 @@ function isDestructiveSpell(spell)
 // From *** piety, Vehumet reduces the failure rates for "destructive" spells
 function isVehumetSupporting()
 {
-    let vehumetPiety = parseInt($('#vehumet_piety').text());
-    return (vehumetPiety >= 3);
+    return $("#vehumet_assist").is(':checked');
 }
 
 function apply_spellcasting_success_boosts(chance, vehumetSupporting)
