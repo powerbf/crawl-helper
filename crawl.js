@@ -829,6 +829,11 @@ function parseData()
         if (statsSection.includes(arm)) {
             $('#body_armour').val(arm);
         }
+        else if (arm == "golden dragon scales") {
+            // check for old name
+            if (statsSection.includes("gold dragon scales"))
+                $('#body_armour').val(arm);
+        }
     }
     if ($('#body_armour').val() == "none") {
         for (let arm in artefactArmourData) {
