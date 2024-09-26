@@ -672,6 +672,7 @@ function reset()
 
     $('#wizardry').val("0");
     $('#vehumet_assist').prop("checked", false);
+    $('#enemy_rholy').prop("checked", false);
 }
 
 // add default unarmed type for species 
