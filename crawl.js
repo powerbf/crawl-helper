@@ -2257,17 +2257,19 @@ function appendSpellResultRow(spell, vehumetSupporting)
         powerPercent = Math.floor(100 * power / powerCap);
     }
 
+    let nameText = spell.name;
+    if (isDestructiveSpell(spell))
+        nameText += "*";
+
     let levelText = spell.level.toString();
 
     let failText = failRate.toString() + "%";
-    if (vehSupportingThisSpell)
-        failText += "*";
 
     let powerText = powerPercent.toString() + "%";
     powerText += " (" + power.toString() + "/" + powerCap.toString() + ")";
 
     var row = "<tr>";
-    row += "<td class='fit'>" + spell.name + "</td>";
+    row += "<td class='fit'>" + nameText + "</td>";
     row += "<td class='fit'>" + levelText + "</td>";
     row += "<td class='fit'>" + toDisplayName(spell.schools.toString()) + "</td>";
     row += "<td class='fit'>" + failText + "</td>";
@@ -2308,11 +2310,6 @@ function updateSpellResults()
 
         appendSpellResultRow(spell, vehumetSupporting)
     }
-
-    let heading = "Failure Rate";
-    if (vehumetSupporting)
-        heading += " (*=Vehumet assist)";
-    $("#spell_failure_heading").text(heading);
 }
 
 function getSpellDifficulty(level)
