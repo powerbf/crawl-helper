@@ -127,7 +127,7 @@ const oldWeaponData = {
 // (only for artefacts that don't have the base type in the name and/or modify the base type)
 // values for damage/hit/delay are modifiers relative to the base type (i.e. not absolute values)
 const artefactData = {
-    31: {
+    32: {
         "singing sword" : { base_type: "double sword" },
         "wrath of trog" : { base_type: "battleaxe" },
         "sword of power" : { base_type: "great sword" },
