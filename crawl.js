@@ -1535,6 +1535,27 @@ function applyACReduction(weightedDamage)
 }
 
 // reduce damage based on defender AC
+function applyHalfACReduction(weightedDamage)
+{
+    let enemy_ac = parseInt($('#enemy_ac').text());
+    if (enemy_ac > 0) {
+        let prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
+
+       for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+           var dam = parseInt(damage);
+           for (var saved = 0; saved <= enemy_ac; saved++) {
+                // damage can't go below zero
+                var newDam = Math.max(0, dam - Math.floor(saved / 2));
+                addToEntry(weightedDamage, newDam, weight);
+            }
+        }
+    }
+
+    return weightedDamage;
+}
+
+// reduce damage based on defender AC
 function applyTripleACReduction(weightedDamage)
 {
     let enemy_ac = parseInt($('#enemy_ac').text());
@@ -1586,6 +1607,20 @@ function calcDiceRollDistribution(numDice, numSides)
 
     return result;
 }
+
+function getWeightedDamage(maxRoll, multiplier)
+{
+    let weightedDamage = {};
+    for (let i = 0; i <= maxRoll; i++) {
+        let dam = Math.floor(i * multiplier);
+        if (weightedDamage[dam] === undefined)
+            weightedDamage[dam] = 1;
+        else
+            weightedDamage[dam] += 1;
+    }
+    return weightedDamage;
+}
+
 
 // Ref: attack::calc_damage() method in:
 // https://github.com/crawl/crawl/blob/master/crawl-ref/source/attack.cc 
@@ -1871,32 +1906,45 @@ function calcStaffBrandDamage(weapon, crawlVersion)
 
     var schoolSkill = parseFloat($('#'+school).text());
 
-    let maxDamage = Math.floor((schoolSkill*100 + evocations*50)/80) - 1;
+    let skillMultiplier = 50;
+    if (crawlVersion >= 32) {
+        if (brand != "conjuration" && brand != "air")
+            skillMultiplier = 63;
+    }
+
+    let maxDamage = Math.floor((schoolSkill*skillMultiplier*2 + evocations*skillMultiplier)/80) - 1;
     if (maxDamage <= 0)
         return 0;
 
-    let avgDamage;
+    let dmgMult = 1;
     if (brand == "earth") {
-        let weightedDamage = {};
-        for (let i = 0; i <= maxDamage; i++) {
-            let dam = Math.floor(i * 4 / 3);
-            weightedDamage[dam] = 1;
-        }
-        weightedDamage = applyTripleACReduction(weightedDamage);
-        avgDamage = getWeightedAverage(weightedDamage);
+        if (crawlVersion == 31)
+            dmgMult = 5 / 4;
+        else if (crawlVersion < 31)
+            dmgMult = 4 / 3;
     }
-    else if (brand == "conjuration") {
-        let weightedDamage = {};
-        for (let i = 0; i <= maxDamage; i++) {
-            weightedDamage[i] = 1;
-        }
-        weightedDamage = applyACReduction(weightedDamage)
-        avgDamage = getWeightedAverage(weightedDamage);
+    let weightedDamage = getWeightedDamage(maxDamage, dmgMult);
+
+    let ac_rule = "normal";
+    if (crawlVersion >= 32) {
+        if (brand == "air")
+            ac_rule = "half";
     }
     else {
-        // randomized, but not affected by AC
-        avgDamage = maxDamage / 2;
+        if (brand == "earth")
+            ac_rule = (crawlVersion == 31 ? "normal" : "triple");
+        else if (brand != "conjuration")
+            ac_rule = "none";
     }
+
+    if (ac_rule == "triple")
+        weightedDamage = applyTripleACReduction(weightedDamage);
+    else if (ac_rule == "normal")
+        weightedDamage = applyACReduction(weightedDamage)
+    else if (ac_rule == "half")
+        weightedDamage = applyHalfACReduction(weightedDamage)
+
+    let avgDamage = getWeightedAverage(weightedDamage);
 
     let triggerChance = Math.floor(evocations*200 + schoolSkill*100)/3000;
     if (triggerChance > 1)
