@@ -69,7 +69,7 @@ const weaponData = {
 
     "stone": { category: "throwing", damage: 2, hit: +0, delay: { base: 11, min: 7 }, },
     "boomerang": { category: "throwing", damage: 6, hit: +0, delay: { base: 13, min: 7 }, },
-    "javelin": { category: "throwing", damage: 11, hit: +0, delay: { base: 15, min: 7 }, },
+    "javelin": { category: "throwing", damage: 10, hit: +0, delay: { base: 15, min: 7 }, },
     "large rock": { category: "throwing", damage: 20, hit: +0, delay: { base: 20, min: 7 }, },
 
 };
@@ -1649,6 +1649,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         }
     }
     var unarmed = (skillName == "unarmed");
+    var throwing = (skillName == "throwing");
 
     var str = parseFloat($('#strength').text());
     var dex = parseFloat($('#dexterity').text());
@@ -1662,10 +1663,13 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
 
     // base damage
     var base_damage = refData["damage"];
-    if (unarmed) {
-        base_damage += Math.floor(weaponSkill);
-        var fraction = weaponSkill - Math.floor(weaponSkill);
-        // if there is a fractional part of weapon skill then there is the corresponding chance to add 1 to base damage
+    if (unarmed || throwing) {
+        let bonus = weaponSkill;
+        if (throwing && weapon["type"] == "stone")
+            bonus /= 2;
+        base_damage += Math.floor(bonus);
+        var fraction = bonus - Math.floor(bonus);
+        // if there is a fractional part of bonus damage then there is the corresponding chance to add 1 to base damage
         if (fraction == 0) {
             weightedDamage[base_damage] = 1;
         }
@@ -1753,7 +1757,7 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
     // [2500 + (random2(you.skill(wpn_skill, 100) + 1))] / 2500
     // = 1 + (0->weapon_skill*100)/2500
 
-    if (!unarmed) {
+    if (!unarmed && !throwing) {
         prevWeightedDamage = weightedDamage;
         weightedDamage = {};
 
