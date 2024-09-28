@@ -1146,7 +1146,7 @@ function getWeaponRefData(weapon, crawlVersion) {
 
 function parseWeapon(s) {
     s = s.trim();
-    if (s.slice(0, 1) == "[") {
+    if (s.startsWith("[") && !s.startsWith("[staff of")) {
         // this is the base type of an artefact, and would give a false match
         return null;
     }
@@ -1194,8 +1194,11 @@ function parseWeapon(s) {
         }
     } catch(err) {}
     
-    if (weapon["type"] == "staff")
+    if (weapon["type"] == "staff") {
         weapon["brand"] = parseStaffBrand(s);
+        if (weapon["brand"] == "")
+            return null;
+    }
     else
         weapon["brand"] = parseBrand(s);
 
@@ -1252,28 +1255,28 @@ function parseStaffBrand(s) {
     if (s.includes("elemental staff")) {
         return "elemental";
     }
-    else if (s.match(/\bearth\b/i)) {
+    else if (s.match(/\bof earth\b/i)) {
         return "earth";
     }
-    else if (s.match(/\bfire\b/i)) {
+    else if (s.match(/\bof fire\b/i)) {
         return "fire";
     }
-    else if (s.match(/\bcold\b/i)) {
+    else if (s.match(/\bof cold\b/i)) {
         return "cold";
     }
-    else if (s.match(/\bair\b/i)) {
+    else if (s.match(/\bof air\b/i)) {
         return "air";
     }
-    else if (s.match(/\bdeath\b/i)) {
+    else if (s.match(/\bof death\b/i)) {
         return "death";
     }
-    else if (s.includes("conj")) {
+    else if (s.includes("of conj")) {
         return "conjuration";
     }
-    else if (s.match(/\bpoison\b/i)) {
+    else if (s.match(/\bof poison\b/i)) {
         return "poison";
     }
-    else if (s.match(/\balchemy\b/i)) {
+    else if (s.match(/\bof alchemy\b/i)) {
         return "alchemy";
     }
     else {
