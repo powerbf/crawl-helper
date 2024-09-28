@@ -1957,6 +1957,10 @@ function calcStaffBrandDamage(weapon, crawlVersion)
     if (school == null)
         return 0.0;
 
+    // poison doesn't do immediate damage
+    if (school == "alchemy" || school == "poison_magic")
+        return 0.0;
+
     var schoolSkill = parseFloat($('#'+school).text());
 
     let skillMultiplier = 50;
