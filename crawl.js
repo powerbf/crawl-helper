@@ -894,6 +894,15 @@ function parseData()
     }
     $('#slaying').text(slaying);
 
+    // get wizardry
+    let wizardry = 0;
+    let wizMatch = (statsSection.match(/wizardry *\(x([0-9])/i));
+    if (wizMatch)
+        wizardry = wizMatch[1];
+    else
+        wizardry = (statsSection.match(/wizardry/gi) || []).length;
+    $('#wizardry').text(wizardry);
+
     // get Vehumet piety
     let vehumetPiety = "";
     let vehumetPietyMatch = /Vehumet\s*\[(\**)/.exec(statsSection);
