@@ -674,6 +674,7 @@ function reset()
     $('#body_armour').val("none");
     $('#shield').val("none");    
 
+    $('#channel').val("0");
     $('#wizardry').val("0");
     $('#vehumet_assist').prop("checked", false);
     $('#enemy_rholy').prop("checked", false);
@@ -902,6 +903,11 @@ function parseData()
     else
         wizardry = (statsSection.match(/wizardry/gi) || []).length;
     $('#wizardry').text(wizardry);
+
+    // get channeling
+    let channel = 0;
+    channel = (statsSection.match(/channel(?! magic)/gi) || []).length;
+    $('#channel').text(channel);
 
     // get Vehumet piety
     let vehumetPiety = "";
@@ -2481,6 +2487,11 @@ function getRawSpellFailRate(level, schools, vehumetSupporting)
     fail = Math.max(0, (((fail + 426) * fail + 82670) * fail + 7245398) / 262144);
 
     // TODO: apply mutations
+
+    // apply channeling penalty
+    channel = parseInt($('#channel').text());
+    if (channel > 0)
+        fail += 10;
 
     // apply wizardry, Vehumet
     fail = apply_spellcasting_success_boosts(fail, vehumetSupporting);
