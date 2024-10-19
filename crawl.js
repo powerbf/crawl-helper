@@ -851,7 +851,7 @@ function parseData()
     }
 
     // get current shield
-    if (statsSection.match(/buckler|small shield/i)) {
+    if (statsSection.match(/(buckler|small shield|warlock's mirror)/i)) {
         $('#shield').val("buckler");
     }
     else if (statsSection.match(/(kite|medium|storm queen's) shield/i)
