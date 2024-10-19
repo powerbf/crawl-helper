@@ -1820,6 +1820,23 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         }
     }
 
+    // spectral weapon now acts like the player attacked again at 70% power
+    if (weapon["brand"] == "copy") {
+        prevWeightedDamage = weightedDamage;
+        weightedDamage = {};
+        for (const [damage, weight] of Object.entries(prevWeightedDamage)) {
+            let dam = parseInt(damage) * 0.7;
+            let floorDam = Math.floor(dam);
+            if (floorDam == dam)
+                addToEntry(weightedDamage, dam, weight);
+            else {
+                let diff = dam - floorDam;
+                addToEntry(weightedDamage, floorDam, weight * diff);
+                addToEntry(weightedDamage, floorDam + 1, weight * (1 - diff));
+            }
+        }
+    }
+
     // apply ac reduction
     weightedDamage = applyACReduction(weightedDamage);
 
@@ -2140,14 +2157,23 @@ function calcHeavyDelay(origAvgDelay)
 
 // calculate damage from spectral weapon
 // ref: player::handle_spectral_brand() and attack::calc_damage()
-// If you trace through player::handle_spectral_brand() you see that spectral wepon is implemented
-// as a monster with damage 6 wielding the original wepaon (I think)
 function calcSpectralDamage(weapon)
 {
     var refData = weapon["ref_data"];
     if (refData == null) {
         return;
     }
+
+    if (getCrawlVersion() >= 30) {
+        // the spectral weapon's attack is now like a 2nd attack by the player, but with a 70% modifier (i.e. 30% weaker)
+        spectralWeapon = {}
+        Object.assign(spectralWeapon, weapon);
+        spectralWeapon["brand"] = "copy";
+        calcDamage(spectralWeapon, 0, 0, getCrawlVersion());
+        return spectralWeapon["damage_per_hit"]["base"];
+    }
+
+    // Prior to v0.30 spectral weapon was implemented as a monster with damage 6 wielding the original weapon (I think)
 
     var enemy_ac = parseInt($('#enemy_ac').text());
 
