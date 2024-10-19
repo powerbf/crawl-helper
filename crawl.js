@@ -2476,7 +2476,7 @@ function getRawSpellFailRate(level, schools, vehumetSupporting)
     penalties = Math.floor(penalties);
 
     let fail = 60 + getSpellDifficulty(level);
-    fail -= 6 * (2*avgSchools + 0.5*spellcasting);
+    fail -= Math.floor(6 * (2*avgSchools + 0.5*spellcasting));
     fail -= 2 * intelligence;
     fail += penalties;
 
@@ -2485,6 +2485,8 @@ function getRawSpellFailRate(level, schools, vehumetSupporting)
 
     // weird polynomial smoothing
     fail = Math.max(0, (((fail + 426) * fail + 82670) * fail + 7245398) / 262144);
+    // C++ does integer arithmetic
+    fail = Math.floor(fail);
 
     // TODO: apply mutations
 
@@ -2530,9 +2532,11 @@ function apply_spellcasting_success_boosts(chance, vehumetSupporting)
     if (wizardry > 0)
       fail_reduce = Math.floor(fail_reduce * 6 / (7 + wizardry));
 
-    // Hard cap on fail rate reduction.
-    if (fail_reduce < 50)
-        fail_reduce = 50;
+    if (getCrawlVersion() < 31) {
+        // Hard cap on fail rate reduction.
+        if (fail_reduce < 50)
+            fail_reduce = 50;
+    }
 
     return Math.floor(chance * fail_reduce / 100);
 }
@@ -2545,7 +2549,7 @@ function calculateSpellFailRate(level, schools, vehumetSupporting)
     if (fail <= 0)
         return 0;
     else if (fail >= 100)
-        return (fail + 100)/2;
+        return (fail + 100)/2; // why?
     else
         return Math.max(1, Math.floor(100 * _get_true_fail_rate(fail)));
 }
@@ -2587,7 +2591,8 @@ function _get_true_fail_rate(raw_fail)
 
 function _tetrahedral_number(n)
 {
-    return n * (n+1) * (n+2) / 6;
+    // Floor because C++ function returns an int
+    return Math.floor(n * (n+1) * (n+2) / 6);
 }
 
 function calculateSpellPower(schools)
