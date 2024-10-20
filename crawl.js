@@ -904,6 +904,9 @@ function parseData()
         wizardry = (statsSection.match(/wizardry/gi) || []).length;
     $('#wizardry').text(wizardry);
 
+    // get enhancers
+    parseEnhancers(statsSection);
+
     // get channeling
     let channel = 0;
     channel = (statsSection.match(/channel(?! magic)/gi) || []).length;
@@ -1299,6 +1302,109 @@ function parseStaffBrand(s) {
     }
 }
 
+enhancersInCharDump = { "archmagi": 0, "destructive": 0, "non-destructive" : 0}
+
+function countMatches(str, pattern)
+{
+    const re = new RegExp(pattern, "g");
+    return ((str || '').match(re) || []).length;
+}
+
+function parseEnhancers(str)
+{
+    enhancersInCharDump["archmagi"] = 0;
+    enhancersInCharDump["conjurations"] = 0;
+    enhancersInCharDump["necromancy"] = 0;
+    enhancersInCharDump["fire_magic"] = 0;
+    enhancersInCharDump["ice_magic"] = 0;
+    enhancersInCharDump["earth_magic"] = 0;
+    enhancersInCharDump["air_magic"] = 0;
+    enhancersInCharDump["alchemy"] = 0;
+    enhancersInCharDump["poison_magic"] = 0;
+    enhancersInCharDump["destructive"] = 0;
+    enhancersInCharDump["non-destructive"] = 0;
+
+    var lines = str.split('\n');
+    for (const s of lines) {
+        if (s.startsWith("%:"))
+            break;
+
+        // melded gear is ineffective
+        if (s.includes("melded"))
+            continue;
+
+        enhancersInCharDump["archmagi"] += countMatches(s, "Archmagi");
+        enhancersInCharDump["conjurations"] += countMatches(s, "\\bConj\\b") + countMatches(s, "staff of conjuration");
+        enhancersInCharDump["necromancy"] += countMatches(s, "\\bNecr\\b") + countMatches(s, "staff of death");
+        enhancersInCharDump["fire_magic"] += countMatches(s, "\\bFire\\b") + countMatches(s, "staff of fire") + countMatches(s, "ring of fire");
+        enhancersInCharDump["ice_magic"] += countMatches(s, "\\bIce\\b") + countMatches(s, "staff of cold") + countMatches(s, "ring of ice");
+        enhancersInCharDump["earth_magic"] += countMatches(s, "\\bEarth\\b") + countMatches(s, "staff of earth");
+        // Avoid counting amulet of the Air twice (it appears like "the amulet of the Air (around neck) {Inacc Air Fly rElec RMsl}")
+        enhancersInCharDump["air_magic"] += countMatches(s, "\\bAir\\b") + countMatches(s, "staff of air") - countMatches(s, "amulet of the Air");
+        enhancersInCharDump["alchemy"] += countMatches(s, "\\bAlchemy\\b") + countMatches(s, "staff of alchemy");
+        enhancersInCharDump["poison_magic"] += countMatches(s, "staff of poison"); // legacy
+
+        if (s.match(/elemental staff/i)) {
+            enhancersInCharDump["fire_magic"] += 1;
+            enhancersInCharDump["ice_magic"] += 1;
+            enhancersInCharDump["earth_magic"] += 1;
+            enhancersInCharDump["air_magic"] += 1;
+        }
+        else if (s.match(/staff of battle/i)) {
+            enhancersInCharDump["conjurations"] += 1;
+        }
+        else if (s.match(/sphere of battle/i)) {
+            enhancersInCharDump["destructive"] = 1;
+            enhancersInCharDump["non-destructive"] = -1;
+        }
+    }
+
+    // archmagi enhances all spells
+    //console.log("archmagi" + ": " + enhancersInCharDump["archmagi"]);
+    $('#enhancers').text(enhancersInCharDump["archmagi"].toString());
+
+    // but anything else is conditional
+    for (let key of ["conjurations", "necromancy", "fire_magic", "ice_magic",
+                     "earth_magic", "air_magic", "alchemy", "poison_magic",
+                     "destructive", "non-destructive"].values()) {
+        //console.log(key + ": " + enhancersInCharDump[key]);
+        if (enhancersInCharDump[key] != 0) {
+            // indicate usage of enhancers from char dump
+            $('#enhancers').text("^");
+            break;
+        }
+    }
+}
+
+function getEnhancers(spell)
+{
+    let enhancers = parseInt($('#enhancers').text());
+
+    // if enhancers control contains a numeric value then return that
+    if (!isNaN(enhancers))
+        return enhancers;
+
+    // otherwise, use the enhancers from the char dump
+    enhancers = enhancersInCharDump["archmagi"];
+
+    for (let school of spell.schools) {
+        if (school in enhancersInCharDump)
+            enhancers += enhancersInCharDump[school];
+    }
+
+    if (isDestructiveSpell(spell))
+        enhancers += enhancersInCharDump["destructive"];
+    else
+        enhancers += enhancersInCharDump["non-destructive"]
+
+    // clamp to the range -3 to +3
+    if (enhancers > 3)
+        enhancers = 3;
+    else if (enhancers < -3)
+        enhancers = -3;
+
+    return enhancers;
+}
 
 function updateResults()
 {
@@ -2401,7 +2507,7 @@ function appendSpellResultRow(spell, vehumetSupporting)
 
     let failRate = calculateSpellFailRate(spell.level, spell.schools, vehSupportingThisSpell);
     let powerCap = spell.powerCap;
-    let power = calculateSpellPower(spell.schools);
+    let power = calculateSpellPower(spell);
     let powerPercent = null;
     if (power >= powerCap) {
         powerPercent = 100;
@@ -2621,12 +2727,12 @@ function _tetrahedral_number(n)
     return Math.floor(n * (n+1) * (n+2) / 6);
 }
 
-function calculateSpellPower(schools)
+function calculateSpellPower(spell)
 {
     let intelligence = parseFloat($('#intelligence').text());
     let spellcasting = parseFloat($('#spellcasting').text());
-    let avgSchools = getAverageSpellSchoolSkills(schools);
-    let enhancers = parseInt($('#enhancers').text());
+    let avgSchools = getAverageSpellSchoolSkills(spell.schools);
+    let enhancers = getEnhancers(spell);
 
     let rawPower = ((spellcasting / 2) + (2 * avgSchools)) * (intelligence / 10);
 

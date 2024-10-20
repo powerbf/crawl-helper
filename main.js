@@ -3,7 +3,7 @@
 $(document).on('click', '.bi-caret-left-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
     var oldVal = parseFloat(valElmt.text());
-    var newVal = Math.ceil(oldVal) - 1;
+    var newVal = isNaN(oldVal)? 0 : Math.ceil(oldVal) - 1;
     
     var min = valElmt.attr('min');
     if (typeof min !== 'undefined' && min !== false) {
@@ -20,7 +20,7 @@ $(document).on('click', '.bi-caret-left-fill', function () {
 $(document).on('click', '.bi-caret-right-fill', function () {
     var valElmt = $(this).parent().children(".number-val").first();
     var oldVal = parseFloat(valElmt.text());
-    var newVal = Math.floor(oldVal) + 1;
+    var newVal = isNaN(oldVal)? 0 : Math.floor(oldVal) + 1;
     
     var max = valElmt.attr('max');
     if (typeof max !== 'undefined' && max !== false) {
