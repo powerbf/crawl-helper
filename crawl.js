@@ -48,6 +48,7 @@ const weaponData = {
     "scythe": { category: "polearms", damage: 13, hit: -3, delay: { base: 15, min: 7 }, img: "scythe" },
     "demon trident": { category: "polearms", damage: 12, hit: +1, delay: { base: 13, min: 6 }, img: "demon_trident" },
     "trishula": { category: "polearms", damage: 13, hit: +0, delay: { base: 13, min: 6 }, img: "trishula" },
+    "partisan": { category: "polearms", damage: 14, hit: +1, delay: { base: 17, min: 7 }, img: "partisan" },
     "glaive": { category: "polearms", damage: 15, hit: -3, delay: { base: 17, min: 7 }, img: "glaive" },
     "bardiche": { category: "polearms", damage: 18, hit: -6, delay: { base: 19, min: 7 }, img: "bardiche" },
 
