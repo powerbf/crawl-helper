@@ -132,7 +132,7 @@ const oldWeaponData = {
 // (only for artefacts that don't have the base type in the name and/or modify the base type)
 // values for damage/hit/delay are modifiers relative to the base type (i.e. not absolute values)
 const artefactData = {
-    32: {
+    33: {
         "singing sword" : { base_type: "double sword" },
         "wrath of trog" : { base_type: "battleaxe" },
         "sword of power" : { base_type: "great sword" },
@@ -267,15 +267,17 @@ const spellData = [
     { name: "Corona", level: 1, schools: ["hexes"], powerCap: 200, maxVersion: 27 },
     { name: "Foxfire", level: 1, schools: ["conjurations", "fire_magic"], powerCap: 25 },
     { name: "Freeze", level: 1, schools: ["ice_magic"], powerCap: 25, destructive: true },
+    { name: "Kinetic Grapnel", level: 1, schools: ["forgecraft"], powerCap: 25, destructive: true, minVersion: 33},
     { name: "Kiss of Death", level: 1, schools: ["conjurations", "necromancy"], powerCap: 25, minVersion: 30 },
     { name: "Magic Dart", level: 1, schools: ["conjurations"], powerCap: 25 },
     { name: "Necrotise", level: 1, schools: ["necromancy"], powerCap: 25, minVersion: 29, maxVersion: 31 },
     { name: "Pain", level: 1, schools: ["necromancy"], powerCap: 25, maxVersion: 28 },
+    { name: "Poisonous Vapours", level: 1, schools: ["alchemy", "air_magic"], powerCap: 25, destructive: true, minVersion: 33 },
     { name: "Sandblast", level: 1, schools: ["earth_magic"], powerCap: 50, destructive: true },
     { name: "Shock", level: 1, schools: ["conjurations", "air_magic"], powerCap: 25 },
     { name: "Slow", level: 1, schools: ["hexes"], powerCap: 25, minVersion: 28 },
     { name: "Soul Splinter", level: 1, schools: ["necromancy"], powerCap: 25, minVersion: 32 },
-    { name: "Sting", level: 1, schools: ["conjurations", "alchemy"], powerCap: 25, minVersion: 31 },
+    { name: "Sting", level: 1, schools: ["conjurations", "alchemy"], powerCap: 25, minVersion: 31, maxVersion: 32 },
     { name: "Sting", level: 1, schools: ["transmutations", "poison_magic"], powerCap: 25, maxVersion: 30 },
     { name: "Summon Small Mammal", level: 1, schools: ["summonings"], powerCap: 25 },
 
@@ -285,6 +287,7 @@ const spellData = [
     { name: "Call Imp", level: 2, schools: ["summonings"], powerCap: 100, maxVersion: 29 },
     { name: "Cigotuvi's Dreadful Rot", level: 2, schools: ["necromancy", "air_magic", "alchemy"], powerCap: 50, minVersion: 31, maxVersion: 31 },
     { name: "Cigotuvi's Dreadful Rot", level: 2, schools: ["necromancy", "air_magic", "poison_magic"], powerCap: 50, minVersion: 30, maxVersion: 30 },
+    { name: "Construct Spike Launcher", level: 2, schools: ["forgecraft"], powerCap: 50, minVersion: 33},
     { name: "Corpse Rot", level: 2, schools: ["necromancy", "air_magic"], powerCap: 50, minVersion: 28, maxVersion: 28 },
     { name: "Corpse Rot", level: 2, schools: ["necromancy", "air_magic"], powerCap: 0, maxVersion: 27 },
     { name: "Ensorcelled Hibernation", level: 2, schools: ["hexes", "ice_magic"], powerCap: 50, minVersion: 30 },
@@ -292,7 +295,8 @@ const spellData = [
     { name: "Grave Claw", level: 2, schools: ["necromancy"], powerCap: 50, minVersion: 32 },
     { name: "Jinxbite", level: 2, schools: ["hexes"], powerCap: 50, minVersion: 31 },
     { name: "Lesser Beckoning", level: 2, schools: ["translocations"], powerCap: 50, minVersion: 30 },
-    { name: "Mercury Vapours", level: 2, schools: ["alchemy", "air_magic"], powerCap: 50, destructive: true, minVersion: 31 },
+    { name: "Mercury Arrow", level: 2, schools: ["alchemy", "conjurations"], powerCap: 50, minVersion: 33 },
+    { name: "Mercury Vapours", level: 2, schools: ["alchemy", "air_magic"], powerCap: 50, destructive: true, minVersion: 31, maxVersion: 32 },
     { name: "Momentum Strike", level: 2, schools: ["conjurations", "translocations"], powerCap: 50, minVersion: 30 },
     { name: "Passwall", level: 2, schools: ["transmutations", "earth_magic"], powerCap: 120, maxVersion: 30 },
     { name: "Poisonous Vapours", level: 2, schools: ["poison_magic", "air_magic"], powerCap: 50, destructive: true, maxVersion: 30 },
@@ -319,6 +323,7 @@ const spellData = [
     { name: "Ignite Poison", level: 3, schools: ["fire_magic", "transmutations", "poison_magic"], powerCap: 100, destructive: true, maxVersion: 30 },
     { name: "Inner Flame", level: 3, schools: ["hexes", "fire_magic"], powerCap: 100, destructive: true, minVersion: 28 },
     { name: "Inner Flame", level: 3, schools: ["hexes", "fire_magic"], powerCap: 200, maxVersion: 27 },
+    { name: "Launch Clockwork Bee", level: 3, schools: ["forgecraft"], powerCap: 100, minVersion: 33},
     { name: "Lesser Beckoning", level: 3, schools: ["translocations"], powerCap: 100, minVersion: 28, maxVersion: 29 },
     { name: "Lesser Beckoning", level: 3, schools: ["translocations"], powerCap: 200, maxVersion: 27 },
     { name: "Maxwell's Portable Piledriver", level: 3, schools: ["translocations"], powerCap: 100, minVersion: 32 },
@@ -345,9 +350,10 @@ const spellData = [
 
     { name: "Airstrike", level: 4, schools: ["air_magic"], powerCap: 200, destructive: true },
     { name: "Anguish", level: 4, schools: ["hexes", "necromancy"], powerCap: 200, minVersion: 28 },
-    { name: "Animate Armour", level: 4, schools: ["summonings", "earth_magic"], powerCap: 50, minVersion: 27 },
+    { name: "Animate Armour", level: 4, schools: ["summonings", "earth_magic"], powerCap: 50, minVersion: 27, maxVersion: 32 },
     { name: "Animate Dead", level: 4, schools: ["necromancy"], powerCap: 100, minVersion: 29 },
     { name: "Animate Dead", level: 4, schools: ["necromancy"], powerCap: 200, maxVersion: 28 },
+    { name: "Awaken Armour", level: 4, schools: ["forgecraft", "earth_magic"], powerCap: 50, minVersion: 33 },
     { name: "Brom's Barrelling Boulder", level: 4, schools: ["earth_magic", "conjurations"], powerCap: 100, minVersion: 31 },
     { name: "Cause Fear", level: 4, schools: ["hexes"], powerCap: 200 },
     { name: "Cigotuvi's Putrefaction", level: 4, schools: ["necromancy", "air_magic"], powerCap: 100, minVersion: 32 },
@@ -355,12 +361,16 @@ const spellData = [
     { name: "Dimensional Bullseye", level: 4, schools: ["translocations", "hexes"], powerCap: 200, minVersion: 31 },
     { name: "Dispel Undead", level: 4, schools: ["necromancy"], powerCap: 100 },
     { name: "Enslavement", level: 4, schools: ["hexes"], powerCap: 200, maxVersion: 26 },
+    { name: "Eringya's Surprising Crocodile", level: 4, schools: ["summonings"], powerCap: 100, minVersion: 33 },
     { name: "Flame Wave", level: 4, schools: ["conjurations", "fire_magic"], powerCap: 100, minVersion: 28 },
+    { name: "Forge Blazeheart Golem", level: 4, schools: ["forgecraft", "fire_magic"], powerCap: 100, minVersion: 33 },
+    { name: "Forge Lightning Spire", level: 4, schools: ["forgecraft", "air_magic"], powerCap: 100, minVersion: 33 },
     { name: "Fulminant Prism", level: 4, schools: ["conjurations", "alchemy"], powerCap: 200, minVersion: 31 },
     { name: "Fulminant Prism", level: 4, schools: ["conjurations", "hexes"], powerCap: 200, maxVersion: 30 },
     { name: "Hailstorm", level: 4, schools: ["conjurations", "ice_magic"], powerCap: 100, maxVersion: 29 },
     { name: "Ice Form", level: 4, schools: ["ice_magic", "transmutations"], powerCap: 100, maxVersion: 30 },
     { name: "Ignite Poison", level: 4, schools: ["fire_magic", "alchemy"], powerCap: 100, destructive: true, minVersion: 31 },
+    { name: "Iskenderun's Battlesphere", level: 4, schools: ["conjurations", "forgecraft"], powerCap: 100, minVersion: 33 },
     { name: "Iskenderun's Mystic Blast", level: 4, schools: ["conjurations", "translocations"], powerCap: 100 },
     { name: "Leda's Liquefaction", level: 4, schools: ["earth_magic", "alchemy"], powerCap: 200, minVersion: 31 },
     { name: "Leda's Liquefaction", level: 4, schools: ["earth_magic", "hexes"], powerCap: 200, maxVersion: 30 },
@@ -373,16 +383,19 @@ const spellData = [
     { name: "Petrify", level: 4, schools: ["alchemy", "earth_magic"], powerCap: 200, minVersion: 31 },
     { name: "Petrify", level: 4, schools: ["transmutations", "earth_magic"], powerCap: 200, maxVersion: 30 },
     { name: "Random Effects", level: 4, schools: ["conjurations"], powerCap: 200, maxVersion: 26 },
+    { name: "Rending Blade", level: 4, schools: ["conjurations", "forgecraft"], powerCap: 100, minVersion: 33 },
     { name: "Sticky Flame", level: 4, schools: ["alchemy", "fire_magic"], powerCap: 100, destructive: true, minVersion: 31 },
     { name: "Sticky Flame", level: 4, schools: ["conjurations", "fire_magic"], powerCap: 100, maxVersion: 30 },
-    { name: "Summon Blazeheart Golem", level: 4, schools: ["summonings", "fire_magic"], powerCap: 100, minVersion: 31 },
+    { name: "Summon Blazeheart Golem", level: 4, schools: ["summonings", "fire_magic"], powerCap: 100, minVersion: 31, maxVersion: 32 },
     { name: "Summon Ice Beast", level: 4, schools: ["ice_magic", "summonings"], powerCap: 100, maxVersion: 30 },
-    { name: "Summon Lightning Spire", level: 4, schools: ["summonings", "air_magic"], powerCap: 100 },
+    { name: "Summon Lightning Spire", level: 4, schools: ["summonings", "air_magic"], powerCap: 100, maxVersion: 32 },
+    { name: "Summon Seismosaurus Egg", level: 4, schools: ["summonings", "earth_magic"], powerCap: 100, minVersion: 33 },
     { name: "Vhi's Electric Charge", level: 4, schools: ["air_magic", "translocations"], powerCap: 50, minVersion: 31 },
 
     { name: "Agony", level: 5, schools: ["necromancy"], powerCap: 200, maxVersion: 30 },
     { name: "Alistair's Intoxication", level: 5, schools: ["alchemy"], powerCap: 150, minVersion: 31 },
     { name: "Alistair's Intoxication", level: 5, schools: ["transmutations", "poison_magic"], powerCap: 150, maxVersion: 30 },
+    { name: "Alistair's Walking Alembic", level: 5, schools: ["alchemy", "forgecraft"], powerCap: 100, minVersion: 33 },
     { name: "Arcjolt", level: 5, schools: ["conjurations", "air_magic"], powerCap: 200, minVersion: 30 },
     { name: "Blade Hands", level: 5, schools: ["transmutations"], powerCap: 200, maxVersion: 30 },
     { name: "Borgnjor's Vile Clutch", level: 5, schools: ["necromancy", "earth_magic"], powerCap: 200 },
@@ -390,13 +403,15 @@ const spellData = [
     { name: "Excruciating Wounds", level: 5, schools: ["necromancy"], powerCap: 200, maxVersion: 28 },
     { name: "Fireball", level: 5, schools: ["conjurations", "fire_magic"], powerCap: 200 },
     { name: "Freezing Cloud", level: 5, schools: ["conjurations", "ice_magic", "air_magic"], powerCap: 200, minVersion: 27 },
-    { name: "Hoarfrost Cannonade", level: 5, schools: ["alchemy", "ice_magic"], powerCap: 200, minVersion: 32 },
+    { name: "Hoarfrost Cannonade", level: 5, schools: ["alchemy", "ice_magic"], powerCap: 200, minVersion: 32, maxVersion: 32 },
+    { name: "Hoarfrost Cannonade", level: 5, schools: ["forgecraft", "ice_magic"], powerCap: 200, minVersion: 33 },
     { name: "Irradiate", level: 5, schools: ["conjurations", "alchemy"], powerCap: 200, minVersion: 31 },
     { name: "Irradiate", level: 5, schools: ["conjurations", "transmutations"], powerCap: 200, maxVersion: 30 },
-    { name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100 },
+    { name: "Iskenderun's Battlesphere", level: 5, schools: ["conjurations"], powerCap: 100, maxVersion: 32 },
     { name: "Lee's Rapid Deconstruction", level: 5, schools: ["earth_magic"], powerCap: 200, destructive: true },
     { name: "Manifold Assault", level: 5, schools: ["translocations"], powerCap: 100, minVersion: 27, maxVersion: 29 },
     { name: "Metabolic Englaciation", level: 5, schools: ["hexes", "ice_magic"], powerCap: 200 },
+    { name: "Nazja's Percussive Tempering", level: 5, schools: ["forgecraft"], powerCap: 200, destructive: true, minVersion: 33 },
     { name: "Silence", level: 5, schools: ["hexes", "air_magic"], powerCap: 200 },
     { name: "Summon Demon", level: 5, schools: ["summonings"], powerCap: 200, maxVersion: 26 },
     { name: "Summon Forest", level: 5, schools: ["summonings", "translocations"], powerCap: 200 },
@@ -413,6 +428,9 @@ const spellData = [
     { name: "Eringya's Noxious Bog", level: 6, schools: ["alchemy"], powerCap: 200, destructive: true, minVersion: 31 },
     { name: "Eringya's Noxious Bog", level: 6, schools: ["poison_magic", "transmutations"], powerCap: 200, destructive: true, maxVersion: 30 },
     { name: "Freezing Cloud", level: 6, schools: ["conjurations", "ice_magic", "air_magic"], powerCap: 200, maxVersion: 26 },
+    { name: "Forge Monarch Bomb", level: 6, schools: ["forgecraft", "fire_magic"], powerCap: 200, minVersion: 33 },
+    { name: "Forge Phalanx Beetle", level: 6, schools: ["forgecraft"], powerCap: 200, minVersion: 33 },
+    { name: "Fortress Blast", level: 6, schools: ["forgecraft"], powerCap: 75, destructive: true, minVersion: 33 },
     { name: "Gell's Gavotte", level: 6, schools: ["translocations"], powerCap: 200, minVersion: 32 },
     { name: "Hydra Form", level: 6, schools: ["transmutations"], powerCap: 200, maxVersion: 26 },
     { name: "Invisibility", level: 6, schools: ["hexes"], powerCap: 200, maxVersion: 27 },
@@ -427,10 +445,12 @@ const spellData = [
     { name: "Statue Form", level: 6, schools: ["transmutations", "earth_magic"], powerCap: 150, maxVersion: 30 },
     { name: "Summon Cactus Giant", level: 6, schools: ["summonings"], powerCap: 200, minVersion: 28 },
 
+    { name: "Diamond Sawblades", level: 7, schools: ["forgecraft"], powerCap: 200, minVersion: 33 },
     { name: "Dragon Form", level: 7, schools: ["transmutations"], powerCap: 200, maxVersion: 30 },
     { name: "Enfeeble", level: 7, schools: ["hexes"], powerCap: 200, minVersion: 28 },
     { name: "Haunt", level: 7, schools: ["summonings", "necromancy"], powerCap: 200 },
-    { name: "Hellfire Mortar", level: 7, schools: ["earth_magic", "fire_magic"], powerCap: 200, destructive: true, minVersion: 32 },
+    { name: "Hellfire Mortar", level: 7, schools: ["earth_magic", "fire_magic"], powerCap: 200, destructive: true, minVersion: 32, maxVersion: 32 },
+    { name: "Hellfire Mortar", level: 7, schools: ["earth_magic", "fire_magic", "forgecraft"], powerCap: 200, destructive: true, minVersion: 33 },
     { name: "Magnavolt", level: 7, schools: ["air_magic", "earth_magic"], powerCap: 200, destructive: true, minVersion: 32 },
     { name: "Malign Gateway", level: 7, schools: ["summonings", "translocations"], powerCap: 200 },
     { name: "Manifold Assault", level: 7, schools: ["translocations"], powerCap: 200, minVersion: 32 },
@@ -438,7 +458,9 @@ const spellData = [
     { name: "Orb of Destruction", level: 7, schools: ["conjurations"], powerCap: 200 },
     { name: "Ozocubu's Refrigeration", level: 7, schools: ["ice_magic"], powerCap: 200, destructive: true, minVersion: 27 },
     { name: "Rimeblight", level: 7, schools: ["necromancy", "ice_magic"], powerCap: 200, destructive: true, minVersion: 32 },
-    { name: "Spellforged Servitor", level: 7, schools: ["conjurations", "summonings"], powerCap: 200 },
+    { name: "Spellforged Servitor", level: 7, schools: ["conjurations", "summonings"], powerCap: 200, maxVersion: 32 },
+    { name: "Spellspark Servitor", level: 7, schools: ["conjurations", "forgecraft"], powerCap: 200, minVersion: 33 },
+    { name: "Splinterfrost Shell", level: 7, schools: ["forgecraft", "ice_magic"], powerCap: 200, minVersion: 33 },
     { name: "Storm Form", level: 7, schools: ["transmutations", "air_magic"], powerCap: 200, minVersion: 27, maxVersion: 30 },
     { name: "Summon Greater Demon", level: 7, schools: ["summonings"], powerCap: 200, maxVersion: 26 },
     { name: "Summon Hydra", level: 7, schools: ["summonings"], powerCap: 200 },
@@ -460,13 +482,14 @@ const spellData = [
     { name: "Death's Door", level: 9, schools: ["necromancy"], powerCap: 200 },
     { name: "Dragon's Call", level: 9, schools: ["summonings"], powerCap: 200 },
     { name: "Fire Storm", level: 9, schools: ["conjurations", "fire_magic"], powerCap: 200 },
+    { name: "Platinum Paragon", level: 9, schools: ["forgecraft"], powerCap: 200, minVersion: 33 },
     { name: "Polar Vortex", level: 9, schools: ["ice_magic"], powerCap: 200, destructive: true, minVersion: 27 },
     { name: "Shatter", level: 9, schools: ["earth_magic"], powerCap: 200, destructive: true },
     { name: "Tornado", level: 9, schools: ["air_magic"], powerCap: 200, maxVersion: 26 },
 ];
 
 const MIN_VERSION = 26;
-const MAX_VERSION = 32;
+const MAX_VERSION = 33;
 
 // globals - yuck
 var weapons = [];
@@ -605,7 +628,7 @@ function populateSpellLevelSelector()
 function populateSpellSchoolSelectors()
 {
     let spellSchools = [
-        "Any", "Conjurations", "Hexes", "Summonings",
+        "Any", "Conjurations", "Hexes", "Summonings", "Forgecraft",
         "Necromancy", "Translocations", "Transmutations", "Alchemy",
         "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
     ];
@@ -642,6 +665,13 @@ function updateAvailableSkills()
         $('#slings_container').show();
         $('#bows_container').show();
         $('#crossbows_container').show();
+    }
+
+    if (crawlVersion >= 33) {
+        $('#forgecraft_container').show();
+    }
+    else {
+        $('#forgecraft_container').hide();
     }
 
     if (crawlVersion >= 31) {
