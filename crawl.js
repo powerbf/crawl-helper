@@ -628,9 +628,9 @@ function populateSpellLevelSelector()
 function populateSpellSchoolSelectors()
 {
     let spellSchools = [
-        "Any", "Conjurations", "Hexes", "Summonings", "Forgecraft",
-        "Necromancy", "Translocations", "Transmutations", "Alchemy",
-        "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic", "Poison Magic"
+        "Any", "Air Magic", "Earth Magic", "Fire Magic", "Ice Magic",
+        "Poison Magic", "Alchemy", "Conjurations", "Forgecraft", "Hexes",
+        "Necromancy",  "Summonings", "Translocations", "Transmutations",
     ];
 
     let crawlVersion = getCrawlVersion();
