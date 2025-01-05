@@ -41,6 +41,7 @@ $("#data").on("input", function() {
 
 $("#version").on("change", function() {
     updateAvailableSkills();
+    populateSpellSchoolSelectors();
     return true;
 });
 

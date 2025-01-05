@@ -635,16 +635,37 @@ function populateSpellSchoolSelectors()
 
     let crawlVersion = getCrawlVersion();
 
+    spellSchools = spellSchools.filter((school) => {
+        if (school === "Forgecraft")
+            return crawlVersion >=  33;
+        else if (school === "Alchemy")
+            return crawlVersion >= 31;
+        else if (["Transmutations", "Poison Magic"].includes(school))
+            return crawlVersion < 31;
+        else
+            return true;
+    });
+
     for (let id of ["school1", "school2", "school3"]) {
         let selector = $('#'+id);
-        selector.empty(); // remove old options
+        let savedVal = selector.val();
 
+        selector.empty(); // remove old options
         for (let school of spellSchools) {
             var option = $("<option></option>");
             option.attr("value", skillNameToElementId(school));
             option.text(school);
             selector.append(option);
         }
+
+        // restore saved val, if possible
+        if (savedVal == "poison_magic" && !spellSchools.includes("Poison Magic"))
+            savedVal = "alchemy";
+        else if (savedVal == "alchemy" && !spellSchools.includes("Alchemy"))
+            savedVal = "poison_magic";
+        selector.val(savedVal);
+        if (selector.val() != savedVal)
+            selector.val("any");
     }
 }
 
