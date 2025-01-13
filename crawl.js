@@ -7,7 +7,7 @@ const weaponData = {
     "claws 3": { category: "unarmed", damage: 9, hit: +6, delay: { base: 10, min: 5 }, },
 
     "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
-    // from v0.31, quick blade hits twice per swing
+    // from v0.31, quick blade attacks twice per swing
     "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 12, min: 5 }, img: "quickblade" },
     "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 10, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
@@ -2022,12 +2022,6 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         damage_per_hit["brand"] = calcNonStaffBrandDamage(weapon, avg_damage, crawlVersion);
     }
 
-    if (crawlVersion >= 31 && weapon["type"] == "quick blade") {
-        // swings twice per attack
-        damage_per_hit["base"] *= 2;
-        damage_per_hit["brand"] *= 2;
-    }
-
     if (weapon["is_pair"]) {
         // two weapons = two attacks
         damage_per_hit["base"] *= 2;
@@ -2064,6 +2058,10 @@ function calcDamage(weapon, shieldSpeedPenalty, armourSpeedPenalty, crawlVersion
         }
     }
 
+    if (crawlVersion >= 31 && weapon["type"] == "quick blade") {
+        // attacks twice per swing
+        delay /= 2;
+    }
 
     weapon["delay"] = delay;
 
