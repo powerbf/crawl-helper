@@ -2216,6 +2216,16 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
         }
         return avgDamage;
     }
+    else if (weapon["description"] && weapon["description"].match(/devastator/i)) {
+        // Nd(5 + base_dmg/2)
+        // N = 6 for brittle monsters, 1 for insubstantial/jelly, 3 for others
+        let maxRoll = (5 + avg_base_damage / 2);
+        // calculate for normal monsters (N=3)
+        let brandDamage = calcDiceRollDistribution(3, maxRoll);
+        brandDamage = applyACReduction(brandDamage);
+        let avgDamage = getWeightedAverage(brandDamage);
+        return avgDamage;
+    }
 
     let brand = weapon["brand"];
     if (brand == "flame+freeze") {
