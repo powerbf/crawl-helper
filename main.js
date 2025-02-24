@@ -40,6 +40,7 @@ $("#data").on("input", function() {
 });
 
 $("#version").on("change", function() {
+    updateSpeciesSelector();
     updateAvailableSkills();
     populateSpellSchoolSelectors();
     return true;

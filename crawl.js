@@ -217,49 +217,45 @@ const artefactArmourData = {
 };
 
 const speciesData = {
-    "armataur": { short: "at", size: "large" },
-    "barachi": { short: "ba", size: "medium" },
-    "coglin": { short: "co", size: "medium" },
+    "armataur": { short: "at", size: "large", minVersion: 30 },
+    "barachi": { short: "ba", size: "medium"},
+    "centaur": { short: "ce", size: "large", maxVersion: 25 },
+    "coglin": { short: "co", size: "medium", minVersion: 32 },
+    "deep dwarf": { short: "dd", size: "medium", maxVersion: 28 },
     "deep elf": { short: "de", size: "medium" },
     "demigod": { short: "dg", size: "medium" },
     "demonspawn": { short: "ds", size: "medium" },
-    "djinni": { short: "dj", size: "medium" },
+    "djinni": { short: "dj", size: "medium", minVersion: 27 },
     "draconian": { short: "dr", size: "medium" },
     "felid": { short: "fe", size: "little" },
     "formicid": { short: "fo", size: "medium" },
     "gargoyle": { short: "gr", size: "medium" },
-    "ghoul": { short: "gh", size: "medium" },
+    "ghoul": { short: "gh", size: "medium", maxVersion: 32 },
     "gnoll": { short: "gn", size: "medium" },
+    "halfling": { short: "ha", size: "small", maxVersion: 26 },
+    "high elf": { short: "he", size: "medium", maxVersion: 19 },
+    "hill orc": { short: "ho", size: "medium", maxVersion: 31 },
     "human": { short: "hu", size: "medium" },
     "kobold": { short: "ko", size: "small" },
+    "lava orc": { short: "lo", size: "medium", maxVersion: 0 }, // never made it out of trunk
     "merfolk": { short: "mf", size: "medium" },
+    "meteoran": { short: "me", size: "medium", minVersion: 29, maxVersion: 30 },
     "minotaur": { short: "mi", size: "medium" },
-    "mountain dwarf": { short: "md", size: "medium" },
+    "mountain dwarf": { short: "md", size: "medium", minVersion: 32 },
     "mummy": { short: "mu", size: "medium" },
     "naga": { short: "na", size: "large" },
     "octopode": { short: "op", size: "medium" },
-    "oni": { short: "on", size: "large" },
-    "poltergeist": { short: "po", size: "medium" },
-    "revenant": { short: "re", size: "medium" },
+    "ogre": { short: "og", size: "large", maxVersion: 30 },
+    "oni": { short: "on", size: "large", minVersion: 31 },
+    "palentonga": { short: "pa", size: "large", minVersion: 26, maxVersion: 29 },
+    "poltergeist": { short: "po", size: "medium", minVersion: 33 },
+    "revenant": { short: "re", size: "medium", minVersion: 33 },
+    "sludge elf": { short: "se", size: "medium", maxVersion: 12 },
     "spriggan": { short: "sp", size: "little" },
     "tengu": { short: "te", size: "medium" },
     "troll": { short: "tr", size: "large" },
-    "vampire": { short: "vp", size: "medium" },
+    "vampire": { short: "vp", size: "medium", maxVersion: 32 },
     "vine stalker": { short: "vs", size: "medium" },
-
-    // recently obsolete
-    "centaur": { short: "ce", size: "large", obsolete: true },
-    "deep dwarf": { short: "dd", size: "medium", obsolete: true },
-    "halfling": { short: "ha", size: "small", obsolete: true },
-    "hill orc": { short: "ho", size: "medium", obsolete: true },
-    "meteoran": { short: "me", size: "medium", obsolete: true },
-    "ogre": { short: "og", size: "large", obsolete: true },
-    "palentonga": { short: "pa", size: "large", obsolete: true },
-
-    // really obsolete
-    "sludge elf": { short: "se", size: "medium", obsolete: true },
-    "high elf": { short: "he", size: "medium", obsolete: true },
-    "lava orc": { short: "lo", size: "medium", obsolete: true },
 };
 
 const spellData = [
@@ -564,9 +560,6 @@ function populateSpeciesSelector()
         var name = capitalizeWords(sp);
         var option = $("<option></option>");
         option.attr("value", sp);
-        if (speciesData[sp]["obsolete"]) {
-            option.attr("class", "obsolete");
-        }
         option.text(name);
         speciesBySize[size].push(option);
     }
@@ -577,6 +570,27 @@ function populateSpeciesSelector()
             selector.append(species);
         }
     }
+
+    updateSpeciesSelector();
+}
+
+function updateSpeciesSelector()
+{
+    let crawlVersion = getCrawlVersion();
+
+    $("#species > option").each(function() {
+        let species = speciesData[this.value];
+        if (species === undefined)
+            return;
+
+        // set appearance based on whether species is available in current version
+        let obsolete = false;
+        if ("maxVersion" in species && species["maxVersion"] < crawlVersion)
+            obsolete = true;
+        else if ("minVersion" in species && species["minVersion"] > crawlVersion)
+            obsolete = true;
+        this.className = obsolete ? "obsolete" : "current";
+    });
 }
 
 function populateBodyArmourSelector()
