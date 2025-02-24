@@ -239,6 +239,8 @@ const speciesData = {
     "naga": { size: "large" },
     "octopode": { size: "medium" },
     "oni": { size: "large" },
+    "poltergeist": { size: "medium" },
+    "revenant": { size: "medium" },
     "spriggan": { size: "little" },
     "tengu": { size: "medium" },
     "troll": { size: "large" },
