@@ -217,49 +217,49 @@ const artefactArmourData = {
 };
 
 const speciesData = {
-    "armataur": { size: "large" },
-    "barachi": { size: "medium" },
-    "coglin": { size: "medium" },
-    "deep elf": { size: "medium" },
-    "demigod": { size: "medium" },
-    "demonspawn": { size: "medium" },
-    "djinni": { size: "medium" },
-    "draconian": { size: "medium" },
-    "felid": { size: "little" },
-    "formicid": { size: "medium" },
-    "gargoyle": { size: "medium" },
-    "ghoul": { size: "medium" },
-    "gnoll": { size: "medium" },
-    "human": { size: "medium" },
-    "kobold": { size: "small" },
-    "merfolk": { size: "medium" },
-    "minotaur": { size: "medium" },
-    "mountain dwarf": { size: "medium" },
-    "mummy": { size: "medium" },
-    "naga": { size: "large" },
-    "octopode": { size: "medium" },
-    "oni": { size: "large" },
-    "poltergeist": { size: "medium" },
-    "revenant": { size: "medium" },
-    "spriggan": { size: "little" },
-    "tengu": { size: "medium" },
-    "troll": { size: "large" },
-    "vampire": { size: "medium" },
-    "vine stalker": { size: "medium" },
+    "armataur": { short: "at", size: "large" },
+    "barachi": { short: "ba", size: "medium" },
+    "coglin": { short: "co", size: "medium" },
+    "deep elf": { short: "de", size: "medium" },
+    "demigod": { short: "dg", size: "medium" },
+    "demonspawn": { short: "ds", size: "medium" },
+    "djinni": { short: "dj", size: "medium" },
+    "draconian": { short: "dr", size: "medium" },
+    "felid": { short: "fe", size: "little" },
+    "formicid": { short: "fo", size: "medium" },
+    "gargoyle": { short: "gr", size: "medium" },
+    "ghoul": { short: "gh", size: "medium" },
+    "gnoll": { short: "gn", size: "medium" },
+    "human": { short: "hu", size: "medium" },
+    "kobold": { short: "ko", size: "small" },
+    "merfolk": { short: "mf", size: "medium" },
+    "minotaur": { short: "mi", size: "medium" },
+    "mountain dwarf": { short: "md", size: "medium" },
+    "mummy": { short: "mu", size: "medium" },
+    "naga": { short: "na", size: "large" },
+    "octopode": { short: "op", size: "medium" },
+    "oni": { short: "on", size: "large" },
+    "poltergeist": { short: "po", size: "medium" },
+    "revenant": { short: "re", size: "medium" },
+    "spriggan": { short: "sp", size: "little" },
+    "tengu": { short: "te", size: "medium" },
+    "troll": { short: "tr", size: "large" },
+    "vampire": { short: "vp", size: "medium" },
+    "vine stalker": { short: "vs", size: "medium" },
 
     // recently obsolete
-    "centaur": { size: "large", obsolete: true },
-    "deep dwarf": { size: "medium", obsolete: true },
-    "halfling": { size: "small", obsolete: true },
-    "hill orc": { size: "medium", obsolete: true },
-    "meteoran": { size: "medium", obsolete: true },
-    "ogre": { size: "large", obsolete: true },
-    "palentonga": { size: "large", obsolete: true },
+    "centaur": { short: "ce", size: "large", obsolete: true },
+    "deep dwarf": { short: "dd", size: "medium", obsolete: true },
+    "halfling": { short: "ha", size: "small", obsolete: true },
+    "hill orc": { short: "ho", size: "medium", obsolete: true },
+    "meteoran": { short: "me", size: "medium", obsolete: true },
+    "ogre": { short: "og", size: "large", obsolete: true },
+    "palentonga": { short: "pa", size: "large", obsolete: true },
 
     // really obsolete
-    "sludge elf": { size: "medium", obsolete: true },
-    "high elf": { size: "medium", obsolete: true },
-    "lava orc": { size: "medium", obsolete: true },
+    "sludge elf": { short: "se", size: "medium", obsolete: true },
+    "high elf": { short: "he", size: "medium", obsolete: true },
+    "lava orc": { short: "lo", size: "medium", obsolete: true },
 };
 
 const spellData = [
@@ -871,18 +871,38 @@ function parseData()
     //
 
     // get player species
+    $('#species').val("human");
     var statsSection = sections["stats"];
     var character_combo = statsSection.match(/\(([A-Za-z ]+)\)\s+Turns:/);
-    if (character_combo != null && character_combo.length >= 2) {
-        let combo = character_combo[1].toLowerCase();
-        for (var sp in speciesData) {
-            if (combo.includes(sp)) {
-                $('#species').val(sp);
-                defaultUnarmed();
+    let combo = ""
+    if (character_combo != null && character_combo.length != 0) {
+        combo = character_combo[1].toLowerCase();
+    }
+    if (combo.length == 4)
+    {
+        // search for species abbreviation
+        let sp = combo.substring(0, 2)
+        for (const [key, value] of Object.entries(speciesData)) {
+            if (value["short"] == sp)
+            {
+                $('#species').val(key);
                 break;
             }
         }
     }
+    else if (combo.length > 4)
+    {
+        // search for full species name
+        for (var sp in speciesData) {
+            if (combo.includes(sp)) {
+                $('#species').val(sp);
+                break;
+            }
+        }
+    }
+
+    // set unarmed attack for species
+    defaultUnarmed();
 
     // get current armour
     for (let arm in armourData) {
