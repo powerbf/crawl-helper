@@ -58,7 +58,8 @@ const weaponData = {
 
     // missile base damage is no longer added to these
     "sling": { category: "slings", damage: 7, hit: +0, delay: { base: 14, min: 7 }, img: "ranged/sling" },
-    "fustibalus": { category: "slings", damage: 10, hit: -2, delay: { base: 16, min: 7 }, img: "ranged/fustibalus" },
+    // Punk
+    "greatsling": { category: "slings", damage: 10, hit: +0, delay: { base: 14, min: 7 }, img: "ranged/fustibalus" },
 
     "shortbow": { category: "bows", damage: 8, hit: +2, delay: { base: 14, min: 7 }, img: "ranged/shortbow" },
     "orcbow": { category: "bows", damage: 11, hit: -3, delay: { base: 15, min: 7 }, img: "ranged/shortbow" },
@@ -141,7 +142,6 @@ const artefactData = {
         "sword of zonguldrok" : { base_type: "double sword" },
         "sword of cerebov" : { base_type: "great sword", new_type: "sword of cerebov", damage: +1, hit: +1 },
         "sceptre of asmodeus" : { base_type: "eveningstar" },
-        "punk": { base_type: "fustibalus" },
         "zealot's sword": { base_type: "eudemon blade" },
         "sword of the doom knight" : { base_type: "great sword" },
         "arga" : { base_type: "broad axe" },
@@ -173,6 +173,7 @@ const artefactData = {
     },
     28: {
         "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5, min_delay: +3 },
+        "punk": { base_type: "fustibalus" },
     }
 };
 
@@ -1336,7 +1337,7 @@ function parseBrand(s) {
         return "discharge";
     }
 
-    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect)/.exec(s);
+    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect|acid)/.exec(s);
     if (m != null) {
         return m[1];
     }
@@ -2329,6 +2330,10 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
         // 1 in 3 chance of casting discharge with an average power of 150
         // damage when it triggers: 3 + random2(5 + pow / 10 + (random2(pow) / 10));
         damage = (3 + (20 + 15/2) / 2) / 3;
+    }
+    else if (brand == "acid") {
+        // 2d4 -> avg 5
+        damage = 5;
     }
 
     damage *= calcBrandResistMultiplier(brand);
