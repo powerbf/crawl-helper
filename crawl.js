@@ -727,27 +727,69 @@ function updateAvailableSkills()
     }
 }
 
-function reset()
+function resetWeapons()
 {
     weapons = [];
+    defaultUnarmed();
+}
 
-    $(".number-val").text("0");
+function resetSkills()
+{
+    $("#fighting").text("0");
+    $("#armour").text("0");
+    $("#shields").text("0");
 
-    $('#strength').text("10");
-    $('#dexterity').text("10");
-    $('#intelligence').text("10");
-    $('#enemy_ac').text("5");
+    $("#skills2 .number-val").text("0");
+}
 
-    $('#version').val(MAX_VERSION);
+function resetEnhancers()
+{
+    enhancersInCharDump["archmagi"] = 0;
+    enhancersInCharDump["conjurations"] = 0;
+    enhancersInCharDump["necromancy"] = 0;
+    enhancersInCharDump["fire_magic"] = 0;
+    enhancersInCharDump["ice_magic"] = 0;
+    enhancersInCharDump["earth_magic"] = 0;
+    enhancersInCharDump["air_magic"] = 0;
+    enhancersInCharDump["alchemy"] = 0;
+    enhancersInCharDump["poison_magic"] = 0;
+    enhancersInCharDump["destructive"] = 0;
+    enhancersInCharDump["non-destructive"] = 0;
+    $('#enhancers').val("0");
+}
+
+// reset everything that comes from the stat section of the char dump
+function resetStats()
+{
     $('#species').val("human");
     $('#body_armour').val("none");
     $('#shield').val("none");    
 
-    $('#channel').val("0");
-    $('#wizardry').val("0");
+    $('#strength').text("10");
+    $('#dexterity').text("10");
+    $('#intelligence').text("10");
+
+    $('#slaying').val("0");
     $('#vehumet_assist').prop("checked", false);
+    $('#wizardry').val("0");
+    $('#channel').val("0");
+
+    resetEnhancers();
+}
+
+function resetOther()
+{
+    $('#enemy_ac').text("5");
     $('#enemy_rholy').prop("checked", false);
     $('#enemy_rsilver').prop("checked", false);
+}
+
+function reset() 
+{
+    resetSkills();
+    resetStats();
+    resetWeapons();
+    //resetOther();
 }
 
 // add default unarmed type for species 
@@ -851,43 +893,17 @@ function extractDataSections(data)
     return sections;
 }
 
-function parseData()
+function parseStatsSection(statsSection)
 {
-    reset();
-    defaultUnarmed();
-
-    var data = $('textarea#data').val();
-
-    // line breaks could be messed up by copy-paste due to difference between Windows and non-Windows
-    // add carriage return for display
-    data = data.replaceAll("\n", "\r\n");
-    data = data.replaceAll("\r\r", "\r");
-    $('textarea#data').val(data);
-
-    // remove carriage return for processing (messes up regex)
-    data = data.replaceAll("\r", "");
-
-    var sections = extractDataSections(data);
-
-    //
-    // process header
-    //
-
-    // get crawl version
-    var version = sections["header"].match(/version\s+0\.(\d+)/);
-    if (version != null) {
-        let crawlVersion = parseInt(version[1]);
-        crawlVersion = clampValue(crawlVersion, MIN_VERSION, MAX_VERSION);
-        $('#version').val(crawlVersion);
+    if (!statsSection) {
+        return;
     }
 
-    //
-    // process stats section
-    //
+    resetStats();
 
     // get player species
     $('#species').val("human");
-    var statsSection = sections["stats"];
+
     var character_combo = statsSection.match(/\(([A-Za-z ]+)\)\s+Turns:/);
     let combo = ""
     if (character_combo != null && character_combo.length != 0) {
@@ -1010,38 +1026,78 @@ function parseData()
     let vehumetAssist = (vehumetPiety.length >= 3);
     $('#vehumet_assist').prop('checked', vehumetAssist);
 
-    //
-    // process inventory
-    //
+}
 
-    var inventory = sections["inventory"];
-
-    var lines = inventory.split('\n');
-    for (const line of lines) {
-        // try to parse as weapon
-        var w = parseWeapon(line);
-        if (w != null) {
-            addWeapon(w);
-        }
-        if (line.match(/(Jewellery|Wands|Scrolls|Potions|Miscellaneous)/)) {
-            break;
-        }
+function parseData()
+{
+    var data = $('textarea#data').val();
+    if (!data) {
+        return;
     }
+
+    // line breaks could be messed up by copy-paste due to difference between Windows and non-Windows
+    // add carriage return for display
+    data = data.replaceAll("\n", "\r\n");
+    data = data.replaceAll("\r\r", "\r");
+    $('textarea#data').val(data);
+
+    // remove carriage return for processing (messes up regex)
+    data = data.replaceAll("\r", "");
+
+    var sections = extractDataSections(data);
+
+    //
+    // process header
+    //
+
+    // get crawl version
+    var version = sections["header"].match(/version\s+0\.(\d+)/);
+    if (version != null) {
+        let crawlVersion = parseInt(version[1]);
+        crawlVersion = clampValue(crawlVersion, MIN_VERSION, MAX_VERSION);
+        $('#version').val(crawlVersion);
+    }
+
+    //
+    // process stats section
+    //
+
+    parseStatsSection(sections["stats"]);
 
     //
     // process skills
     //
 
     var skills = sections["skills"];
+    if (skills) {
+        resetSkills();
+        var lines = skills.split('\n');
+        for (const line of lines) {
+            parseSkill(line);
+        }
 
-    var lines = skills.split('\n');
-    for (const line of lines) {
-        parseSkill(line);
+        handleCrossTraining();
     }
 
-    handleCrossTraining();
+    //
+    // process inventory
+    //
 
-    updateAvailableSkills();
+    var inventory = sections["inventory"];
+    if (inventory) {
+        resetWeapons();
+        var lines = inventory.split('\n');
+        for (const line of lines) {
+            // try to parse as weapon
+            var w = parseWeapon(line);
+            if (w != null) {
+                addWeapon(w);
+            }
+            if (line.match(/(Jewellery|Wands|Scrolls|Potions|Miscellaneous)/)) {
+                break;
+            }
+        }
+    }
 }
 
 function skillNameToElementId(skill)
@@ -1401,17 +1457,7 @@ function countMatches(str, pattern)
 
 function parseEnhancers(str)
 {
-    enhancersInCharDump["archmagi"] = 0;
-    enhancersInCharDump["conjurations"] = 0;
-    enhancersInCharDump["necromancy"] = 0;
-    enhancersInCharDump["fire_magic"] = 0;
-    enhancersInCharDump["ice_magic"] = 0;
-    enhancersInCharDump["earth_magic"] = 0;
-    enhancersInCharDump["air_magic"] = 0;
-    enhancersInCharDump["alchemy"] = 0;
-    enhancersInCharDump["poison_magic"] = 0;
-    enhancersInCharDump["destructive"] = 0;
-    enhancersInCharDump["non-destructive"] = 0;
+    resetEnhancers();
 
     var lines = str.split('\n');
     for (const s of lines) {

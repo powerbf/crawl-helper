@@ -113,5 +113,6 @@ populateBodyArmourSelector();
 populateSpellLevelSelector();
 populateSpellSchoolSelectors();
 
+reset();
 parseData();
 showCombatTab();
