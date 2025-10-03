@@ -112,6 +112,7 @@ populateSpeciesSelector();
 populateBodyArmourSelector();
 populateSpellLevelSelector();
 populateSpellSchoolSelectors();
+updateAvailableSkills();
 
 reset();
 parseData();
