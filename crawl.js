@@ -488,7 +488,7 @@ const spellData = [
 ];
 
 const MIN_VERSION = 26;
-const MAX_VERSION = 33;
+const MAX_VERSION = 34;
 
 // globals - yuck
 var weapons = [];
@@ -2744,7 +2744,7 @@ function getRawSpellFailRate(level, schools, vehumetSupporting)
     let species = $('#species').val();
 
     // calculate penalties
-    let crawlVersion = parseInt($('#version').val());
+    let crawlVersion = getCrawlVersion();
     let armourPenalty = 19 * calcArmourPenalty(crawlVersion);
     if (species == "mountain dwarf") {
         armourPenalty /= 4; // runic magic
@@ -2759,8 +2759,9 @@ function getRawSpellFailRate(level, schools, vehumetSupporting)
     fail -= 2 * intelligence;
     fail += penalties;
 
-    // limit to 210
-    fail = Math.min(210, fail);
+    // cap fail rate
+    let cap = crawlVersion >= 33 ? 400 : 210;
+    fail = Math.min(cap, fail);
 
     // weird polynomial smoothing
     fail = Math.max(0, (((fail + 426) * fail + 82670) * fail + 7245398) / 262144);
