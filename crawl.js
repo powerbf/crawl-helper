@@ -215,6 +215,7 @@ const artefactArmourData = {
     "Kryia's mail coat" : { base_type: "scale mail" },
     "armour of Talos" : { base_type: "plate armour" },
     "Cigotuvi's embrace" : { base_type: "leather armour" },
+    "toga" : { base_type: "robe" },
 };
 
 const speciesData = {
