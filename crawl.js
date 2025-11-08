@@ -1171,16 +1171,18 @@ function handleCrossTraining() {
 
     var cross_train_factor = 0.6; // TODO: account for aptitudes
 
-    // throwing and slings cross-train with eachother
-    var throwing = parseFloat($('#throwing').text());
-    var slings = parseFloat($('#slings').text());
-    if (throwing == 0.0 && slings > 0.0) {
-        throwing = slings * cross_train_factor;
-        $('#throwing').text(niceNumber(throwing));
-    }
-    else if (slings == 0.0 && throwing > 0.0) {
-        slings = throwing * cross_train_factor;
-        $('#slings').text(niceNumber(slings));
+    if (getCrawlVersion() < 29) {
+        // throwing and slings cross-train with eachother
+        var throwing = parseFloat($('#throwing').text());
+        var slings = parseFloat($('#slings').text());
+        if (throwing == 0.0 && slings > 0.0) {
+            throwing = slings * cross_train_factor;
+            $('#throwing').text(niceNumber(throwing));
+        }
+        else if (slings == 0.0 && throwing > 0.0) {
+            slings = throwing * cross_train_factor;
+            $('#slings').text(niceNumber(slings));
+        }
     }
 
     // short blades and long blades cross-train with eachother
