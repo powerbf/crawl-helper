@@ -8,7 +8,7 @@ const weaponData = {
 
     "dagger": { category: "short_blades", damage: 4, hit: +6, delay: { base: 10, min: 5 }, img: "dagger" },
     // from v0.31, quick blade attacks twice per swing
-    "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 12, min: 5 }, img: "quickblade" },
+    "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 15, min: 5 }, img: "quickblade" },
     "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 10, min: 5 }, img: "short_sword" },
     "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
@@ -41,7 +41,7 @@ const weaponData = {
     "giant club": { category: "maces", damage: 20, hit: -6, delay: { base: 16, min: 7 }, img: "giant_club" },
     "giant spiked club": { category: "maces", damage: 22, hit: -7, delay: { base: 18, min: 7 }, img: "spiked_giant_club" },
 
-    "spear": { category: "polearms", damage: 6, hit: +4, delay: { base: 11, min: 6 }, img: "spear" },
+    "spear": { category: "polearms", damage: 6, hit: +4, delay: { base: 11, min: 5 }, img: "spear" },
     "trident": { category: "polearms", damage: 9, hit: +1, delay: { base: 13, min: 6 }, img: "trident" },
     "halberd": { category: "polearms", damage: 13, hit: -3, delay: { base: 15, min: 7 }, img: "halberd" },
     // since 0.29, scythes are just re-badged halberds
@@ -78,6 +78,9 @@ const weaponData = {
 
 // old weapon data - indexed by *last* version they were valid for
 const oldWeaponData = {
+    33: {
+        "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 12, min: 5 }, img: "quickblade" },
+    },
     30: {
         "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 7, min: 3 }, img: "quickblade" },
 
