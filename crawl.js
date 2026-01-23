@@ -190,7 +190,7 @@ const armourData = {
     "leather armour": { ac: 3, encumbrance: 40 },
     "ring mail": { ac: 5, encumbrance: 70 },
     "scale mail": { ac: 6, encumbrance: 100 },
-    "chain mail": { ac: 8, encumbrance: 150 },
+    "chain mail": { ac: 8, encumbrance: 140 },
     "plate armour": { ac: 10, encumbrance: 180 },
     "crystal plate armour": { ac: 14, encumbrance: 230 },
 
@@ -200,12 +200,21 @@ const armourData = {
     "acid dragon scales": { ac: 6,  encumbrance: 50 },
     "quicksilver dragon scales": { ac: 9,  encumbrance: 70 },
     "swamp dragon scales": { ac: 7,  encumbrance: 70 },
-    "fire dragon scales": { ac: 8, encumbrance: 110 },
+    "fire dragon scales": { ac: 8, encumbrance: 90 },
     "ice dragon scales": { ac: 9, encumbrance: 110 },
     "pearl dragon scales": { ac: 10, encumbrance: 110 },
     "storm dragon scales": { ac: 10, encumbrance: 150 },
     "shadow dragon scales": { ac: 11, encumbrance: 150 },
     "golden dragon scales": { ac: 12, encumbrance: 230 },
+};
+
+const oldArmourData = {
+    33: {
+        "fire dragon scales": { ac: 8, encumbrance: 110 },
+    },
+    29: {
+        "chain mail": { ac: 8, encumbrance: 150 },
+    },
 };
 
 const artefactArmourData = {
@@ -1255,6 +1264,33 @@ function getBaseWeaponRefData(weapType, crawlVersion) {
     }
 
     result["type"] = weapType;
+    return result;
+}
+
+function getBaseArmourRefData(armourType, crawlVersion) {
+
+    // if version is not specified, assume current version
+    if (crawlVersion == null) {
+        crawlVersion = MAX_VERSION;
+    }
+
+    var result = null;
+
+    // search for older weapon data where relevant
+    // take the oldest match where version >= target version
+    for (let ver = crawlVersion; ver < MAX_VERSION; ver++) {
+        if (ver in oldArmourData && armourType in oldArmourData[ver]) {
+            result = oldArmourData[ver][armourType];
+            break;
+        }
+    }
+
+    if (result == null) {
+        // use current armour data
+        result = armourData[armourType];
+    }
+
+    result["type"] = armourType;
     return result;
 }
 
@@ -2631,7 +2667,7 @@ function calcArmourPenalty(crawlVersion)
     var armourSkill = parseFloat($("#armour").text());
     var bodyArmour = $("#body_armour").val();
 
-    var armourStats = armourData[bodyArmour];
+    var armourStats = getBaseArmourRefData(bodyArmour, getCrawlVersion());
     var base_ev_penalty = armourStats["encumbrance"] / 10;
 
     var penalty =  2 / 5 * base_ev_penalty * base_ev_penalty / (str + 3)
