@@ -433,7 +433,6 @@ const spellData = [
     { name: "Summon Demon", level: 5, schools: ["summonings"], powerCap: 200, maxVersion: 26 },
     { name: "Summon Forest", level: 5, schools: ["summonings", "translocations"], powerCap: 200 },
     { name: "Summon Mana Viper", level: 5, schools: ["summonings", "hexes"], powerCap: 100 },
-    { name: "Warp Space", level: 5, schools: ["translocations"], powerCap: 200, minVersion: 32 },
     { name: "Yara's Violent Unravelling", level: 5, schools: ["hexes", "alchemy"], powerCap: 200, destructive: true, minVersion: 31 },
     { name: "Yara's Violent Unravelling", level: 5, schools: ["hexes", "transmutations"], powerCap: 200, destructive: true, maxVersion: 30 },
 
