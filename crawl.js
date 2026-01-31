@@ -1440,7 +1440,12 @@ function parseBrand(s) {
         return "discharge";
     }
 
-    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|disrupt|silver|venom|slay drac|spect|acid)/.exec(s);
+    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|silver|venom)/.exec(s);
+    if (m != null) {
+        return m[1];
+    }
+
+    var m = /\b(heavy|acid|spect|disrupt|slay drac|concussion)/.exec(s);
     if (m != null) {
         return m[1];
     }
@@ -1452,10 +1457,6 @@ function parseBrand(s) {
 
     if (s.match('crushing|chopping|piercing|slashing|slicing|crush|chop|pierce|slash|slice|velocity|vorpal')) {
         return "vorpal";
-    }
-
-    if (s.includes("heavy")) {
-        return "heavy";
     }
 
     return "";
@@ -2427,6 +2428,10 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
     else if (brand == "acid") {
         // 2d4 -> avg 5
         damage = 5;
+    }
+    else if (brand == "concussion") {
+        // random2(damage_done) * 3 / 4 + 1;
+        damage = (avg_base_damage - 1 ) * 3 / 4 + 1
     }
 
     damage *= calcBrandResistMultiplier(brand);
