@@ -162,7 +162,7 @@ const artefactData = {
         "axe of woe": { base_type: "executioner's axe" },
         "dark maul": { base_type: "great mace", new_type: "maul", damage: +20, hit: +2, base_delay: +7 },
         "arc blade": { base_type: "rapier" },
-        "majin-bo": { base_type: "quarterstaff" },
+        "majin-bo": { base_type: "staff", damage: +6, hit: -4 },
         "frostbite": { base_type: "executioner's axe" },
         "thermic engine" : { base_type: "double sword" },
         "woodcutter's axe": { base_type: "battleaxe", new_type: "woodcutter's axe", base_delay: -7, min_delay: +3 },
@@ -173,6 +173,7 @@ const artefactData = {
         "sceptre of asmodeus" : { base_type: "staff" },
         "sniper" : { base_type: "triple crossbow", new_type: "heavy crossbow", base_delay: +4 },
         "dark maul": { base_type: "great mace", new_type: "maul", damage: +35, hit: +2, base_delay: +13 },
+        "majin-bo": { base_type: "quarterstaff" },
     },
     28: {
         "woodcutter's axe": { base_type: "war axe", new_type: "woodcutter's axe", base_delay: -5, min_delay: +3 },
