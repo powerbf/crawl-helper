@@ -1446,7 +1446,7 @@ function parseBrand(s) {
         return m[1];
     }
 
-    var m = /\b(heavy|acid|spect|disrupt|slay drac|concussion|rebuke)/.exec(s);
+    var m = /\b(heavy|acid|spect|disrupt|slay drac|concussion|rebuke|devious)/.exec(s);
     if (m != null) {
         return m[1];
     }
