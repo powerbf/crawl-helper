@@ -1455,6 +1455,8 @@ function parseBrand(s) {
         return "flame";
     else if (s.includes("freezing"))
         return "freeze";
+    else if (s.includes("entangling"))
+        return "entangle";
 
     if (s.match('crushing|chopping|piercing|slashing|slicing|crush|chop|pierce|slash|slice|velocity|vorpal')) {
         return "vorpal";
@@ -2433,6 +2435,10 @@ function calcNonStaffBrandDamage(weapon, avg_base_damage, crawlVersion)
     else if (brand == "concussion") {
         // random2(damage_done) * 3 / 4 + 1;
         damage = (avg_base_damage - 1 ) * 3 / 4 + 1
+    }
+    else if (brand == "entangle") {
+        // 1/2 chance, 2-4 damage
+        damage = 0.5 * 3
     }
 
     damage *= calcBrandResistMultiplier(brand);
