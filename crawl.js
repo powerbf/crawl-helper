@@ -10,6 +10,7 @@ const weaponData = {
     // from v0.31, quick blade attacks twice per swing
     "quick blade": { category: "short_blades", damage: 4, hit: +6, delay: { base: 15, min: 5 }, img: "quickblade" },
     "short sword": { category: "short_blades", damage: 5, hit: +4, delay: { base: 10, min: 5 }, img: "short_sword" },
+    "athame": { category: "short_blades", damage: 6, hit: +5, delay: { base: 13, min: 5 }, img: "athame" },
     "rapier": { category: "short_blades", damage: 7, hit: +4, delay: { base: 12, min: 5 }, img: "rapier" },
 
     "falchion": { category: "long_blades", damage: 8, hit: +2, delay: { base: 13, min: 6 }, img: "falchion" },
