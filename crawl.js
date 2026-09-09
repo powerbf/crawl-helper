@@ -1442,12 +1442,12 @@ function parseBrand(s) {
         return "discharge";
     }
 
-    var m = /\b(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|silver|venom)/.exec(s);
+    var m = /\b(?<!\^)(freeze|flame|elec|holy|protect|distort|pain|drain|speed|vamp|antimagic|silver|venom)/.exec(s);
     if (m != null) {
         return m[1];
     }
 
-    var m = /\b(heavy|acid|spect|disrupt|slay drac|concussion|rebuke|devious)/.exec(s);
+    var m = /\b(?<!\^)(heavy|acid|spect|disrupt|slay drac|concussion|rebuke|devious)/.exec(s);
     if (m != null) {
         return m[1];
     }
